@@ -24,7 +24,7 @@ Open the folder in **Godot 4.4.x** and press F5 (main scene `scenes/Main.tscn`).
 * `tools/build_assets.py <wall_kit_dir> <floor_tile.png> <blueprint.png>` makes everything in `art/game/` and `data/layout.json`:
   * wall centre-lines traced from the blueprint (left half, mirrored - the plan is symmetric); gaps for the 2 gatehouses and the stairs;
   * ground grid (water / paved floor / rocky shore) classified from the blueprint colours, 1 cell per 16 px tile;
-  * floor tiles: the isometric slab un-warped to a flat square (8x8-tile atlas); wall face / walkway textures cut from `01_straight_wall` and `10_causeway`; towers, gatehouses, stairs, causeway sprites from the kit; Kael and the minimap image are generated.
+  * floor tiles: the supplied top-down slab tile, top face cropped (front lip removed) into an 8x8-tile atlas; wall face / walkway textures cut from `01_straight_wall` and `10_causeway`; towers, gatehouses, stairs, causeway sprites from the kit; Kael and the minimap image are generated.
 * `scripts/World.gd` builds the level at runtime: TileMapLayer ground, wall chunks (top walkway + south face, y-sorted in 64 px chunks so Kael passes behind/in front), towers, gatehouses, stairs, causeway bridge, collision (wall bands, tower/gate bases, water), shadows, Kael and the minimap.
 * Shadows: one light from the upper-left; walls, towers and gatehouses cast soft blue-violet shadows to the lower-right on a dedicated layer (no collision). Kael has a contact shadow.
 * Originals are kept untouched in `art/source/`.

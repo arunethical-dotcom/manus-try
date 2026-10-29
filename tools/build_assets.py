@@ -35,7 +35,7 @@ GW, GH = int(BP_W * SX / TILE), int(BP_H * SY / TILE)   # 522 x 441 tiles
 for f in sorted(os.listdir(KIT)):
     if f.endswith(".png"):
         shutil.copy(os.path.join(KIT, f), os.path.join(SRC, "wallkit_" + f))
-shutil.copy(FLOOR, os.path.join(SRC, "floor_tile_iso.png"))
+shutil.copy(FLOOR, os.path.join(SRC, "floor_tile.png"))
 shutil.copy(BLUE, os.path.join(SRC, "palace_blueprint.png"))
 
 
@@ -78,18 +78,12 @@ for key, fn, s in [("tower", "07_watchtower.png", TOWER_SCALE), ("gatehouse", "0
     im.save(os.path.join(OUT, key + ".png"))
     sprites[key] = [im.width, im.height]
 
-# ---------------------------------------------------------------- floor: un-warp the isometric slab to a square
-fl = np.array(Image.open(FLOOR).convert("RGBA"))
-topv, left, right = np.float32([958, 331]), np.float32([101, 936]), np.float32([1819, 946])
-c = (left + right) * 0.5
-ins = 0.985  # trim the bevel
-topv, left, right = c + (topv - c) * ins, c + (left - c) * ins, c + (right - c) * ins
-S = 1024
-M = cv2.getAffineTransform(np.float32([left, topv, right]), np.float32([[0, 0], [S, 0], [S, S]]))
-sq = cv2.warpAffine(fl, M, (S, S), flags=cv2.INTER_AREA)
-sq = cv2.resize(sq, (128, 128), interpolation=cv2.INTER_AREA)   # 8x8 tiles of 16 px, slabs ~32 px
-sq[..., 3] = 255
-Image.fromarray(sq).save(os.path.join(OUT, "floor_atlas.png"))
+# ---------------------------------------------------------------- floor: top-down slab tile
+# crop the walkable top face (drop the transparent margin and the front lip), 8x8 tiles of 16 px
+fl = Image.open(FLOOR).convert("RGBA").crop((104, 106, 1150, 1098))
+fl = fl.resize((128, 128), Image.BOX)
+a = np.array(fl); a[..., 3] = 255
+Image.fromarray(a).save(os.path.join(OUT, "floor_atlas.png"))
 
 # ---------------------------------------------------------------- generated tiles: water + rocky shore (64 px atlases)
 rng = np.random.RandomState(3)
