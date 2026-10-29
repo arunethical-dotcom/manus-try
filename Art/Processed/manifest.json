@@ -1,0 +1,663 @@
+{
+ "barracks": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   22,
+   95,
+   2133,
+   1434
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1813113,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 60983,
+  "pixels_alpha_245_254": 1797420,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/barracks.png",
+  "processed_size": [
+   2133,
+   1434
+  ],
+  "size_src": [
+   2176,
+   1632
+  ],
+  "source": "Art/Source/individual_barracks.png",
+  "tiny_components_lt_16px": 0
+ },
+ "blacksmith": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   212,
+   11,
+   1889,
+   1542
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1963155,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 146447,
+  "pixels_alpha_245_254": 1939247,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/blacksmith.png",
+  "processed_size": [
+   1889,
+   1542
+  ],
+  "size_src": [
+   2176,
+   1632
+  ],
+  "source": "Art/Source/individual_blacksmith.png",
+  "tiny_components_lt_16px": 0
+ },
+ "chapel": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   510,
+   15,
+   1290,
+   1555
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1183599,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 43274,
+  "pixels_alpha_245_254": 1170465,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/chapel.png",
+  "processed_size": [
+   1290,
+   1555
+  ],
+  "size_src": [
+   2176,
+   1632
+  ],
+  "source": "Art/Source/individual_chapel.png",
+  "tiny_components_lt_16px": 0
+ },
+ "cobblestone_tile": {
+  "adjacent_px_diff_h": 2.69,
+  "adjacent_px_diff_v": 2.74,
+  "alpha_max": 249,
+  "alpha_min": 193,
+  "kind": "tile",
+  "pixels_alpha_1_127": 0,
+  "pixels_alpha_245_254": 1248883,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/cobblestone_tile.png",
+  "processed_size": [
+   1920,
+   1920
+  ],
+  "seam_ratio": 5.69,
+  "seamless_derivative": "Art/Processed/cobblestone_tile_seamless.png",
+  "seamless_seam_ratio": 4.06,
+  "seamless_wrap_edge_diff_h": 10.11,
+  "seamless_wrap_edge_diff_v": 1.47,
+  "size_src": [
+   1920,
+   1920
+  ],
+  "source": "Art/Source/individual_cobblestone_tile.png",
+  "wrap_edge_diff_h": 6.9,
+  "wrap_edge_diff_v": 15.62
+ },
+ "courtyard_garden": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   55,
+   74,
+   1810,
+   1772
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 2920516,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 90396,
+  "pixels_alpha_245_254": 2893440,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/courtyard_garden.png",
+  "processed_size": [
+   1810,
+   1772
+  ],
+  "size_src": [
+   1920,
+   1920
+  ],
+  "source": "Art/Source/individual_courtyard_garden.png",
+  "tiny_components_lt_16px": 0
+ },
+ "fountain": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 2,
+  "crop_rect": [
+   177,
+   240,
+   1567,
+   1462
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1645956,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 41296,
+  "pixels_alpha_245_254": 1636356,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/fountain.png",
+  "processed_size": [
+   1567,
+   1462
+  ],
+  "size_src": [
+   1920,
+   1920
+  ],
+  "source": "Art/Source/individual_fountain.png",
+  "tiny_components_lt_16px": 0
+ },
+ "gatehouse_asset": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   222,
+   2,
+   1793,
+   1620
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1700564,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 67079,
+  "pixels_alpha_245_254": 1680121,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/gatehouse_asset.png",
+  "processed_size": [
+   1793,
+   1620
+  ],
+  "size_src": [
+   2176,
+   1632
+  ],
+  "source": "Art/Source/individual_gatehouse_asset.png",
+  "tiny_components_lt_16px": 0
+ },
+ "grass_tile": {
+  "adjacent_px_diff_h": 3.99,
+  "adjacent_px_diff_v": 3.24,
+  "alpha_max": 247,
+  "alpha_min": 225,
+  "kind": "tile",
+  "pixels_alpha_1_127": 0,
+  "pixels_alpha_245_254": 7813,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/grass_tile.png",
+  "processed_size": [
+   1920,
+   1920
+  ],
+  "seam_ratio": 4.82,
+  "seamless_derivative": "Art/Processed/grass_tile_seamless.png",
+  "seamless_seam_ratio": 2.45,
+  "seamless_wrap_edge_diff_h": 8.94,
+  "seamless_wrap_edge_diff_v": 3.25,
+  "size_src": [
+   1920,
+   1920
+  ],
+  "source": "Art/Source/individual_grass_tile.png",
+  "wrap_edge_diff_h": 14.06,
+  "wrap_edge_diff_v": 15.62
+ },
+ "great_hall": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   47,
+   17,
+   2094,
+   1567
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1874755,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 69301,
+  "pixels_alpha_245_254": 1855679,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/great_hall.png",
+  "processed_size": [
+   2094,
+   1567
+  ],
+  "size_src": [
+   2176,
+   1632
+  ],
+  "source": "Art/Source/individual_great_hall.png",
+  "tiny_components_lt_16px": 0
+ },
+ "heraldic_banner": {
+  "alpha_cut": 128,
+  "alpha_max": 255,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   286,
+   34,
+   954,
+   2207
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 912318,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 45417,
+  "pixels_alpha_245_254": 903579,
+  "pixels_alpha_eq_255": 7,
+  "processed": "Art/Processed/heraldic_banner.png",
+  "processed_size": [
+   954,
+   2207
+  ],
+  "size_src": [
+   1536,
+   2304
+  ],
+  "source": "Art/Source/individual_heraldic_banner.png",
+  "tiny_components_lt_16px": 0
+ },
+ "keep_asset": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   274,
+   12,
+   1687,
+   1591
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1634143,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 66576,
+  "pixels_alpha_245_254": 1613232,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/keep_asset.png",
+  "processed_size": [
+   1687,
+   1591
+  ],
+  "size_src": [
+   2176,
+   1632
+  ],
+  "source": "Art/Source/individual_keep_asset.png",
+  "tiny_components_lt_16px": 0
+ },
+ "kitchen_bakery": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   185,
+   5,
+   1852,
+   1602
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1981013,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 46756,
+  "pixels_alpha_245_254": 1967509,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/kitchen_bakery.png",
+  "processed_size": [
+   1852,
+   1602
+  ],
+  "size_src": [
+   2176,
+   1632
+  ],
+  "source": "Art/Source/individual_kitchen_bakery.png",
+  "tiny_components_lt_16px": 0
+ },
+ "library_tower": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   655,
+   0,
+   1097,
+   1568
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1044149,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 34556,
+  "pixels_alpha_245_254": 1032739,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/library_tower.png",
+  "processed_size": [
+   1097,
+   1568
+  ],
+  "size_src": [
+   2176,
+   1632
+  ],
+  "source": "Art/Source/individual_library_tower.png",
+  "tiny_components_lt_16px": 0
+ },
+ "modular_wall": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 2,
+  "crop_rect": [
+   50,
+   334,
+   2204,
+   865
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1631370,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 119539,
+  "pixels_alpha_245_254": 1616558,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/modular_wall.png",
+  "processed_size": [
+   2204,
+   865
+  ],
+  "size_src": [
+   2304,
+   1536
+  ],
+  "source": "Art/Source/individual_modular_wall.png",
+  "tiny_components_lt_16px": 1
+ },
+ "oak_tree": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   16,
+   152,
+   1510,
+   1920
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1748549,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 209522,
+  "pixels_alpha_245_254": 1700255,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/oak_tree.png",
+  "processed_size": [
+   1510,
+   1920
+  ],
+  "size_src": [
+   1536,
+   2304
+  ],
+  "source": "Art/Source/individual_oak_tree.png",
+  "tiny_components_lt_16px": 0
+ },
+ "pine_tree": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   125,
+   56,
+   1293,
+   2116
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1374873,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 175338,
+  "pixels_alpha_245_254": 1348098,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/pine_tree.png",
+  "processed_size": [
+   1293,
+   2116
+  ],
+  "size_src": [
+   1536,
+   2304
+  ],
+  "source": "Art/Source/individual_pine_tree.png",
+  "tiny_components_lt_16px": 0
+ },
+ "river_water_tile": {
+  "adjacent_px_diff_h": 1.5,
+  "adjacent_px_diff_v": 1.83,
+  "alpha_max": 247,
+  "alpha_min": 196,
+  "kind": "tile",
+  "pixels_alpha_1_127": 0,
+  "pixels_alpha_245_254": 1092,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/river_water_tile.png",
+  "processed_size": [
+   1920,
+   1920
+  ],
+  "seam_ratio": 5.34,
+  "seamless_derivative": "Art/Processed/river_water_tile_seamless.png",
+  "seamless_seam_ratio": 4.32,
+  "seamless_wrap_edge_diff_h": 6.1,
+  "seamless_wrap_edge_diff_v": 1.18,
+  "size_src": [
+   1920,
+   1920
+  ],
+  "source": "Art/Source/individual_river_water_tile.png",
+  "wrap_edge_diff_h": 4.75,
+  "wrap_edge_diff_v": 9.78
+ },
+ "stable": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   20,
+   4,
+   2127,
+   1561
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 2212708,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 77968,
+  "pixels_alpha_245_254": 2196572,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/stable.png",
+  "processed_size": [
+   2127,
+   1561
+  ],
+  "size_src": [
+   2176,
+   1632
+  ],
+  "source": "Art/Source/individual_stable.png",
+  "tiny_components_lt_16px": 0
+ },
+ "stone_well": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   245,
+   60,
+   1434,
+   1818
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1885058,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 51075,
+  "pixels_alpha_245_254": 1875220,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/stone_well.png",
+  "processed_size": [
+   1434,
+   1818
+  ],
+  "size_src": [
+   1920,
+   1920
+  ],
+  "source": "Art/Source/individual_stone_well.png",
+  "tiny_components_lt_16px": 0
+ },
+ "treasure_chest": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   113,
+   128,
+   1723,
+   1720
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 2096097,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 36275,
+  "pixels_alpha_245_254": 2086995,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/treasure_chest.png",
+  "processed_size": [
+   1723,
+   1720
+  ],
+  "size_src": [
+   1920,
+   1920
+  ],
+  "source": "Art/Source/individual_treasure_chest.png",
+  "tiny_components_lt_16px": 0
+ },
+ "wall_torch": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 10,
+  "crop_rect": [
+   526,
+   46,
+   965,
+   1771
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 661844,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 41567,
+  "pixels_alpha_245_254": 649504,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/wall_torch.png",
+  "processed_size": [
+   965,
+   1771
+  ],
+  "size_src": [
+   1920,
+   1920
+  ],
+  "source": "Art/Source/individual_wall_torch.png",
+  "tiny_components_lt_16px": 0
+ },
+ "watchtower": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   249,
+   9,
+   1039,
+   2255
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 1609118,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 50216,
+  "pixels_alpha_245_254": 1591698,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/watchtower.png",
+  "processed_size": [
+   1039,
+   2255
+  ],
+  "size_src": [
+   1536,
+   2304
+  ],
+  "source": "Art/Source/individual_watchtower.png",
+  "tiny_components_lt_16px": 0
+ },
+ "waterfall": {
+  "alpha_cut": 128,
+  "alpha_max": 254,
+  "alpha_min": 0,
+  "components": 1,
+  "crop_rect": [
+   76,
+   108,
+   1392,
+   2107
+  ],
+  "kind": "sprite",
+  "opaque_pixels_after": 2150217,
+  "pivot_rule": "bottom-center of visible bounds",
+  "pixels_alpha_1_127": 40647,
+  "pixels_alpha_245_254": 2139846,
+  "pixels_alpha_eq_255": 0,
+  "processed": "Art/Processed/waterfall.png",
+  "processed_size": [
+   1392,
+   2107
+  ],
+  "size_src": [
+   1536,
+   2304
+  ],
+  "source": "Art/Source/individual_waterfall.png",
+  "tiny_components_lt_16px": 0
+ }
+}
