@@ -1,0 +1,49 @@
+== Castle route play-test (real input, real collision) ==
+PASS  approach scene loaded, player is 64px sprite  Approach.tscn
+PASS  approach: path start -> drawbridge is collision-traversable (ford + bridge corridor)  flood-fill over real collision
+PASS  approach: moat water blocks (no walking across the river)  water collision
+PASS  approach: wall / towers are not walkable (north of moat unreachable except via gate)  
+PASS  approach -> gate -> courtyard transition by walking  AutoDoor To_Courtyard
+PASS  courtyard: garden walkable south gate -> north gate  path len 688
+PASS  courtyard: garden perimeter wall blocks (west side)  
+PASS  courtyard: cannot walk through the south castle wall  stopped at y=2085
+PASS  courtyard: cannot walk through the keep facade  stopped at y=948
+PASS  courtyard -> keep (door)  Door_keep_main
+PASS  keep -> library / upper keep (stair door)  ToLibrary
+PASS  library -> keep (back down)  
+PASS  keep -> chapel (side door)  
+PASS  chapel -> courtyard (exit)  
+PASS  courtyard -> library tower door  Door_library_main
+PASS  library -> courtyard (exit)  
+PASS  courtyard -> great hall  
+PASS  great hall -> kitchen/bakery (service route)  ToKitchen
+PASS  pantry hatch is NOT available before the clue is found  
+PASS  kitchen pantry: inspect (clue) then pull shelf -> underground  PantrySecret
+PASS  underground: crypt lever reachable from pantry arrival (cistern -> junction -> crypt)  Lever -> prison_open
+PASS  underground: loop gate blocks the short way until the lever is pulled  path before 2176 px, after 128 px
+PASS  underground: branch/loop junction -> prison -> west passage -> pantry stair -> cistern -> junction  4 legs reachable
+PASS  underground: smuggler's tunnel is sealed before the wall is opened  
+PASS  underground: examine (clue) then push stones opens the hidden wall  SecretWallUse
+PASS  underground -> escape tunnel -> surface beyond the castle wall  LadderEscape -> Approach 'escape'
+PASS  escape exit emerges outside the walls (south of the moat, east hillside)  player at (2450.0, 1075.0)
+PASS  surface return: drain grate leads back down (return route)  GrateOpen
+PASS  underground: well shaft reachable from the escape tunnel  
+PASS  underground -> well ladder -> courtyard  LadderWell
+PASS  courtyard well: examine (clue) then climb down -> underground  Well
+PASS  well ladder returns to courtyard  
+PASS  courtyard -> barracks  
+PASS  barracks -> courtyard  
+PASS  courtyard -> kitchen (direct door)  
+PASS  kitchen -> courtyard  
+PASS  courtyard -> service yard (east gate)  
+PASS  service yard -> stable  
+PASS  stable -> service yard  
+PASS  service yard -> blacksmith  
+PASS  blacksmith -> service yard  
+PASS  service yard -> courtyard (west gate)  
+PASS  courtyard -> south gate -> forest approach (safe surface exit)  
+PASS  y-sort: player behind oak (foot above trunk foot) is drawn before the oak  player y 480 < oak foot y 560
+PASS  occlusion: canopy fades while the player is behind it  alpha 0.40
+PASS  y-sort: player in front of oak is drawn after it, canopy opaque  alpha 1.00
+PASS  occlusion: wall front fades while the player is behind it  
+== 47 checks, 0 failed, 5.4 s wall time ==

@@ -1,0 +1,548 @@
+[gd_scene load_steps=45 format=3]
+
+[ext_resource type="Script" path="res://Scripts/LevelBase.gd" id="1_mblhf"]
+[ext_resource type="Texture2D" path="res://Art/Generated/floor_flags.png" id="2_dybp2"]
+[ext_resource type="Texture2D" path="res://Art/Generated/wall_brick.png" id="3_wrfrd"]
+[ext_resource type="Texture2D" path="res://Art/Generated/carpet_red.png" id="4_d728f"]
+[ext_resource type="Texture2D" path="res://Art/Generated/prop_mat.png" id="5_8cx1a"]
+[ext_resource type="Texture2D" path="res://Art/Generated/prop_throne.png" id="6_2xuoh"]
+[ext_resource type="Texture2D" path="res://Art/Generated/prop_table.png" id="7_7xyln"]
+[ext_resource type="Texture2D" path="res://Art/Generated/prop_bench.png" id="8_escik"]
+[ext_resource type="Texture2D" path="res://Art/Generated/prop_pillar.png" id="9_3qfpr"]
+[ext_resource type="Texture2D" path="res://Art/Game/heraldic_banner.png" id="10_34ulb"]
+[ext_resource type="Texture2D" path="res://Art/Game/wall_torch.png" id="11_x8fcm"]
+[ext_resource type="Texture2D" path="res://Art/Generated/prop_door.png" id="12_guqi5"]
+[ext_resource type="Script" path="res://Scripts/Interactable.gd" id="13_rx8xq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xamo1"]
+size = Vector2(1248, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ct8hh"]
+size = Vector2(1248, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w6uyd"]
+size = Vector2(80, 640)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5kxbj"]
+size = Vector2(80, 640)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oiy86"]
+size = Vector2(1088, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7p8ix"]
+size = Vector2(32, 512)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rxb58"]
+size = Vector2(32, 512)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6kx8e"]
+size = Vector2(1088, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wssa8"]
+size = Vector2(36, 12)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rei0i"]
+size = Vector2(64, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kwj0q"]
+size = Vector2(64, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wfyhh"]
+size = Vector2(56, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0cqrn"]
+size = Vector2(56, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_giwav"]
+size = Vector2(64, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_16h4j"]
+size = Vector2(64, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0ctum"]
+size = Vector2(56, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tqdo3"]
+size = Vector2(56, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vg5kj"]
+size = Vector2(64, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q52ff"]
+size = Vector2(64, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8agup"]
+size = Vector2(56, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nvsgx"]
+size = Vector2(56, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_28e50"]
+size = Vector2(64, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rw2y0"]
+size = Vector2(64, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lld3a"]
+size = Vector2(56, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rvvdc"]
+size = Vector2(56, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ubrto"]
+size = Vector2(22, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hnowp"]
+size = Vector2(22, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hcx84"]
+size = Vector2(22, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_umspd"]
+size = Vector2(22, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_485m8"]
+size = Vector2(72, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n5vp3"]
+size = Vector2(88, 44)
+
+[node name="Level" type="Node2D"]
+script = ExtResource("1_mblhf")
+level_title = "The Great Hall"
+bounds = Rect2(0, 0, 1088, 640)
+default_spawn = "from_courtyard"
+
+[node name="Ground" type="Node2D" parent="."]
+
+[node name="Background" type="Polygon2D" parent="Ground"]
+color = Color(0.04, 0.03, 0.05, 1)
+polygon = PackedVector2Array(0, 0, 1088, 0, 1088, 640, 0, 640)
+
+[node name="Floor" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("2_dybp2")
+polygon = PackedVector2Array(32, 96, 1056, 96, 1056, 608, 32, 608)
+
+[node name="WallFace" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("3_wrfrd")
+polygon = PackedVector2Array(32, 32, 1056, 32, 1056, 96, 32, 96)
+
+[node name="WallCap" type="Polygon2D" parent="Ground"]
+color = Color(0.1, 0.09, 0.12, 1)
+polygon = PackedVector2Array(0, 32, 32, 32, 32, 608, 0, 608)
+
+[node name="@Polygon2D@336" type="Polygon2D" parent="Ground"]
+color = Color(0.1, 0.09, 0.12, 1)
+polygon = PackedVector2Array(1056, 32, 1088, 32, 1088, 608, 1056, 608)
+
+[node name="@Polygon2D@337" type="Polygon2D" parent="Ground"]
+color = Color(0.1, 0.09, 0.12, 1)
+polygon = PackedVector2Array(0, 608, 1088, 608, 1088, 640, 0, 640)
+
+[node name="Carpet" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("4_d728f")
+polygon = PackedVector2Array(448, 96, 640, 96, 640, 576, 448, 576)
+
+[node name="ExitMat" type="Sprite2D" parent="Ground"]
+position = Vector2(512, 594)
+texture = ExtResource("5_8cx1a")
+centered = false
+
+[node name="Collision" type="Node2D" parent="."]
+
+[node name="EdgeN" type="StaticBody2D" parent="Collision"]
+position = Vector2(544, -40)
+collision_mask = 0
+
+[node name="@CollisionShape2D@332" type="CollisionShape2D" parent="Collision/EdgeN"]
+shape = SubResource("RectangleShape2D_xamo1")
+
+[node name="EdgeS" type="StaticBody2D" parent="Collision"]
+position = Vector2(544, 680)
+collision_mask = 0
+
+[node name="@CollisionShape2D@333" type="CollisionShape2D" parent="Collision/EdgeS"]
+shape = SubResource("RectangleShape2D_ct8hh")
+
+[node name="EdgeW" type="StaticBody2D" parent="Collision"]
+position = Vector2(-40, 320)
+collision_mask = 0
+
+[node name="@CollisionShape2D@334" type="CollisionShape2D" parent="Collision/EdgeW"]
+shape = SubResource("RectangleShape2D_w6uyd")
+
+[node name="EdgeE" type="StaticBody2D" parent="Collision"]
+position = Vector2(1128, 320)
+collision_mask = 0
+
+[node name="@CollisionShape2D@335" type="CollisionShape2D" parent="Collision/EdgeE"]
+shape = SubResource("RectangleShape2D_5kxbj")
+
+[node name="Col_Wall" type="StaticBody2D" parent="Collision"]
+position = Vector2(544, 80)
+collision_mask = 0
+
+[node name="@CollisionShape2D@338" type="CollisionShape2D" parent="Collision/Col_Wall"]
+shape = SubResource("RectangleShape2D_oiy86")
+
+[node name="@StaticBody2D@340" type="StaticBody2D" parent="Collision"]
+position = Vector2(16, 352)
+collision_mask = 0
+
+[node name="@CollisionShape2D@339" type="CollisionShape2D" parent="Collision/@StaticBody2D@340"]
+shape = SubResource("RectangleShape2D_7p8ix")
+
+[node name="@StaticBody2D@342" type="StaticBody2D" parent="Collision"]
+position = Vector2(1072, 352)
+collision_mask = 0
+
+[node name="@CollisionShape2D@341" type="CollisionShape2D" parent="Collision/@StaticBody2D@342"]
+shape = SubResource("RectangleShape2D_rxb58")
+
+[node name="@StaticBody2D@344" type="StaticBody2D" parent="Collision"]
+position = Vector2(544, 624)
+collision_mask = 0
+
+[node name="@CollisionShape2D@343" type="CollisionShape2D" parent="Collision/@StaticBody2D@344"]
+shape = SubResource("RectangleShape2D_6kx8e")
+
+[node name="Col_prop_throne_167" type="StaticBody2D" parent="Collision"]
+position = Vector2(544, 173.2)
+collision_mask = 0
+
+[node name="@CollisionShape2D@345" type="CollisionShape2D" parent="Collision/Col_prop_throne_167"]
+shape = SubResource("RectangleShape2D_wssa8")
+
+[node name="Col_prop_table_168" type="StaticBody2D" parent="Collision"]
+position = Vector2(208, 278)
+collision_mask = 0
+
+[node name="@CollisionShape2D@346" type="CollisionShape2D" parent="Collision/Col_prop_table_168"]
+shape = SubResource("RectangleShape2D_rei0i")
+
+[node name="Col_prop_table_169" type="StaticBody2D" parent="Collision"]
+position = Vector2(272, 278)
+collision_mask = 0
+
+[node name="@CollisionShape2D@347" type="CollisionShape2D" parent="Collision/Col_prop_table_169"]
+shape = SubResource("RectangleShape2D_kwj0q")
+
+[node name="Col_prop_bench_170" type="StaticBody2D" parent="Collision"]
+position = Vector2(224, 335.2)
+collision_mask = 0
+
+[node name="@CollisionShape2D@348" type="CollisionShape2D" parent="Collision/Col_prop_bench_170"]
+shape = SubResource("RectangleShape2D_wfyhh")
+
+[node name="Col_prop_bench_171" type="StaticBody2D" parent="Collision"]
+position = Vector2(288, 335.2)
+collision_mask = 0
+
+[node name="@CollisionShape2D@349" type="CollisionShape2D" parent="Collision/Col_prop_bench_171"]
+shape = SubResource("RectangleShape2D_0cqrn")
+
+[node name="Col_prop_table_172" type="StaticBody2D" parent="Collision"]
+position = Vector2(208, 438)
+collision_mask = 0
+
+[node name="@CollisionShape2D@350" type="CollisionShape2D" parent="Collision/Col_prop_table_172"]
+shape = SubResource("RectangleShape2D_giwav")
+
+[node name="Col_prop_table_173" type="StaticBody2D" parent="Collision"]
+position = Vector2(272, 438)
+collision_mask = 0
+
+[node name="@CollisionShape2D@351" type="CollisionShape2D" parent="Collision/Col_prop_table_173"]
+shape = SubResource("RectangleShape2D_16h4j")
+
+[node name="Col_prop_bench_174" type="StaticBody2D" parent="Collision"]
+position = Vector2(224, 495.2)
+collision_mask = 0
+
+[node name="@CollisionShape2D@352" type="CollisionShape2D" parent="Collision/Col_prop_bench_174"]
+shape = SubResource("RectangleShape2D_0ctum")
+
+[node name="Col_prop_bench_175" type="StaticBody2D" parent="Collision"]
+position = Vector2(288, 495.2)
+collision_mask = 0
+
+[node name="@CollisionShape2D@353" type="CollisionShape2D" parent="Collision/Col_prop_bench_175"]
+shape = SubResource("RectangleShape2D_tqdo3")
+
+[node name="Col_prop_table_176" type="StaticBody2D" parent="Collision"]
+position = Vector2(784, 278)
+collision_mask = 0
+
+[node name="@CollisionShape2D@354" type="CollisionShape2D" parent="Collision/Col_prop_table_176"]
+shape = SubResource("RectangleShape2D_vg5kj")
+
+[node name="Col_prop_table_177" type="StaticBody2D" parent="Collision"]
+position = Vector2(848, 278)
+collision_mask = 0
+
+[node name="@CollisionShape2D@355" type="CollisionShape2D" parent="Collision/Col_prop_table_177"]
+shape = SubResource("RectangleShape2D_q52ff")
+
+[node name="Col_prop_bench_178" type="StaticBody2D" parent="Collision"]
+position = Vector2(800, 335.2)
+collision_mask = 0
+
+[node name="@CollisionShape2D@356" type="CollisionShape2D" parent="Collision/Col_prop_bench_178"]
+shape = SubResource("RectangleShape2D_8agup")
+
+[node name="Col_prop_bench_179" type="StaticBody2D" parent="Collision"]
+position = Vector2(864, 335.2)
+collision_mask = 0
+
+[node name="@CollisionShape2D@357" type="CollisionShape2D" parent="Collision/Col_prop_bench_179"]
+shape = SubResource("RectangleShape2D_nvsgx")
+
+[node name="Col_prop_table_180" type="StaticBody2D" parent="Collision"]
+position = Vector2(784, 438)
+collision_mask = 0
+
+[node name="@CollisionShape2D@358" type="CollisionShape2D" parent="Collision/Col_prop_table_180"]
+shape = SubResource("RectangleShape2D_28e50")
+
+[node name="Col_prop_table_181" type="StaticBody2D" parent="Collision"]
+position = Vector2(848, 438)
+collision_mask = 0
+
+[node name="@CollisionShape2D@359" type="CollisionShape2D" parent="Collision/Col_prop_table_181"]
+shape = SubResource("RectangleShape2D_rw2y0")
+
+[node name="Col_prop_bench_182" type="StaticBody2D" parent="Collision"]
+position = Vector2(800, 495.2)
+collision_mask = 0
+
+[node name="@CollisionShape2D@360" type="CollisionShape2D" parent="Collision/Col_prop_bench_182"]
+shape = SubResource("RectangleShape2D_lld3a")
+
+[node name="Col_prop_bench_183" type="StaticBody2D" parent="Collision"]
+position = Vector2(864, 495.2)
+collision_mask = 0
+
+[node name="@CollisionShape2D@361" type="CollisionShape2D" parent="Collision/Col_prop_bench_183"]
+shape = SubResource("RectangleShape2D_rvvdc")
+
+[node name="Col_prop_pillar_184" type="StaticBody2D" parent="Collision"]
+position = Vector2(368, 252)
+collision_mask = 0
+
+[node name="@CollisionShape2D@362" type="CollisionShape2D" parent="Collision/Col_prop_pillar_184"]
+shape = SubResource("RectangleShape2D_ubrto")
+
+[node name="Col_prop_pillar_185" type="StaticBody2D" parent="Collision"]
+position = Vector2(368, 508)
+collision_mask = 0
+
+[node name="@CollisionShape2D@363" type="CollisionShape2D" parent="Collision/Col_prop_pillar_185"]
+shape = SubResource("RectangleShape2D_hnowp")
+
+[node name="Col_prop_pillar_186" type="StaticBody2D" parent="Collision"]
+position = Vector2(720, 252)
+collision_mask = 0
+
+[node name="@CollisionShape2D@364" type="CollisionShape2D" parent="Collision/Col_prop_pillar_186"]
+shape = SubResource("RectangleShape2D_hcx84")
+
+[node name="Col_prop_pillar_187" type="StaticBody2D" parent="Collision"]
+position = Vector2(720, 508)
+collision_mask = 0
+
+[node name="@CollisionShape2D@365" type="CollisionShape2D" parent="Collision/Col_prop_pillar_187"]
+shape = SubResource("RectangleShape2D_umspd")
+
+[node name="World" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="prop_throne_167" type="Sprite2D" parent="World"]
+position = Vector2(544, 179)
+texture = ExtResource("6_2xuoh")
+centered = false
+offset = Vector2(-18, -74)
+
+[node name="prop_table_168" type="Sprite2D" parent="World"]
+position = Vector2(208, 288)
+texture = ExtResource("7_7xyln")
+centered = false
+offset = Vector2(-32, -40)
+
+[node name="prop_table_169" type="Sprite2D" parent="World"]
+position = Vector2(272, 288)
+texture = ExtResource("7_7xyln")
+centered = false
+offset = Vector2(-32, -40)
+
+[node name="prop_bench_170" type="Sprite2D" parent="World"]
+position = Vector2(224, 339)
+texture = ExtResource("8_escik")
+centered = false
+offset = Vector2(-28, -18)
+
+[node name="prop_bench_171" type="Sprite2D" parent="World"]
+position = Vector2(288, 339)
+texture = ExtResource("8_escik")
+centered = false
+offset = Vector2(-28, -18)
+
+[node name="prop_table_172" type="Sprite2D" parent="World"]
+position = Vector2(208, 448)
+texture = ExtResource("7_7xyln")
+centered = false
+offset = Vector2(-32, -40)
+
+[node name="prop_table_173" type="Sprite2D" parent="World"]
+position = Vector2(272, 448)
+texture = ExtResource("7_7xyln")
+centered = false
+offset = Vector2(-32, -40)
+
+[node name="prop_bench_174" type="Sprite2D" parent="World"]
+position = Vector2(224, 499)
+texture = ExtResource("8_escik")
+centered = false
+offset = Vector2(-28, -18)
+
+[node name="prop_bench_175" type="Sprite2D" parent="World"]
+position = Vector2(288, 499)
+texture = ExtResource("8_escik")
+centered = false
+offset = Vector2(-28, -18)
+
+[node name="prop_table_176" type="Sprite2D" parent="World"]
+position = Vector2(784, 288)
+texture = ExtResource("7_7xyln")
+centered = false
+offset = Vector2(-32, -40)
+
+[node name="prop_table_177" type="Sprite2D" parent="World"]
+position = Vector2(848, 288)
+texture = ExtResource("7_7xyln")
+centered = false
+offset = Vector2(-32, -40)
+
+[node name="prop_bench_178" type="Sprite2D" parent="World"]
+position = Vector2(800, 339)
+texture = ExtResource("8_escik")
+centered = false
+offset = Vector2(-28, -18)
+
+[node name="prop_bench_179" type="Sprite2D" parent="World"]
+position = Vector2(864, 339)
+texture = ExtResource("8_escik")
+centered = false
+offset = Vector2(-28, -18)
+
+[node name="prop_table_180" type="Sprite2D" parent="World"]
+position = Vector2(784, 448)
+texture = ExtResource("7_7xyln")
+centered = false
+offset = Vector2(-32, -40)
+
+[node name="prop_table_181" type="Sprite2D" parent="World"]
+position = Vector2(848, 448)
+texture = ExtResource("7_7xyln")
+centered = false
+offset = Vector2(-32, -40)
+
+[node name="prop_bench_182" type="Sprite2D" parent="World"]
+position = Vector2(800, 499)
+texture = ExtResource("8_escik")
+centered = false
+offset = Vector2(-28, -18)
+
+[node name="prop_bench_183" type="Sprite2D" parent="World"]
+position = Vector2(864, 499)
+texture = ExtResource("8_escik")
+centered = false
+offset = Vector2(-28, -18)
+
+[node name="prop_pillar_184" type="Sprite2D" parent="World"]
+position = Vector2(368, 256)
+texture = ExtResource("9_3qfpr")
+centered = false
+offset = Vector2(-11, -82)
+
+[node name="prop_pillar_185" type="Sprite2D" parent="World"]
+position = Vector2(368, 512)
+texture = ExtResource("9_3qfpr")
+centered = false
+offset = Vector2(-11, -82)
+
+[node name="prop_pillar_186" type="Sprite2D" parent="World"]
+position = Vector2(720, 256)
+texture = ExtResource("9_3qfpr")
+centered = false
+offset = Vector2(-11, -82)
+
+[node name="prop_pillar_187" type="Sprite2D" parent="World"]
+position = Vector2(720, 512)
+texture = ExtResource("9_3qfpr")
+centered = false
+offset = Vector2(-11, -82)
+
+[node name="heraldic_banner_188" type="Sprite2D" parent="World"]
+position = Vector2(272, 122)
+texture = ExtResource("10_34ulb")
+centered = false
+offset = Vector2(-23.5, -110)
+
+[node name="heraldic_banner_189" type="Sprite2D" parent="World"]
+position = Vector2(816, 122)
+texture = ExtResource("10_34ulb")
+centered = false
+offset = Vector2(-23.5, -110)
+
+[node name="wall_torch_190" type="Sprite2D" parent="World"]
+position = Vector2(400, 88)
+texture = ExtResource("11_x8fcm")
+centered = false
+offset = Vector2(-13, -49)
+
+[node name="wall_torch_191" type="Sprite2D" parent="World"]
+position = Vector2(688, 88)
+texture = ExtResource("11_x8fcm")
+centered = false
+offset = Vector2(-13, -49)
+
+[node name="ToKitchenDoor" type="Sprite2D" parent="World"]
+position = Vector2(976, 96)
+texture = ExtResource("12_guqi5")
+centered = false
+offset = Vector2(-22, -66)
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="ToKitchen" type="Area2D" parent="Triggers"]
+position = Vector2(976, 112)
+script = ExtResource("13_rx8xq")
+label = "Go to the kitchens"
+target_scene = "res://Scenes/Interior/Kitchen.tscn"
+target_spawn = "from_hall"
+
+[node name="@CollisionShape2D@366" type="CollisionShape2D" parent="Triggers/ToKitchen"]
+shape = SubResource("RectangleShape2D_485m8")
+
+[node name="Exit" type="Area2D" parent="Triggers"]
+position = Vector2(544, 590)
+script = ExtResource("13_rx8xq")
+label = "Leave the hall"
+target_scene = "res://Scenes/Exterior/Courtyard.tscn"
+target_spawn = "from_hall"
+
+[node name="@CollisionShape2D@367" type="CollisionShape2D" parent="Triggers/Exit"]
+shape = SubResource("RectangleShape2D_n5vp3")
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="from_courtyard" type="Marker2D" parent="Spawns"]
+position = Vector2(544, 592)
+metadata/facing = "up"
+
+[node name="from_kitchen" type="Marker2D" parent="Spawns"]
+position = Vector2(976, 148)
+metadata/facing = "down"

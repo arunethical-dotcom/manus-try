@@ -1,0 +1,26 @@
+path,width_px,height_px,image_mode,usage_notes
+assets/castle_world_overview.png,2560,1440,RGB,Full environment overview reference; not a directly playable/collision-ready map.
+assets/individual_barracks.png,2176,1632,RGBA/PNG,Standalone barracks with alpha.
+assets/individual_blacksmith.png,2176,1632,RGBA/PNG,Standalone blacksmith with alpha.
+assets/individual_chapel.png,2176,1632,RGBA/PNG,Standalone chapel with alpha.
+assets/individual_cobblestone_tile.png,1920,1920,RGBA/PNG,Cobblestone ground tile candidate; verify four edges before tiling.
+assets/individual_courtyard_garden.png,1920,1920,RGBA/PNG,Courtyard garden tile/patch; inspect edges for intended composition.
+assets/individual_fountain.png,1920,1920,RGBA/PNG,Standalone fountain prop with alpha.
+assets/individual_gatehouse_asset.png,2176,1632,RGBA/PNG,Standalone gatehouse sprite with alpha.
+assets/individual_grass_tile.png,1920,1920,RGBA/PNG,Grass ground tile candidate; verify four edges before tiling.
+assets/individual_great_hall.png,2176,1632,RGBA/PNG,Standalone great hall with alpha.
+assets/individual_heraldic_banner.png,1536,2304,RGBA/PNG,Standalone banner prop with alpha.
+assets/individual_keep_asset.png,2176,1632,RGBA/PNG,Standalone building sprite with alpha.
+assets/individual_kitchen_bakery.png,2176,1632,RGBA/PNG,Standalone kitchen/bakery with alpha.
+assets/individual_library_tower.png,2176,1632,RGBA/PNG,Standalone library tower with alpha.
+assets/individual_modular_wall.png,2304,1536,RGBA/PNG,Modular wall component with alpha.
+assets/individual_oak_tree.png,1536,2304,RGBA/PNG,Standalone oak tree prop with alpha; sort by ground footpoint.
+assets/individual_pine_tree.png,1536,2304,RGBA/PNG,Standalone pine tree prop with alpha; sort by ground footpoint.
+assets/individual_river_water_tile.png,1920,1920,RGBA/PNG,Water ground tile candidate; verify four edges before tiling.
+assets/individual_stable.png,2176,1632,RGBA/PNG,Standalone stable with alpha.
+assets/individual_stone_well.png,1920,1920,RGBA/PNG,Standalone well prop with alpha.
+assets/individual_treasure_chest.png,1920,1920,RGBA/PNG,Standalone gameplay prop with alpha.
+assets/individual_wall_torch.png,1920,1920,RGBA/PNG,Standalone torch prop with alpha.
+assets/individual_watchtower.png,1536,2304,RGBA/PNG,Standalone watchtower with alpha.
+assets/individual_waterfall.png,1536,2304,RGBA/PNG,Standalone waterfall effect/landmark with alpha.
+assets/underground_level_overview.png,2560,1440,RGB,Underground level overview reference; not a directly playable/collision-ready map.

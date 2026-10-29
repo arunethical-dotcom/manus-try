@@ -1,0 +1,471 @@
+[gd_scene load_steps=22 format=3]
+
+[ext_resource type="Script" path="res://Scripts/LevelBase.gd" id="1_dxn30"]
+[ext_resource type="Texture2D" path="res://Art/Game/grass_tile.png" id="2_6pghu"]
+[ext_resource type="Texture2D" path="res://Art/Game/cobblestone_tile.png" id="3_iqwdg"]
+[ext_resource type="Texture2D" path="res://Art/Game/oak_tree.png" id="4_i10sm"]
+[ext_resource type="Texture2D" path="res://Art/Game/pine_tree.png" id="5_tyq56"]
+[ext_resource type="Texture2D" path="res://Art/Game/stone_well.png" id="6_01o2e"]
+[ext_resource type="Texture2D" path="res://Art/Game/fountain.png" id="7_xopy8"]
+[ext_resource type="Texture2D" path="res://Art/Game/treasure_chest.png" id="8_kv0s4"]
+[ext_resource type="Texture2D" path="res://Art/Game/modular_wall.png" id="9_klgd5"]
+[ext_resource type="Texture2D" path="res://Art/Game/kitchen_bakery.png" id="10_uo67n"]
+[ext_resource type="Script" path="res://Scripts/Occluder.gd" id="11_3ssd3"]
+[ext_resource type="Script" path="res://Scripts/Interactable.gd" id="12_e24uu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_74llg"]
+size = Vector2(1960, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_koilc"]
+size = Vector2(1960, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6iivu"]
+size = Vector2(80, 1000)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d7wrx"]
+size = Vector2(80, 1000)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wpf8e"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5w8kw"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ifl5a"]
+size = Vector2(440, 112)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xp518"]
+size = Vector2(617, 230)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q13bl"]
+size = Vector2(130, 60)
+
+[node name="Level" type="Node2D"]
+script = ExtResource("1_dxn30")
+level_title = "Scale / Y-sort / occlusion test"
+bounds = Rect2(0, 0, 1800, 1000)
+
+[node name="Ground" type="Node2D" parent="."]
+
+[node name="Grass" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("2_6pghu")
+polygon = PackedVector2Array(0, 0, 1800, 0, 1800, 1000, 0, 1000)
+
+[node name="WalkablePath" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+color = Color(0.92, 0.88, 0.8, 1)
+texture = ExtResource("3_iqwdg")
+polygon = PackedVector2Array(0, 700, 1800, 700, 1800, 850, 0, 850)
+
+[node name="Ruler64" type="Line2D" parent="Ground"]
+points = PackedVector2Array(60, 636, 92, 636, 92, 700, 60, 700, 60, 636)
+width = 2.0
+default_color = Color(1, 0.2, 0.9, 1)
+
+[node name="@Label@788" type="Label" parent="Ground"]
+offset_left = 40.0
+offset_top = 606.0
+offset_right = 40.0
+offset_bottom = 606.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "64 px = player"
+
+[node name="Tick" type="Line2D" parent="Ground"]
+points = PackedVector2Array(120, 700, 136, 700)
+width = 1.0
+
+[node name="@Line2D@789" type="Line2D" parent="Ground"]
+points = PackedVector2Array(120, 684, 136, 684)
+width = 1.0
+
+[node name="@Line2D@790" type="Line2D" parent="Ground"]
+points = PackedVector2Array(120, 668, 136, 668)
+width = 1.0
+
+[node name="@Line2D@791" type="Line2D" parent="Ground"]
+points = PackedVector2Array(120, 652, 136, 652)
+width = 1.0
+
+[node name="@Line2D@792" type="Line2D" parent="Ground"]
+points = PackedVector2Array(120, 636, 136, 636)
+width = 1.0
+
+[node name="RulerLine" type="Line2D" parent="Ground"]
+points = PackedVector2Array(128, 700, 128, 636)
+width = 1.0
+
+[node name="@Label@793" type="Label" parent="Ground"]
+offset_left = 200.0
+offset_top = 596.0
+offset_right = 200.0
+offset_bottom = 596.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "ground row y=560 (footpoints)"
+
+[node name="FootRow" type="Line2D" parent="Ground"]
+points = PackedVector2Array(0, 560, 1800, 560)
+width = 1.0
+default_color = Color(1, 1, 0.3, 0.5)
+
+[node name="@Label@806" type="Label" parent="Ground"]
+offset_left = 930.0
+offset_top = 340.0
+offset_right = 930.0
+offset_bottom = 340.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "door"
+
+[node name="Collision" type="Node2D" parent="."]
+
+[node name="EdgeN" type="StaticBody2D" parent="Collision"]
+position = Vector2(900, -40)
+collision_mask = 0
+
+[node name="@CollisionShape2D@784" type="CollisionShape2D" parent="Collision/EdgeN"]
+shape = SubResource("RectangleShape2D_74llg")
+
+[node name="EdgeS" type="StaticBody2D" parent="Collision"]
+position = Vector2(900, 1040)
+collision_mask = 0
+
+[node name="@CollisionShape2D@785" type="CollisionShape2D" parent="Collision/EdgeS"]
+shape = SubResource("RectangleShape2D_koilc")
+
+[node name="EdgeW" type="StaticBody2D" parent="Collision"]
+position = Vector2(-40, 500)
+collision_mask = 0
+
+[node name="@CollisionShape2D@786" type="CollisionShape2D" parent="Collision/EdgeW"]
+shape = SubResource("RectangleShape2D_6iivu")
+
+[node name="EdgeE" type="StaticBody2D" parent="Collision"]
+position = Vector2(1840, 500)
+collision_mask = 0
+
+[node name="@CollisionShape2D@787" type="CollisionShape2D" parent="Collision/EdgeE"]
+shape = SubResource("RectangleShape2D_d7wrx")
+
+[node name="Col_oak_316_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@794" type="CollisionPolygon2D" parent="Collision/Col_oak_316_0"]
+polygon = PackedVector2Array(284, 542, 316, 542, 316, 558, 284, 558)
+
+[node name="Col_pine_317_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@796" type="CollisionPolygon2D" parent="Collision/Col_pine_317_0"]
+polygon = PackedVector2Array(508, 546, 533, 546, 533, 558, 508, 558)
+
+[node name="Col_well_318_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@798" type="CollisionPolygon2D" parent="Collision/Col_well_318_0"]
+polygon = PackedVector2Array(697, 527, 783, 527, 783, 558, 697, 558)
+
+[node name="Col_fountain_319_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@799" type="CollisionPolygon2D" parent="Collision/Col_fountain_319_0"]
+polygon = PackedVector2Array(901, 490, 1060, 490, 1073, 538, 983, 558, 888, 538)
+
+[node name="Col_chest_320_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@800" type="CollisionPolygon2D" parent="Collision/Col_chest_320_0"]
+polygon = PackedVector2Array(1141, 541, 1180, 541, 1180, 558, 1141, 558)
+
+[node name="Col_wall_321_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@801" type="CollisionPolygon2D" parent="Collision/Col_wall_321_0"]
+polygon = PackedVector2Array(1280, 495, 1720, 495, 1720, 555, 1280, 555)
+
+[node name="Col_kitchen_322_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@803" type="CollisionPolygon2D" parent="Collision/Col_kitchen_322_0"]
+polygon = PackedVector2Array(607, 126, 842, 243, 972, 243, 1152, 221, 1192, 126, 1192, 26, 742, -4)
+
+[node name="World" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="oak_316" type="Sprite2D" parent="World" groups=["occ_oak_tree_316"]]
+position = Vector2(300, 560)
+texture = ExtResource("4_i10sm")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="pine_317" type="Sprite2D" parent="World" groups=["occ_pine_tree_317"]]
+position = Vector2(520, 560)
+texture = ExtResource("5_tyq56")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="well_318" type="Sprite2D" parent="World" groups=["occ_stone_well_318"]]
+position = Vector2(740, 560)
+texture = ExtResource("6_01o2e")
+centered = false
+offset = Vector2(-51, -129)
+
+[node name="fountain_319" type="Sprite2D" parent="World" groups=["occ_fountain_319"]]
+position = Vector2(980, 560)
+texture = ExtResource("7_xopy8")
+centered = false
+offset = Vector2(-97, -182)
+
+[node name="chest_320" type="Sprite2D" parent="World" groups=["occ_treasure_chest_320"]]
+position = Vector2(1160, 560)
+texture = ExtResource("8_kv0s4")
+centered = false
+offset = Vector2(-23, -47)
+
+[node name="wall_321" type="Sprite2D" parent="World" groups=["occ_modular_wall_321"]]
+position = Vector2(1500, 560)
+texture = ExtResource("9_klgd5")
+centered = false
+offset = Vector2(-220, -173)
+
+[node name="kitchen_322_s0" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(608, 138)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -342)
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 534)
+
+[node name="kitchen_322_s1" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(640, 153)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -357)
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 534)
+
+[node name="kitchen_322_s2" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(672, 167)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -371)
+region_enabled = true
+region_rect = Rect2(64, 0, 32, 534)
+
+[node name="kitchen_322_s3" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(704, 181)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -385)
+region_enabled = true
+region_rect = Rect2(96, 0, 32, 534)
+
+[node name="kitchen_322_s4" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(736, 196)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -400)
+region_enabled = true
+region_rect = Rect2(128, 0, 32, 534)
+
+[node name="kitchen_322_s5" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(768, 210)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -414)
+region_enabled = true
+region_rect = Rect2(160, 0, 32, 534)
+
+[node name="kitchen_322_s6" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(800, 224)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -428)
+region_enabled = true
+region_rect = Rect2(192, 0, 32, 534)
+
+[node name="kitchen_322_s7" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(832, 239)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -443)
+region_enabled = true
+region_rect = Rect2(224, 0, 32, 534)
+
+[node name="kitchen_322_s8" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(864, 243)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -447)
+region_enabled = true
+region_rect = Rect2(256, 0, 32, 534)
+
+[node name="kitchen_322_s9" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(896, 243)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -447)
+region_enabled = true
+region_rect = Rect2(288, 0, 32, 534)
+
+[node name="kitchen_322_s10" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(928, 243)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -447)
+region_enabled = true
+region_rect = Rect2(320, 0, 32, 534)
+
+[node name="kitchen_322_s11" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(960, 243)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -447)
+region_enabled = true
+region_rect = Rect2(352, 0, 32, 534)
+
+[node name="kitchen_322_s12" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(992, 241)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -445)
+region_enabled = true
+region_rect = Rect2(384, 0, 32, 534)
+
+[node name="kitchen_322_s13" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(1024, 237)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -441)
+region_enabled = true
+region_rect = Rect2(416, 0, 32, 534)
+
+[node name="kitchen_322_s14" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(1056, 233)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -437)
+region_enabled = true
+region_rect = Rect2(448, 0, 32, 534)
+
+[node name="kitchen_322_s15" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(1088, 229)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -433)
+region_enabled = true
+region_rect = Rect2(480, 0, 32, 534)
+
+[node name="kitchen_322_s16" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(1120, 225)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -429)
+region_enabled = true
+region_rect = Rect2(512, 0, 32, 534)
+
+[node name="kitchen_322_s17" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(1152, 221)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -425)
+region_enabled = true
+region_rect = Rect2(544, 0, 32, 534)
+
+[node name="kitchen_322_s18" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(1184, 168)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-16, -372)
+region_enabled = true
+region_rect = Rect2(576, 0, 32, 534)
+
+[node name="kitchen_322_s19" type="Sprite2D" parent="World" groups=["occ_kitchen_bakery_322"]]
+position = Vector2(1204.5, 134)
+texture = ExtResource("10_uo67n")
+centered = false
+offset = Vector2(-4.5, -338)
+region_enabled = true
+region_rect = Rect2(608, 0, 9, 534)
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="Occ_oak_316_0" type="Area2D" parent="Triggers"]
+position = Vector2(300, 415)
+script = ExtResource("11_3ssd3")
+group_name = "occ_oak_tree_316"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@795" type="CollisionShape2D" parent="Triggers/Occ_oak_316_0"]
+shape = SubResource("RectangleShape2D_wpf8e")
+
+[node name="Occ_pine_317_0" type="Area2D" parent="Triggers"]
+position = Vector2(520, 398.5)
+script = ExtResource("11_3ssd3")
+group_name = "occ_pine_tree_317"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@797" type="CollisionShape2D" parent="Triggers/Occ_pine_317_0"]
+shape = SubResource("RectangleShape2D_5w8kw")
+
+[node name="Occ_wall_321_0" type="Area2D" parent="Triggers"]
+position = Vector2(1500, 443)
+script = ExtResource("11_3ssd3")
+group_name = "occ_modular_wall_321"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@802" type="CollisionShape2D" parent="Triggers/Occ_wall_321_0"]
+shape = SubResource("RectangleShape2D_ifl5a")
+
+[node name="Occ_kitchen_322_0" type="Area2D" parent="Triggers"]
+position = Vector2(900.5, -89)
+script = ExtResource("11_3ssd3")
+group_name = "occ_kitchen_bakery_322"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@804" type="CollisionShape2D" parent="Triggers/Occ_kitchen_322_0"]
+shape = SubResource("RectangleShape2D_xp518")
+
+[node name="Door_kitchen_main" type="Area2D" parent="Triggers"]
+position = Vector2(907, 273)
+script = ExtResource("12_e24uu")
+label = "Enter Kitchen"
+target_scene = "res://Scenes/Interior/Kitchen.tscn"
+target_spawn = "from_courtyard"
+
+[node name="@CollisionShape2D@805" type="CollisionShape2D" parent="Triggers/Door_kitchen_main"]
+shape = SubResource("RectangleShape2D_q13bl")
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="start" type="Marker2D" parent="Spawns"]
+position = Vector2(900, 790)
+metadata/facing = "up"
+
+[node name="behind_oak" type="Marker2D" parent="Spawns"]
+position = Vector2(300, 480)
+metadata/facing = "down"
+
+[node name="front_oak" type="Marker2D" parent="Spawns"]
+position = Vector2(300, 600)
+metadata/facing = "up"
+
+[node name="behind_wall" type="Marker2D" parent="Spawns"]
+position = Vector2(1500, 470)
+metadata/facing = "down"
+
+[node name="front_wall" type="Marker2D" parent="Spawns"]
+position = Vector2(1500, 600)
+metadata/facing = "up"
+
+[node name="behind_building" type="Marker2D" parent="Spawns"]
+position = Vector2(900, 120)
+metadata/facing = "down"

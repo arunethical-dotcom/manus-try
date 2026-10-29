@@ -1,0 +1,3085 @@
+[gd_scene load_steps=112 format=3]
+
+[ext_resource type="Script" path="res://Scripts/LevelBase.gd" id="1_x853i"]
+[ext_resource type="Texture2D" path="res://Art/Game/grass_tile.png" id="2_tje57"]
+[ext_resource type="Texture2D" path="res://Art/Game/cobblestone_tile.png" id="3_q8tjc"]
+[ext_resource type="Texture2D" path="res://Art/Generated/floor_flags.png" id="4_fjru7"]
+[ext_resource type="Texture2D" path="res://Art/Game/river_water_tile.png" id="5_r8d0t"]
+[ext_resource type="Texture2D" path="res://Art/Game/gatehouse_bridge.png" id="6_86nfa"]
+[ext_resource type="Texture2D" path="res://Art/Game/gatehouse_main.png" id="7_l5os3"]
+[ext_resource type="Texture2D" path="res://Art/Game/modular_wall.png" id="8_lrwu8"]
+[ext_resource type="Texture2D" path="res://Art/Game/watchtower.png" id="9_hnc4q"]
+[ext_resource type="Texture2D" path="res://Art/Game/waterfall.png" id="10_f1ahy"]
+[ext_resource type="Texture2D" path="res://Art/Game/keep_asset.png" id="11_c8ys4"]
+[ext_resource type="Texture2D" path="res://Art/Game/library_tower.png" id="12_j72ae"]
+[ext_resource type="Texture2D" path="res://Art/Game/great_hall.png" id="13_g5kad"]
+[ext_resource type="Texture2D" path="res://Art/Game/chapel.png" id="14_yhxrw"]
+[ext_resource type="Texture2D" path="res://Art/Generated/prop_grate.png" id="15_7rt72"]
+[ext_resource type="Texture2D" path="res://Art/Game/oak_tree.png" id="16_qnj5g"]
+[ext_resource type="Texture2D" path="res://Art/Game/pine_tree.png" id="17_cs74j"]
+[ext_resource type="Script" path="res://Scripts/Occluder.gd" id="18_650km"]
+[ext_resource type="Script" path="res://Scripts/AutoDoor.gd" id="19_2nt1r"]
+[ext_resource type="Script" path="res://Scripts/Interactable.gd" id="20_io085"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8pbsi"]
+size = Vector2(2960, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dwaxy"]
+size = Vector2(2960, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e14xq"]
+size = Vector2(80, 1800)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ical3"]
+size = Vector2(80, 1800)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6j3rx"]
+size = Vector2(137, 84)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hhbq8"]
+size = Vector2(901, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_va2di"]
+size = Vector2(1485, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_unx38"]
+size = Vector2(150, 390)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5eqb2"]
+size = Vector2(115, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b03is"]
+size = Vector2(80, 60)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v3qvp"]
+size = Vector2(80, 60)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e8i6x"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_anchd"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_35elr"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_anxqt"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jeoe0"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_60j0q"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l8bj2"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q6y6c"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_taypl"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bx46r"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rrx57"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6riqy"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q85vq"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j7uq6"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cy48d"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_amqru"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kaogq"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0kvc1"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_od3ks"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cft0t"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_88cab"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e5ybn"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_icbjd"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ouict"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k742j"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u5xge"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_leign"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ridrm"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q0p0k"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bo72l"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4fhl"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jrudl"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q6ggv"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6mhjn"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uxjwv"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8g30d"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v3cbq"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ej3ys"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pyo5b"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_753he"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f11xu"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ym0kj"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_daluh"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3yiyv"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y2l4t"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mhx3u"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ykqef"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d6q7m"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rq3wv"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ynxmx"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e7pwe"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dj8e0"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bcp7o"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8era4"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5782u"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hu6m6"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ohi61"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wyxqy"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_smp82"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mysoe"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jx28i"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mc5iv"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wngbd"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bbg2l"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wccel"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k1aqk"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qceu2"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e8f2p"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t8w8h"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v5ou2"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l4jua"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5dif7"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1xokj"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g20y4"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jannu"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qjdtr"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3corx"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vvmer"]
+size = Vector2(140, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3xhua"]
+size = Vector2(168, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_utjcv"]
+size = Vector2(168, 190)
+
+[node name="Level" type="Node2D"]
+script = ExtResource("1_x853i")
+level_title = "The Forest Approach"
+bounds = Rect2(0, 0, 2800, 1800)
+controls_hint = true
+
+[node name="Ground" type="Node2D" parent="."]
+
+[node name="Grass" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("2_tje57")
+polygon = PackedVector2Array(0, 0, 2800, 0, 2800, 1800, 0, 1800)
+
+[node name="CastleGround" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+color = Color(0.62, 0.62, 0.7, 1)
+texture = ExtResource("3_q8tjc")
+polygon = PackedVector2Array(0, 300, 2800, 300, 2800, 640, 0, 640)
+
+[node name="RockCliff" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+color = Color(0.8, 0.8, 0.82, 1)
+texture = ExtResource("4_fjru7")
+polygon = PackedVector2Array(0, 250, 250, 250, 262, 450, 240, 640, 0, 640)
+
+[node name="MoatW" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("5_r8d0t")
+polygon = PackedVector2Array(0, 640, 1118, 640, 1082, 790, 0, 790)
+
+[node name="MoatE" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("5_r8d0t")
+polygon = PackedVector2Array(1264, 640, 2800, 640, 2800, 790, 1252, 790)
+
+[node name="MoatUnderBridge" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("5_r8d0t")
+polygon = PackedVector2Array(1082, 640, 1264, 640, 1264, 790, 1082, 790)
+
+[node name="BankW" type="Line2D" parent="Ground"]
+points = PackedVector2Array(0, 792, 1082, 792)
+width = 8.0
+default_color = Color(0.35, 0.34, 0.38, 1)
+
+[node name="BankE" type="Line2D" parent="Ground"]
+points = PackedVector2Array(1252, 792, 2800, 792)
+width = 8.0
+default_color = Color(0.35, 0.34, 0.38, 1)
+
+[node name="StreamW" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("5_r8d0t")
+polygon = PackedVector2Array(0, 1180, 1180, 1180, 1180, 1290, 0, 1290)
+
+[node name="StreamE" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("5_r8d0t")
+polygon = PackedVector2Array(1320, 1180, 2800, 1180, 2800, 1290, 1320, 1290)
+
+[node name="StreamFordBed" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("5_r8d0t")
+polygon = PackedVector2Array(1180, 1180, 1320, 1180, 1320, 1290, 1180, 1290)
+
+[node name="Path" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+color = Color(0.92, 0.88, 0.8, 1)
+texture = ExtResource("3_q8tjc")
+polygon = PackedVector2Array(1484, 1800, 1480.02, 1537.8, 1352.54, 1383.45, 1311.95, 1313.95, 1313.32, 1190.71, 1252.78, 987.564, 1233.68, 793.632, 1106.32, 806.368, 1127.22, 1012.44, 1186.68, 1209.29, 1188.05, 1346.05, 1247.46, 1456.55, 1359.98, 1582.2, 1356, 1800)
+
+[node name="PathEast" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+color = Color(0.85, 0.8, 0.72, 1)
+texture = ExtResource("3_q8tjc")
+polygon = PackedVector2Array(1200.9, 1044.99, 1699.55, 1035, 2196.31, 1054.85, 2434.42, 1084.65, 2445.58, 995.347, 2203.69, 965.152, 1700.45, 945.002, 1199.1, 955.009)
+
+[node name="Drawbridge" type="Sprite2D" parent="Ground"]
+position = Vector2(1089, 620)
+texture = ExtResource("6_86nfa")
+centered = false
+
+[node name="RockOutcrop" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+color = Color(0.8, 0.8, 0.82, 1)
+texture = ExtResource("4_fjru7")
+polygon = PackedVector2Array(2360, 920, 2540, 920, 2560, 1010, 2330, 1010)
+
+[node name="Collision" type="Node2D" parent="."]
+
+[node name="EdgeN" type="StaticBody2D" parent="Collision"]
+position = Vector2(1400, -40)
+collision_mask = 0
+
+[node name="@CollisionShape2D@3" type="CollisionShape2D" parent="Collision/EdgeN"]
+shape = SubResource("RectangleShape2D_8pbsi")
+
+[node name="EdgeS" type="StaticBody2D" parent="Collision"]
+position = Vector2(1400, 1840)
+collision_mask = 0
+
+[node name="@CollisionShape2D@4" type="CollisionShape2D" parent="Collision/EdgeS"]
+shape = SubResource("RectangleShape2D_dwaxy")
+
+[node name="EdgeW" type="StaticBody2D" parent="Collision"]
+position = Vector2(-40, 900)
+collision_mask = 0
+
+[node name="@CollisionShape2D@5" type="CollisionShape2D" parent="Collision/EdgeW"]
+shape = SubResource("RectangleShape2D_e14xq")
+
+[node name="EdgeE" type="StaticBody2D" parent="Collision"]
+position = Vector2(2840, 900)
+collision_mask = 0
+
+[node name="@CollisionShape2D@6" type="CollisionShape2D" parent="Collision/EdgeE"]
+shape = SubResource("RectangleShape2D_ical3")
+
+[node name="Col_RockCliff" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@7" type="CollisionPolygon2D" parent="Collision/Col_RockCliff"]
+polygon = PackedVector2Array(0, 250, 250, 250, 262, 450, 240, 640, 0, 640)
+
+[node name="Col_MoatW" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@8" type="CollisionPolygon2D" parent="Collision/Col_MoatW"]
+polygon = PackedVector2Array(0, 640, 1118, 640, 1082, 790, 0, 790)
+
+[node name="Col_MoatE" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@9" type="CollisionPolygon2D" parent="Collision/Col_MoatE"]
+polygon = PackedVector2Array(1264, 640, 2800, 640, 2800, 790, 1252, 790)
+
+[node name="Col_StreamW" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@10" type="CollisionPolygon2D" parent="Collision/Col_StreamW"]
+polygon = PackedVector2Array(0, 1180, 1180, 1180, 1180, 1290, 0, 1290)
+
+[node name="Col_StreamE" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@11" type="CollisionPolygon2D" parent="Collision/Col_StreamE"]
+polygon = PackedVector2Array(1320, 1180, 2800, 1180, 2800, 1290, 1320, 1290)
+
+[node name="Col_gatehouse_1_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@12" type="CollisionPolygon2D" parent="Collision/Col_gatehouse_1_0"]
+polygon = PackedVector2Array(915, 552, 1138, 552, 1138, 700, 1023, 704, 915, 657)
+
+[node name="Col_gatehouse_1_1" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@13" type="CollisionPolygon2D" parent="Collision/Col_gatehouse_1_1"]
+polygon = PackedVector2Array(1275, 552, 1497, 552, 1497, 672, 1403, 704, 1275, 700)
+
+[node name="GatePassageBack" type="StaticBody2D" parent="Collision"]
+position = Vector2(1206.5, 582)
+collision_mask = 0
+
+[node name="@CollisionShape2D@16" type="CollisionShape2D" parent="Collision/GatePassageBack"]
+shape = SubResource("RectangleShape2D_6j3rx")
+
+[node name="Col_wallW_2_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@17" type="CollisionPolygon2D" parent="Collision/Col_wallW_2_0"]
+polygon = PackedVector2Array(452, 565, 892, 565, 892, 625, 452, 625)
+
+[node name="Col_wallE_3_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@18" type="CollisionPolygon2D" parent="Collision/Col_wallE_3_0"]
+polygon = PackedVector2Array(1477, 565, 1917, 565, 1917, 625, 1477, 625)
+
+[node name="Col_wallE_4_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@19" type="CollisionPolygon2D" parent="Collision/Col_wallE_4_0"]
+polygon = PackedVector2Array(1917, 565, 2357, 565, 2357, 625, 1917, 625)
+
+[node name="Col_wallE_5_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@20" type="CollisionPolygon2D" parent="Collision/Col_wallE_5_0"]
+polygon = PackedVector2Array(2357, 565, 2797, 565, 2797, 625, 2357, 625)
+
+[node name="WallFillW" type="StaticBody2D" parent="Collision"]
+position = Vector2(687.5, 600)
+collision_mask = 0
+
+[node name="@CollisionShape2D@21" type="CollisionShape2D" parent="Collision/WallFillW"]
+shape = SubResource("RectangleShape2D_hhbq8")
+
+[node name="WallFillE" type="StaticBody2D" parent="Collision"]
+position = Vector2(2017.5, 600)
+collision_mask = 0
+
+[node name="@CollisionShape2D@22" type="CollisionShape2D" parent="Collision/WallFillE"]
+shape = SubResource("RectangleShape2D_va2di")
+
+[node name="Col_towerW_6_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@23" type="CollisionPolygon2D" parent="Collision/Col_towerW_6_0"]
+polygon = PackedVector2Array(237, 604, 327, 659, 422, 604, 422, 504, 327, 469, 237, 504)
+
+[node name="Col_towerE_7_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@24" type="CollisionPolygon2D" parent="Collision/Col_towerE_7_0"]
+polygon = PackedVector2Array(2607, 604, 2697, 659, 2792, 604, 2792, 504, 2697, 469, 2607, 504)
+
+[node name="Col_waterfall_8_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@25" type="CollisionPolygon2D" parent="Collision/Col_waterfall_8_0"]
+polygon = PackedVector2Array(38, 722, 193, 722, 193, 780, 38, 780)
+
+[node name="Col_tree_14_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@28" type="CollisionPolygon2D" parent="Collision/Col_tree_14_0"]
+polygon = PackedVector2Array(2293, 1425, 2325, 1425, 2325, 1441, 2293, 1441)
+
+[node name="Col_tree_15_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@30" type="CollisionPolygon2D" parent="Collision/Col_tree_15_0"]
+polygon = PackedVector2Array(1514, 1103, 1539, 1103, 1539, 1115, 1514, 1115)
+
+[node name="Col_tree_16_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@32" type="CollisionPolygon2D" parent="Collision/Col_tree_16_0"]
+polygon = PackedVector2Array(2394, 1512, 2426, 1512, 2426, 1528, 2394, 1528)
+
+[node name="Col_tree_17_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@34" type="CollisionPolygon2D" parent="Collision/Col_tree_17_0"]
+polygon = PackedVector2Array(418, 936, 450, 936, 450, 952, 418, 952)
+
+[node name="Col_tree_18_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@36" type="CollisionPolygon2D" parent="Collision/Col_tree_18_0"]
+polygon = PackedVector2Array(1982, 1716, 2007, 1716, 2007, 1728, 1982, 1728)
+
+[node name="Col_tree_19_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@38" type="CollisionPolygon2D" parent="Collision/Col_tree_19_0"]
+polygon = PackedVector2Array(2024, 871, 2049, 871, 2049, 883, 2024, 883)
+
+[node name="Col_tree_20_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@40" type="CollisionPolygon2D" parent="Collision/Col_tree_20_0"]
+polygon = PackedVector2Array(802, 1077, 827, 1077, 827, 1089, 802, 1089)
+
+[node name="Col_tree_21_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@42" type="CollisionPolygon2D" parent="Collision/Col_tree_21_0"]
+polygon = PackedVector2Array(229, 1057, 261, 1057, 261, 1073, 229, 1073)
+
+[node name="Col_tree_22_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@44" type="CollisionPolygon2D" parent="Collision/Col_tree_22_0"]
+polygon = PackedVector2Array(1381, 1099, 1406, 1099, 1406, 1111, 1381, 1111)
+
+[node name="Col_tree_23_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@46" type="CollisionPolygon2D" parent="Collision/Col_tree_23_0"]
+polygon = PackedVector2Array(320, 1386, 352, 1386, 352, 1402, 320, 1402)
+
+[node name="Col_tree_24_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@48" type="CollisionPolygon2D" parent="Collision/Col_tree_24_0"]
+polygon = PackedVector2Array(496, 1634, 521, 1634, 521, 1646, 496, 1646)
+
+[node name="Col_tree_25_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@50" type="CollisionPolygon2D" parent="Collision/Col_tree_25_0"]
+polygon = PackedVector2Array(201, 1682, 226, 1682, 226, 1694, 201, 1694)
+
+[node name="Col_tree_26_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@52" type="CollisionPolygon2D" parent="Collision/Col_tree_26_0"]
+polygon = PackedVector2Array(2690, 893, 2715, 893, 2715, 905, 2690, 905)
+
+[node name="Col_tree_27_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@54" type="CollisionPolygon2D" parent="Collision/Col_tree_27_0"]
+polygon = PackedVector2Array(1989, 1449, 2021, 1449, 2021, 1465, 1989, 1465)
+
+[node name="Col_tree_28_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@56" type="CollisionPolygon2D" parent="Collision/Col_tree_28_0"]
+polygon = PackedVector2Array(1188, 1588, 1213, 1588, 1213, 1600, 1188, 1600)
+
+[node name="Col_tree_29_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@58" type="CollisionPolygon2D" parent="Collision/Col_tree_29_0"]
+polygon = PackedVector2Array(69, 1612, 94, 1612, 94, 1624, 69, 1624)
+
+[node name="Col_tree_30_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@60" type="CollisionPolygon2D" parent="Collision/Col_tree_30_0"]
+polygon = PackedVector2Array(1651, 865, 1676, 865, 1676, 877, 1651, 877)
+
+[node name="Col_tree_31_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@62" type="CollisionPolygon2D" parent="Collision/Col_tree_31_0"]
+polygon = PackedVector2Array(2608, 1459, 2633, 1459, 2633, 1471, 2608, 1471)
+
+[node name="Col_tree_32_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@64" type="CollisionPolygon2D" parent="Collision/Col_tree_32_0"]
+polygon = PackedVector2Array(498, 991, 523, 991, 523, 1003, 498, 1003)
+
+[node name="Col_tree_33_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@66" type="CollisionPolygon2D" parent="Collision/Col_tree_33_0"]
+polygon = PackedVector2Array(1123, 1736, 1155, 1736, 1155, 1752, 1123, 1752)
+
+[node name="Col_tree_34_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@68" type="CollisionPolygon2D" parent="Collision/Col_tree_34_0"]
+polygon = PackedVector2Array(1655, 1613, 1680, 1613, 1680, 1625, 1655, 1625)
+
+[node name="Col_tree_35_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@70" type="CollisionPolygon2D" parent="Collision/Col_tree_35_0"]
+polygon = PackedVector2Array(2439, 1647, 2464, 1647, 2464, 1659, 2439, 1659)
+
+[node name="Col_tree_36_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@72" type="CollisionPolygon2D" parent="Collision/Col_tree_36_0"]
+polygon = PackedVector2Array(655, 1430, 680, 1430, 680, 1442, 655, 1442)
+
+[node name="Col_tree_37_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@74" type="CollisionPolygon2D" parent="Collision/Col_tree_37_0"]
+polygon = PackedVector2Array(2037, 1338, 2069, 1338, 2069, 1354, 2037, 1354)
+
+[node name="Col_tree_38_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@76" type="CollisionPolygon2D" parent="Collision/Col_tree_38_0"]
+polygon = PackedVector2Array(2010, 1552, 2042, 1552, 2042, 1568, 2010, 1568)
+
+[node name="Col_tree_39_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@78" type="CollisionPolygon2D" parent="Collision/Col_tree_39_0"]
+polygon = PackedVector2Array(1558, 1349, 1590, 1349, 1590, 1365, 1558, 1365)
+
+[node name="Col_tree_40_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@80" type="CollisionPolygon2D" parent="Collision/Col_tree_40_0"]
+polygon = PackedVector2Array(262, 1598, 287, 1598, 287, 1610, 262, 1610)
+
+[node name="Col_tree_41_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@82" type="CollisionPolygon2D" parent="Collision/Col_tree_41_0"]
+polygon = PackedVector2Array(2553, 1703, 2585, 1703, 2585, 1719, 2553, 1719)
+
+[node name="Col_tree_42_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@84" type="CollisionPolygon2D" parent="Collision/Col_tree_42_0"]
+polygon = PackedVector2Array(1728, 1699, 1753, 1699, 1753, 1711, 1728, 1711)
+
+[node name="Col_tree_43_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@86" type="CollisionPolygon2D" parent="Collision/Col_tree_43_0"]
+polygon = PackedVector2Array(744, 1616, 769, 1616, 769, 1628, 744, 1628)
+
+[node name="Col_tree_44_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@88" type="CollisionPolygon2D" parent="Collision/Col_tree_44_0"]
+polygon = PackedVector2Array(1795, 1087, 1827, 1087, 1827, 1103, 1795, 1103)
+
+[node name="Col_tree_45_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@90" type="CollisionPolygon2D" parent="Collision/Col_tree_45_0"]
+polygon = PackedVector2Array(2698, 1063, 2730, 1063, 2730, 1079, 2698, 1079)
+
+[node name="Col_tree_46_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@92" type="CollisionPolygon2D" parent="Collision/Col_tree_46_0"]
+polygon = PackedVector2Array(983, 1582, 1008, 1582, 1008, 1594, 983, 1594)
+
+[node name="Col_tree_47_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@94" type="CollisionPolygon2D" parent="Collision/Col_tree_47_0"]
+polygon = PackedVector2Array(158, 1415, 190, 1415, 190, 1431, 158, 1431)
+
+[node name="Col_tree_48_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@96" type="CollisionPolygon2D" parent="Collision/Col_tree_48_0"]
+polygon = PackedVector2Array(955, 1671, 987, 1671, 987, 1687, 955, 1687)
+
+[node name="Col_tree_49_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@98" type="CollisionPolygon2D" parent="Collision/Col_tree_49_0"]
+polygon = PackedVector2Array(1716, 1539, 1741, 1539, 1741, 1551, 1716, 1551)
+
+[node name="Col_tree_50_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@100" type="CollisionPolygon2D" parent="Collision/Col_tree_50_0"]
+polygon = PackedVector2Array(337, 1650, 362, 1650, 362, 1662, 337, 1662)
+
+[node name="Col_tree_51_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@102" type="CollisionPolygon2D" parent="Collision/Col_tree_51_0"]
+polygon = PackedVector2Array(2143, 1448, 2175, 1448, 2175, 1464, 2143, 1464)
+
+[node name="Col_tree_52_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@104" type="CollisionPolygon2D" parent="Collision/Col_tree_52_0"]
+polygon = PackedVector2Array(2454, 1438, 2486, 1438, 2486, 1454, 2454, 1454)
+
+[node name="Col_tree_53_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@106" type="CollisionPolygon2D" parent="Collision/Col_tree_53_0"]
+polygon = PackedVector2Array(707, 901, 732, 901, 732, 913, 707, 913)
+
+[node name="Col_tree_54_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@108" type="CollisionPolygon2D" parent="Collision/Col_tree_54_0"]
+polygon = PackedVector2Array(414, 1480, 439, 1480, 439, 1492, 414, 1492)
+
+[node name="Col_tree_55_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@110" type="CollisionPolygon2D" parent="Collision/Col_tree_55_0"]
+polygon = PackedVector2Array(32, 1061, 64, 1061, 64, 1077, 32, 1077)
+
+[node name="Col_tree_56_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@112" type="CollisionPolygon2D" parent="Collision/Col_tree_56_0"]
+polygon = PackedVector2Array(169, 1556, 194, 1556, 194, 1568, 169, 1568)
+
+[node name="Col_tree_57_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@114" type="CollisionPolygon2D" parent="Collision/Col_tree_57_0"]
+polygon = PackedVector2Array(403, 1044, 435, 1044, 435, 1060, 403, 1060)
+
+[node name="Col_tree_58_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@116" type="CollisionPolygon2D" parent="Collision/Col_tree_58_0"]
+polygon = PackedVector2Array(1777, 1455, 1809, 1455, 1809, 1471, 1777, 1471)
+
+[node name="Col_tree_59_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@118" type="CollisionPolygon2D" parent="Collision/Col_tree_59_0"]
+polygon = PackedVector2Array(1269, 1739, 1301, 1739, 1301, 1755, 1269, 1755)
+
+[node name="Col_tree_60_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@120" type="CollisionPolygon2D" parent="Collision/Col_tree_60_0"]
+polygon = PackedVector2Array(1012, 1047, 1044, 1047, 1044, 1063, 1012, 1063)
+
+[node name="Col_tree_61_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@122" type="CollisionPolygon2D" parent="Collision/Col_tree_61_0"]
+polygon = PackedVector2Array(582, 931, 614, 931, 614, 947, 582, 947)
+
+[node name="Col_tree_62_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@124" type="CollisionPolygon2D" parent="Collision/Col_tree_62_0"]
+polygon = PackedVector2Array(1819, 1623, 1851, 1623, 1851, 1639, 1819, 1639)
+
+[node name="Col_tree_63_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@126" type="CollisionPolygon2D" parent="Collision/Col_tree_63_0"]
+polygon = PackedVector2Array(841, 981, 873, 981, 873, 997, 841, 997)
+
+[node name="Col_tree_64_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@128" type="CollisionPolygon2D" parent="Collision/Col_tree_64_0"]
+polygon = PackedVector2Array(310, 1014, 335, 1014, 335, 1026, 310, 1026)
+
+[node name="Col_tree_65_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@130" type="CollisionPolygon2D" parent="Collision/Col_tree_65_0"]
+polygon = PackedVector2Array(2530, 1608, 2562, 1608, 2562, 1624, 2530, 1624)
+
+[node name="Col_tree_66_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@132" type="CollisionPolygon2D" parent="Collision/Col_tree_66_0"]
+polygon = PackedVector2Array(863, 1670, 895, 1670, 895, 1686, 863, 1686)
+
+[node name="Col_tree_67_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@134" type="CollisionPolygon2D" parent="Collision/Col_tree_67_0"]
+polygon = PackedVector2Array(610, 1351, 635, 1351, 635, 1363, 610, 1363)
+
+[node name="Col_tree_68_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@136" type="CollisionPolygon2D" parent="Collision/Col_tree_68_0"]
+polygon = PackedVector2Array(2002, 1103, 2034, 1103, 2034, 1119, 2002, 1119)
+
+[node name="Col_tree_69_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@138" type="CollisionPolygon2D" parent="Collision/Col_tree_69_0"]
+polygon = PackedVector2Array(1565, 1629, 1590, 1629, 1590, 1641, 1565, 1641)
+
+[node name="Col_tree_70_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@140" type="CollisionPolygon2D" parent="Collision/Col_tree_70_0"]
+polygon = PackedVector2Array(437, 1334, 469, 1334, 469, 1350, 437, 1350)
+
+[node name="Col_tree_71_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@142" type="CollisionPolygon2D" parent="Collision/Col_tree_71_0"]
+polygon = PackedVector2Array(2698, 1562, 2723, 1562, 2723, 1574, 2698, 1574)
+
+[node name="Col_tree_72_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@144" type="CollisionPolygon2D" parent="Collision/Col_tree_72_0"]
+polygon = PackedVector2Array(889, 1431, 914, 1431, 914, 1443, 889, 1443)
+
+[node name="Col_tree_73_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@146" type="CollisionPolygon2D" parent="Collision/Col_tree_73_0"]
+polygon = PackedVector2Array(71, 1439, 96, 1439, 96, 1451, 71, 1451)
+
+[node name="Col_tree_74_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@148" type="CollisionPolygon2D" parent="Collision/Col_tree_74_0"]
+polygon = PackedVector2Array(2661, 1655, 2693, 1655, 2693, 1671, 2661, 1671)
+
+[node name="Col_tree_75_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@150" type="CollisionPolygon2D" parent="Collision/Col_tree_75_0"]
+polygon = PackedVector2Array(2204, 874, 2236, 874, 2236, 890, 2204, 890)
+
+[node name="Col_tree_76_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@152" type="CollisionPolygon2D" parent="Collision/Col_tree_76_0"]
+polygon = PackedVector2Array(1089, 1557, 1121, 1557, 1121, 1573, 1089, 1573)
+
+[node name="Col_tree_77_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@154" type="CollisionPolygon2D" parent="Collision/Col_tree_77_0"]
+polygon = PackedVector2Array(55, 1698, 87, 1698, 87, 1714, 55, 1714)
+
+[node name="Col_tree_78_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@156" type="CollisionPolygon2D" parent="Collision/Col_tree_78_0"]
+polygon = PackedVector2Array(1466, 864, 1491, 864, 1491, 876, 1466, 876)
+
+[node name="Col_tree_79_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@158" type="CollisionPolygon2D" parent="Collision/Col_tree_79_0"]
+polygon = PackedVector2Array(1044, 1459, 1076, 1459, 1076, 1475, 1044, 1475)
+
+[node name="Col_tree_80_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@160" type="CollisionPolygon2D" parent="Collision/Col_tree_80_0"]
+polygon = PackedVector2Array(1559, 1484, 1584, 1484, 1584, 1496, 1559, 1496)
+
+[node name="Col_tree_81_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@162" type="CollisionPolygon2D" parent="Collision/Col_tree_81_0"]
+polygon = PackedVector2Array(2173, 1658, 2205, 1658, 2205, 1674, 2173, 1674)
+
+[node name="Col_tree_82_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@164" type="CollisionPolygon2D" parent="Collision/Col_tree_82_0"]
+polygon = PackedVector2Array(850, 1554, 882, 1554, 882, 1570, 850, 1570)
+
+[node name="Col_tree_83_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@166" type="CollisionPolygon2D" parent="Collision/Col_tree_83_0"]
+polygon = PackedVector2Array(517, 1096, 549, 1096, 549, 1112, 517, 1112)
+
+[node name="Col_tree_84_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@168" type="CollisionPolygon2D" parent="Collision/Col_tree_84_0"]
+polygon = PackedVector2Array(963, 1378, 988, 1378, 988, 1390, 963, 1390)
+
+[node name="Col_tree_85_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@170" type="CollisionPolygon2D" parent="Collision/Col_tree_85_0"]
+polygon = PackedVector2Array(2314, 1729, 2346, 1729, 2346, 1745, 2314, 1745)
+
+[node name="Col_tree_86_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@172" type="CollisionPolygon2D" parent="Collision/Col_tree_86_0"]
+polygon = PackedVector2Array(1134, 1384, 1159, 1384, 1159, 1396, 1134, 1396)
+
+[node name="Col_tree_87_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@174" type="CollisionPolygon2D" parent="Collision/Col_tree_87_0"]
+polygon = PackedVector2Array(601, 844, 626, 844, 626, 856, 601, 856)
+
+[node name="Col_tree_88_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@176" type="CollisionPolygon2D" parent="Collision/Col_tree_88_0"]
+polygon = PackedVector2Array(118, 965, 150, 965, 150, 981, 118, 981)
+
+[node name="Col_tree_89_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@178" type="CollisionPolygon2D" parent="Collision/Col_tree_89_0"]
+polygon = PackedVector2Array(872, 891, 897, 891, 897, 903, 872, 903)
+
+[node name="Col_tree_90_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@180" type="CollisionPolygon2D" parent="Collision/Col_tree_90_0"]
+polygon = PackedVector2Array(38, 903, 63, 903, 63, 915, 38, 915)
+
+[node name="Col_tree_91_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@182" type="CollisionPolygon2D" parent="Collision/Col_tree_91_0"]
+polygon = PackedVector2Array(2267, 1643, 2292, 1643, 2292, 1655, 2267, 1655)
+
+[node name="Col_tree_92_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@184" type="CollisionPolygon2D" parent="Collision/Col_tree_92_0"]
+polygon = PackedVector2Array(1872, 1496, 1904, 1496, 1904, 1512, 1872, 1512)
+
+[node name="Col_tree_93_0" type="StaticBody2D" parent="Collision"]
+collision_mask = 0
+
+[node name="@CollisionPolygon2D@186" type="CollisionPolygon2D" parent="Collision/Col_tree_93_0"]
+polygon = PackedVector2Array(1004, 897, 1036, 897, 1036, 913, 1004, 913)
+
+[node name="World" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="gatehouse_1_s0" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(919, 663)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -411)
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 540)
+
+[node name="gatehouse_1_s1" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(951, 676)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -424)
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 540)
+
+[node name="gatehouse_1_s2" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(983, 688)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -436)
+region_enabled = true
+region_rect = Rect2(64, 0, 32, 540)
+
+[node name="gatehouse_1_s3" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1015, 701)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -449)
+region_enabled = true
+region_rect = Rect2(96, 0, 32, 540)
+
+[node name="gatehouse_1_s4" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1047, 703)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -451)
+region_enabled = true
+region_rect = Rect2(128, 0, 32, 540)
+
+[node name="gatehouse_1_s5" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1079, 702)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -450)
+region_enabled = true
+region_rect = Rect2(160, 0, 32, 540)
+
+[node name="gatehouse_1_s6" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1111, 701)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -449)
+region_enabled = true
+region_rect = Rect2(192, 0, 32, 540)
+
+[node name="gatehouse_1_s7" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1143, 700)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -448)
+region_enabled = true
+region_rect = Rect2(224, 0, 32, 540)
+
+[node name="gatehouse_1_s8" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1175, 700)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -448)
+region_enabled = true
+region_rect = Rect2(256, 0, 32, 540)
+
+[node name="gatehouse_1_s9" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1207, 700)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -448)
+region_enabled = true
+region_rect = Rect2(288, 0, 32, 540)
+
+[node name="gatehouse_1_s10" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1239, 700)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -448)
+region_enabled = true
+region_rect = Rect2(320, 0, 32, 540)
+
+[node name="gatehouse_1_s11" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1271, 700)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -448)
+region_enabled = true
+region_rect = Rect2(352, 0, 32, 540)
+
+[node name="gatehouse_1_s12" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1303, 701)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -449)
+region_enabled = true
+region_rect = Rect2(384, 0, 32, 540)
+
+[node name="gatehouse_1_s13" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1335, 702)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -450)
+region_enabled = true
+region_rect = Rect2(416, 0, 32, 540)
+
+[node name="gatehouse_1_s14" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1367, 703)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -451)
+region_enabled = true
+region_rect = Rect2(448, 0, 32, 540)
+
+[node name="gatehouse_1_s15" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1399, 704)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -452)
+region_enabled = true
+region_rect = Rect2(480, 0, 32, 540)
+
+[node name="gatehouse_1_s16" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1431, 695)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -443)
+region_enabled = true
+region_rect = Rect2(512, 0, 32, 540)
+
+[node name="gatehouse_1_s17" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1463, 684)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-16, -432)
+region_enabled = true
+region_rect = Rect2(544, 0, 32, 540)
+
+[node name="gatehouse_1_s18" type="Sprite2D" parent="World" groups=["occ_gatehouse_main_1"]]
+position = Vector2(1489.5, 675)
+texture = ExtResource("7_l5os3")
+centered = false
+offset = Vector2(-10.5, -423)
+region_enabled = true
+region_rect = Rect2(576, 0, 21, 540)
+
+[node name="wallW_2" type="Sprite2D" parent="World" groups=["occ_modular_wall_2"]]
+position = Vector2(672, 630)
+texture = ExtResource("8_lrwu8")
+centered = false
+offset = Vector2(-220, -173)
+
+[node name="wallE_3" type="Sprite2D" parent="World" groups=["occ_modular_wall_3"]]
+position = Vector2(1697, 630)
+texture = ExtResource("8_lrwu8")
+centered = false
+offset = Vector2(-220, -173)
+
+[node name="wallE_4" type="Sprite2D" parent="World" groups=["occ_modular_wall_4"]]
+position = Vector2(2137, 630)
+texture = ExtResource("8_lrwu8")
+centered = false
+offset = Vector2(-220, -173)
+
+[node name="wallE_5" type="Sprite2D" parent="World" groups=["occ_modular_wall_5"]]
+position = Vector2(2577, 630)
+texture = ExtResource("8_lrwu8")
+centered = false
+offset = Vector2(-220, -173)
+
+[node name="towerW_6_s0" type="Sprite2D" parent="World" groups=["occ_watchtower_6"]]
+position = Vector2(243, 613)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-16, -394)
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 451)
+
+[node name="towerW_6_s1" type="Sprite2D" parent="World" groups=["occ_watchtower_6"]]
+position = Vector2(275, 630)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-16, -411)
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 451)
+
+[node name="towerW_6_s2" type="Sprite2D" parent="World" groups=["occ_watchtower_6"]]
+position = Vector2(307, 648)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-16, -429)
+region_enabled = true
+region_rect = Rect2(64, 0, 32, 451)
+
+[node name="towerW_6_s3" type="Sprite2D" parent="World" groups=["occ_watchtower_6"]]
+position = Vector2(339, 653)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-16, -434)
+region_enabled = true
+region_rect = Rect2(96, 0, 32, 451)
+
+[node name="towerW_6_s4" type="Sprite2D" parent="World" groups=["occ_watchtower_6"]]
+position = Vector2(371, 636)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-16, -417)
+region_enabled = true
+region_rect = Rect2(128, 0, 32, 451)
+
+[node name="towerW_6_s5" type="Sprite2D" parent="World" groups=["occ_watchtower_6"]]
+position = Vector2(403, 620)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-16, -401)
+region_enabled = true
+region_rect = Rect2(160, 0, 32, 451)
+
+[node name="towerW_6_s6" type="Sprite2D" parent="World" groups=["occ_watchtower_6"]]
+position = Vector2(426.5, 608)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-7.5, -389)
+region_enabled = true
+region_rect = Rect2(192, 0, 15, 451)
+
+[node name="towerE_7_s0" type="Sprite2D" parent="World" groups=["occ_watchtower_7"]]
+position = Vector2(2613, 613)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-16, -394)
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 451)
+
+[node name="towerE_7_s1" type="Sprite2D" parent="World" groups=["occ_watchtower_7"]]
+position = Vector2(2645, 630)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-16, -411)
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 451)
+
+[node name="towerE_7_s2" type="Sprite2D" parent="World" groups=["occ_watchtower_7"]]
+position = Vector2(2677, 648)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-16, -429)
+region_enabled = true
+region_rect = Rect2(64, 0, 32, 451)
+
+[node name="towerE_7_s3" type="Sprite2D" parent="World" groups=["occ_watchtower_7"]]
+position = Vector2(2709, 653)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-16, -434)
+region_enabled = true
+region_rect = Rect2(96, 0, 32, 451)
+
+[node name="towerE_7_s4" type="Sprite2D" parent="World" groups=["occ_watchtower_7"]]
+position = Vector2(2741, 636)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-16, -417)
+region_enabled = true
+region_rect = Rect2(128, 0, 32, 451)
+
+[node name="towerE_7_s5" type="Sprite2D" parent="World" groups=["occ_watchtower_7"]]
+position = Vector2(2773, 620)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-16, -401)
+region_enabled = true
+region_rect = Rect2(160, 0, 32, 451)
+
+[node name="towerE_7_s6" type="Sprite2D" parent="World" groups=["occ_watchtower_7"]]
+position = Vector2(2796.5, 608)
+texture = ExtResource("9_hnc4q")
+centered = false
+offset = Vector2(-7.5, -389)
+region_enabled = true
+region_rect = Rect2(192, 0, 15, 451)
+
+[node name="waterfall_8" type="Sprite2D" parent="World" groups=["occ_waterfall_8"]]
+position = Vector2(115, 785)
+texture = ExtResource("10_f1ahy")
+centered = false
+offset = Vector2(-87, -263)
+
+[node name="bgkeep_9_s0" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(375, 481)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -451)
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 530)
+
+[node name="bgkeep_9_s1" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(407, 502)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -472)
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 530)
+
+[node name="bgkeep_9_s2" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(439, 523)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -493)
+region_enabled = true
+region_rect = Rect2(64, 0, 32, 530)
+
+[node name="bgkeep_9_s3" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(471, 532)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -502)
+region_enabled = true
+region_rect = Rect2(96, 0, 32, 530)
+
+[node name="bgkeep_9_s4" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(503, 534)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -504)
+region_enabled = true
+region_rect = Rect2(128, 0, 32, 530)
+
+[node name="bgkeep_9_s5" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(535, 536)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -506)
+region_enabled = true
+region_rect = Rect2(160, 0, 32, 530)
+
+[node name="bgkeep_9_s6" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(567, 538)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -508)
+region_enabled = true
+region_rect = Rect2(192, 0, 32, 530)
+
+[node name="bgkeep_9_s7" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(599, 541)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -511)
+region_enabled = true
+region_rect = Rect2(224, 0, 32, 530)
+
+[node name="bgkeep_9_s8" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(631, 539)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -509)
+region_enabled = true
+region_rect = Rect2(256, 0, 32, 530)
+
+[node name="bgkeep_9_s9" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(663, 529)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -499)
+region_enabled = true
+region_rect = Rect2(288, 0, 32, 530)
+
+[node name="bgkeep_9_s10" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(695, 520)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -490)
+region_enabled = true
+region_rect = Rect2(320, 0, 32, 530)
+
+[node name="bgkeep_9_s11" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(727, 511)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -481)
+region_enabled = true
+region_rect = Rect2(352, 0, 32, 530)
+
+[node name="bgkeep_9_s12" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(759, 502)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -472)
+region_enabled = true
+region_rect = Rect2(384, 0, 32, 530)
+
+[node name="bgkeep_9_s13" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(791, 492)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -462)
+region_enabled = true
+region_rect = Rect2(416, 0, 32, 530)
+
+[node name="bgkeep_9_s14" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(823, 481)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -451)
+region_enabled = true
+region_rect = Rect2(448, 0, 32, 530)
+
+[node name="bgkeep_9_s15" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(855, 471)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -441)
+region_enabled = true
+region_rect = Rect2(480, 0, 32, 530)
+
+[node name="bgkeep_9_s16" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(887, 461)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-16, -431)
+region_enabled = true
+region_rect = Rect2(512, 0, 32, 530)
+
+[node name="bgkeep_9_s17" type="Sprite2D" parent="World" groups=["occ_keep_asset_9"]]
+position = Vector2(912, 453)
+texture = ExtResource("11_c8ys4")
+centered = false
+offset = Vector2(-9, -423)
+region_enabled = true
+region_rect = Rect2(544, 0, 18, 530)
+
+[node name="bglib_10_s0" type="Sprite2D" parent="World" groups=["occ_library_tower_10"]]
+position = Vector2(1214, 408)
+texture = ExtResource("12_j72ae")
+centered = false
+offset = Vector2(-16, -410)
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 522)
+
+[node name="bglib_10_s1" type="Sprite2D" parent="World" groups=["occ_library_tower_10"]]
+position = Vector2(1246, 427)
+texture = ExtResource("12_j72ae")
+centered = false
+offset = Vector2(-16, -429)
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 522)
+
+[node name="bglib_10_s2" type="Sprite2D" parent="World" groups=["occ_library_tower_10"]]
+position = Vector2(1278, 446)
+texture = ExtResource("12_j72ae")
+centered = false
+offset = Vector2(-16, -448)
+region_enabled = true
+region_rect = Rect2(64, 0, 32, 522)
+
+[node name="bglib_10_s3" type="Sprite2D" parent="World" groups=["occ_library_tower_10"]]
+position = Vector2(1310, 465)
+texture = ExtResource("12_j72ae")
+centered = false
+offset = Vector2(-16, -467)
+region_enabled = true
+region_rect = Rect2(96, 0, 32, 522)
+
+[node name="bglib_10_s4" type="Sprite2D" parent="World" groups=["occ_library_tower_10"]]
+position = Vector2(1342, 470)
+texture = ExtResource("12_j72ae")
+centered = false
+offset = Vector2(-16, -472)
+region_enabled = true
+region_rect = Rect2(128, 0, 32, 522)
+
+[node name="bglib_10_s5" type="Sprite2D" parent="World" groups=["occ_library_tower_10"]]
+position = Vector2(1374, 459)
+texture = ExtResource("12_j72ae")
+centered = false
+offset = Vector2(-16, -461)
+region_enabled = true
+region_rect = Rect2(160, 0, 32, 522)
+
+[node name="bglib_10_s6" type="Sprite2D" parent="World" groups=["occ_library_tower_10"]]
+position = Vector2(1406, 445)
+texture = ExtResource("12_j72ae")
+centered = false
+offset = Vector2(-16, -447)
+region_enabled = true
+region_rect = Rect2(192, 0, 32, 522)
+
+[node name="bglib_10_s7" type="Sprite2D" parent="World" groups=["occ_library_tower_10"]]
+position = Vector2(1438, 431)
+texture = ExtResource("12_j72ae")
+centered = false
+offset = Vector2(-16, -433)
+region_enabled = true
+region_rect = Rect2(224, 0, 32, 522)
+
+[node name="bglib_10_s8" type="Sprite2D" parent="World" groups=["occ_library_tower_10"]]
+position = Vector2(1470, 418)
+texture = ExtResource("12_j72ae")
+centered = false
+offset = Vector2(-16, -420)
+region_enabled = true
+region_rect = Rect2(256, 0, 32, 522)
+
+[node name="bglib_10_s9" type="Sprite2D" parent="World" groups=["occ_library_tower_10"]]
+position = Vector2(1502, 404)
+texture = ExtResource("12_j72ae")
+centered = false
+offset = Vector2(-16, -406)
+region_enabled = true
+region_rect = Rect2(288, 0, 32, 522)
+
+[node name="bglib_10_s10" type="Sprite2D" parent="World" groups=["occ_library_tower_10"]]
+position = Vector2(1534, 390)
+texture = ExtResource("12_j72ae")
+centered = false
+offset = Vector2(-16, -392)
+region_enabled = true
+region_rect = Rect2(320, 0, 32, 522)
+
+[node name="bglib_10_s11" type="Sprite2D" parent="World" groups=["occ_library_tower_10"]]
+position = Vector2(1556.5, 381)
+texture = ExtResource("12_j72ae")
+centered = false
+offset = Vector2(-6.5, -383)
+region_enabled = true
+region_rect = Rect2(352, 0, 13, 522)
+
+[node name="bghall_11_s0" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1567, 347)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -309)
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 522)
+
+[node name="bghall_11_s1" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1599, 365)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -327)
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 522)
+
+[node name="bghall_11_s2" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1631, 384)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -346)
+region_enabled = true
+region_rect = Rect2(64, 0, 32, 522)
+
+[node name="bghall_11_s3" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1663, 402)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -364)
+region_enabled = true
+region_rect = Rect2(96, 0, 32, 522)
+
+[node name="bghall_11_s4" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1695, 420)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -382)
+region_enabled = true
+region_rect = Rect2(128, 0, 32, 522)
+
+[node name="bghall_11_s5" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1727, 438)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -400)
+region_enabled = true
+region_rect = Rect2(160, 0, 32, 522)
+
+[node name="bghall_11_s6" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1759, 456)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -418)
+region_enabled = true
+region_rect = Rect2(192, 0, 32, 522)
+
+[node name="bghall_11_s7" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1791, 475)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -437)
+region_enabled = true
+region_rect = Rect2(224, 0, 32, 522)
+
+[node name="bghall_11_s8" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1823, 493)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -455)
+region_enabled = true
+region_rect = Rect2(256, 0, 32, 522)
+
+[node name="bghall_11_s9" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1855, 503)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -465)
+region_enabled = true
+region_rect = Rect2(288, 0, 32, 522)
+
+[node name="bghall_11_s10" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1887, 503)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -465)
+region_enabled = true
+region_rect = Rect2(320, 0, 32, 522)
+
+[node name="bghall_11_s11" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1919, 503)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -465)
+region_enabled = true
+region_rect = Rect2(352, 0, 32, 522)
+
+[node name="bghall_11_s12" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1951, 503)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -465)
+region_enabled = true
+region_rect = Rect2(384, 0, 32, 522)
+
+[node name="bghall_11_s13" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(1983, 495)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -457)
+region_enabled = true
+region_rect = Rect2(416, 0, 32, 522)
+
+[node name="bghall_11_s14" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(2015, 474)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -436)
+region_enabled = true
+region_rect = Rect2(448, 0, 32, 522)
+
+[node name="bghall_11_s15" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(2047, 452)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -414)
+region_enabled = true
+region_rect = Rect2(480, 0, 32, 522)
+
+[node name="bghall_11_s16" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(2079, 431)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -393)
+region_enabled = true
+region_rect = Rect2(512, 0, 32, 522)
+
+[node name="bghall_11_s17" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(2111, 410)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -372)
+region_enabled = true
+region_rect = Rect2(544, 0, 32, 522)
+
+[node name="bghall_11_s18" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(2143, 389)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -351)
+region_enabled = true
+region_rect = Rect2(576, 0, 32, 522)
+
+[node name="bghall_11_s19" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(2175, 367)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -329)
+region_enabled = true
+region_rect = Rect2(608, 0, 32, 522)
+
+[node name="bghall_11_s20" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(2207, 346)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-16, -308)
+region_enabled = true
+region_rect = Rect2(640, 0, 32, 522)
+
+[node name="bghall_11_s21" type="Sprite2D" parent="World" groups=["occ_great_hall_11"]]
+position = Vector2(2236, 327)
+texture = ExtResource("13_g5kad")
+centered = false
+offset = Vector2(-13, -289)
+region_enabled = true
+region_rect = Rect2(672, 0, 26, 522)
+
+[node name="bgchapel_12_s0" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2301, 383)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-16, -356)
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 518)
+
+[node name="bgchapel_12_s1" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2333, 414)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-16, -387)
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 518)
+
+[node name="bgchapel_12_s2" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2365, 446)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-16, -419)
+region_enabled = true
+region_rect = Rect2(64, 0, 32, 518)
+
+[node name="bgchapel_12_s3" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2397, 477)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-16, -450)
+region_enabled = true
+region_rect = Rect2(96, 0, 32, 518)
+
+[node name="bgchapel_12_s4" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2429, 485)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-16, -458)
+region_enabled = true
+region_rect = Rect2(128, 0, 32, 518)
+
+[node name="bgchapel_12_s5" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2461, 475)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-16, -448)
+region_enabled = true
+region_rect = Rect2(160, 0, 32, 518)
+
+[node name="bgchapel_12_s6" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2493, 463)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-16, -436)
+region_enabled = true
+region_rect = Rect2(192, 0, 32, 518)
+
+[node name="bgchapel_12_s7" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2525, 450)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-16, -423)
+region_enabled = true
+region_rect = Rect2(224, 0, 32, 518)
+
+[node name="bgchapel_12_s8" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2557, 438)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-16, -411)
+region_enabled = true
+region_rect = Rect2(256, 0, 32, 518)
+
+[node name="bgchapel_12_s9" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2589, 426)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-16, -399)
+region_enabled = true
+region_rect = Rect2(288, 0, 32, 518)
+
+[node name="bgchapel_12_s10" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2621, 413)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-16, -386)
+region_enabled = true
+region_rect = Rect2(320, 0, 32, 518)
+
+[node name="bgchapel_12_s11" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2653, 401)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-16, -374)
+region_enabled = true
+region_rect = Rect2(352, 0, 32, 518)
+
+[node name="bgchapel_12_s12" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2685, 389)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-16, -362)
+region_enabled = true
+region_rect = Rect2(384, 0, 32, 518)
+
+[node name="bgchapel_12_s13" type="Sprite2D" parent="World" groups=["occ_chapel_12"]]
+position = Vector2(2708, 380)
+texture = ExtResource("14_yhxrw")
+centered = false
+offset = Vector2(-7, -353)
+region_enabled = true
+region_rect = Rect2(416, 0, 14, 518)
+
+[node name="prop_grate_13" type="Sprite2D" parent="World"]
+position = Vector2(2450, 985)
+texture = ExtResource("15_7rt72")
+centered = false
+offset = Vector2(-20, -28)
+
+[node name="tree_14" type="Sprite2D" parent="World" groups=["occ_oak_tree_14"]]
+position = Vector2(2309, 1443)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_15" type="Sprite2D" parent="World" groups=["occ_pine_tree_15"]]
+position = Vector2(1526, 1117)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_16" type="Sprite2D" parent="World" groups=["occ_oak_tree_16"]]
+position = Vector2(2410, 1530)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_17" type="Sprite2D" parent="World" groups=["occ_oak_tree_17"]]
+position = Vector2(434, 954)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_18" type="Sprite2D" parent="World" groups=["occ_pine_tree_18"]]
+position = Vector2(1994, 1730)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_19" type="Sprite2D" parent="World" groups=["occ_pine_tree_19"]]
+position = Vector2(2036, 885)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_20" type="Sprite2D" parent="World" groups=["occ_pine_tree_20"]]
+position = Vector2(814, 1091)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_21" type="Sprite2D" parent="World" groups=["occ_oak_tree_21"]]
+position = Vector2(245, 1075)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_22" type="Sprite2D" parent="World" groups=["occ_pine_tree_22"]]
+position = Vector2(1393, 1113)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_23" type="Sprite2D" parent="World" groups=["occ_oak_tree_23"]]
+position = Vector2(336, 1404)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_24" type="Sprite2D" parent="World" groups=["occ_pine_tree_24"]]
+position = Vector2(508, 1648)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_25" type="Sprite2D" parent="World" groups=["occ_pine_tree_25"]]
+position = Vector2(213, 1696)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_26" type="Sprite2D" parent="World" groups=["occ_pine_tree_26"]]
+position = Vector2(2702, 907)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_27" type="Sprite2D" parent="World" groups=["occ_oak_tree_27"]]
+position = Vector2(2005, 1467)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_28" type="Sprite2D" parent="World" groups=["occ_pine_tree_28"]]
+position = Vector2(1200, 1602)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_29" type="Sprite2D" parent="World" groups=["occ_pine_tree_29"]]
+position = Vector2(81, 1626)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_30" type="Sprite2D" parent="World" groups=["occ_pine_tree_30"]]
+position = Vector2(1663, 879)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_31" type="Sprite2D" parent="World" groups=["occ_pine_tree_31"]]
+position = Vector2(2620, 1473)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_32" type="Sprite2D" parent="World" groups=["occ_pine_tree_32"]]
+position = Vector2(510, 1005)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_33" type="Sprite2D" parent="World" groups=["occ_oak_tree_33"]]
+position = Vector2(1139, 1754)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_34" type="Sprite2D" parent="World" groups=["occ_pine_tree_34"]]
+position = Vector2(1667, 1627)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_35" type="Sprite2D" parent="World" groups=["occ_pine_tree_35"]]
+position = Vector2(2451, 1661)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_36" type="Sprite2D" parent="World" groups=["occ_pine_tree_36"]]
+position = Vector2(667, 1444)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_37" type="Sprite2D" parent="World" groups=["occ_oak_tree_37"]]
+position = Vector2(2053, 1356)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_38" type="Sprite2D" parent="World" groups=["occ_oak_tree_38"]]
+position = Vector2(2026, 1570)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_39" type="Sprite2D" parent="World" groups=["occ_oak_tree_39"]]
+position = Vector2(1574, 1367)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_40" type="Sprite2D" parent="World" groups=["occ_pine_tree_40"]]
+position = Vector2(274, 1612)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_41" type="Sprite2D" parent="World" groups=["occ_oak_tree_41"]]
+position = Vector2(2569, 1721)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_42" type="Sprite2D" parent="World" groups=["occ_pine_tree_42"]]
+position = Vector2(1740, 1713)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_43" type="Sprite2D" parent="World" groups=["occ_pine_tree_43"]]
+position = Vector2(756, 1630)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_44" type="Sprite2D" parent="World" groups=["occ_oak_tree_44"]]
+position = Vector2(1811, 1105)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_45" type="Sprite2D" parent="World" groups=["occ_oak_tree_45"]]
+position = Vector2(2714, 1081)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_46" type="Sprite2D" parent="World" groups=["occ_pine_tree_46"]]
+position = Vector2(995, 1596)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_47" type="Sprite2D" parent="World" groups=["occ_oak_tree_47"]]
+position = Vector2(174, 1433)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_48" type="Sprite2D" parent="World" groups=["occ_oak_tree_48"]]
+position = Vector2(971, 1689)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_49" type="Sprite2D" parent="World" groups=["occ_pine_tree_49"]]
+position = Vector2(1728, 1553)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_50" type="Sprite2D" parent="World" groups=["occ_pine_tree_50"]]
+position = Vector2(349, 1664)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_51" type="Sprite2D" parent="World" groups=["occ_oak_tree_51"]]
+position = Vector2(2159, 1466)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_52" type="Sprite2D" parent="World" groups=["occ_oak_tree_52"]]
+position = Vector2(2470, 1456)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_53" type="Sprite2D" parent="World" groups=["occ_pine_tree_53"]]
+position = Vector2(719, 915)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_54" type="Sprite2D" parent="World" groups=["occ_pine_tree_54"]]
+position = Vector2(426, 1494)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_55" type="Sprite2D" parent="World" groups=["occ_oak_tree_55"]]
+position = Vector2(48, 1079)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_56" type="Sprite2D" parent="World" groups=["occ_pine_tree_56"]]
+position = Vector2(181, 1570)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_57" type="Sprite2D" parent="World" groups=["occ_oak_tree_57"]]
+position = Vector2(419, 1062)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_58" type="Sprite2D" parent="World" groups=["occ_oak_tree_58"]]
+position = Vector2(1793, 1473)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_59" type="Sprite2D" parent="World" groups=["occ_oak_tree_59"]]
+position = Vector2(1285, 1757)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_60" type="Sprite2D" parent="World" groups=["occ_oak_tree_60"]]
+position = Vector2(1028, 1065)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_61" type="Sprite2D" parent="World" groups=["occ_oak_tree_61"]]
+position = Vector2(598, 949)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_62" type="Sprite2D" parent="World" groups=["occ_oak_tree_62"]]
+position = Vector2(1835, 1641)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_63" type="Sprite2D" parent="World" groups=["occ_oak_tree_63"]]
+position = Vector2(857, 999)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_64" type="Sprite2D" parent="World" groups=["occ_pine_tree_64"]]
+position = Vector2(322, 1028)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_65" type="Sprite2D" parent="World" groups=["occ_oak_tree_65"]]
+position = Vector2(2546, 1626)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_66" type="Sprite2D" parent="World" groups=["occ_oak_tree_66"]]
+position = Vector2(879, 1688)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_67" type="Sprite2D" parent="World" groups=["occ_pine_tree_67"]]
+position = Vector2(622, 1365)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_68" type="Sprite2D" parent="World" groups=["occ_oak_tree_68"]]
+position = Vector2(2018, 1121)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_69" type="Sprite2D" parent="World" groups=["occ_pine_tree_69"]]
+position = Vector2(1577, 1643)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_70" type="Sprite2D" parent="World" groups=["occ_oak_tree_70"]]
+position = Vector2(453, 1352)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_71" type="Sprite2D" parent="World" groups=["occ_pine_tree_71"]]
+position = Vector2(2710, 1576)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_72" type="Sprite2D" parent="World" groups=["occ_pine_tree_72"]]
+position = Vector2(901, 1445)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_73" type="Sprite2D" parent="World" groups=["occ_pine_tree_73"]]
+position = Vector2(83, 1453)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_74" type="Sprite2D" parent="World" groups=["occ_oak_tree_74"]]
+position = Vector2(2677, 1673)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_75" type="Sprite2D" parent="World" groups=["occ_oak_tree_75"]]
+position = Vector2(2220, 892)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_76" type="Sprite2D" parent="World" groups=["occ_oak_tree_76"]]
+position = Vector2(1105, 1575)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_77" type="Sprite2D" parent="World" groups=["occ_oak_tree_77"]]
+position = Vector2(71, 1716)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_78" type="Sprite2D" parent="World" groups=["occ_pine_tree_78"]]
+position = Vector2(1478, 878)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_79" type="Sprite2D" parent="World" groups=["occ_oak_tree_79"]]
+position = Vector2(1060, 1477)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_80" type="Sprite2D" parent="World" groups=["occ_pine_tree_80"]]
+position = Vector2(1571, 1498)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_81" type="Sprite2D" parent="World" groups=["occ_oak_tree_81"]]
+position = Vector2(2189, 1676)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_82" type="Sprite2D" parent="World" groups=["occ_oak_tree_82"]]
+position = Vector2(866, 1572)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_83" type="Sprite2D" parent="World" groups=["occ_oak_tree_83"]]
+position = Vector2(533, 1114)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_84" type="Sprite2D" parent="World" groups=["occ_pine_tree_84"]]
+position = Vector2(975, 1392)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_85" type="Sprite2D" parent="World" groups=["occ_oak_tree_85"]]
+position = Vector2(2330, 1747)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_86" type="Sprite2D" parent="World" groups=["occ_pine_tree_86"]]
+position = Vector2(1146, 1398)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_87" type="Sprite2D" parent="World" groups=["occ_pine_tree_87"]]
+position = Vector2(613, 858)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_88" type="Sprite2D" parent="World" groups=["occ_oak_tree_88"]]
+position = Vector2(134, 983)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_89" type="Sprite2D" parent="World" groups=["occ_pine_tree_89"]]
+position = Vector2(884, 905)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_90" type="Sprite2D" parent="World" groups=["occ_pine_tree_90"]]
+position = Vector2(50, 917)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_91" type="Sprite2D" parent="World" groups=["occ_pine_tree_91"]]
+position = Vector2(2279, 1657)
+texture = ExtResource("17_cs74j")
+centered = false
+offset = Vector2(-80, -264)
+
+[node name="tree_92" type="Sprite2D" parent="World" groups=["occ_oak_tree_92"]]
+position = Vector2(1888, 1514)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="tree_93" type="Sprite2D" parent="World" groups=["occ_oak_tree_93"]]
+position = Vector2(1020, 915)
+texture = ExtResource("16_qnj5g")
+centered = false
+offset = Vector2(-94, -240)
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="Occ_gatehouse_1_0" type="Area2D" parent="Triggers"]
+position = Vector2(1203, 447)
+script = ExtResource("18_650km")
+group_name = "occ_gatehouse_main_1"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@14" type="CollisionShape2D" parent="Triggers/Occ_gatehouse_1_0"]
+shape = SubResource("RectangleShape2D_unx38")
+
+[node name="To_Courtyard" type="Area2D" parent="Triggers"]
+position = Vector2(1205.5, 640)
+script = ExtResource("19_2nt1r")
+target_scene = "res://Scenes/Exterior/Courtyard.tscn"
+target_spawn = "gate_in"
+
+[node name="@CollisionShape2D@15" type="CollisionShape2D" parent="Triggers/To_Courtyard"]
+shape = SubResource("RectangleShape2D_5eqb2")
+
+[node name="GrateLocked" type="Area2D" parent="Triggers"]
+position = Vector2(2450, 990)
+script = ExtResource("20_io085")
+kind = "search"
+label = "Inspect grate"
+concealed_hint = "A rusted drain grate in the hillside. It is barred from below."
+hide_when_flag = "escape_open"
+
+[node name="@CollisionShape2D@26" type="CollisionShape2D" parent="Triggers/GrateLocked"]
+shape = SubResource("RectangleShape2D_b03is")
+
+[node name="GrateOpen" type="Area2D" parent="Triggers"]
+position = Vector2(2450, 990)
+script = ExtResource("20_io085")
+label = "Climb down the drain"
+target_scene = "res://Scenes/Underground/Underground.tscn"
+target_spawn = "escape_in"
+required_flag = "escape_open"
+
+[node name="@CollisionShape2D@27" type="CollisionShape2D" parent="Triggers/GrateOpen"]
+shape = SubResource("RectangleShape2D_v3qvp")
+
+[node name="Occ_tree_14_0" type="Area2D" parent="Triggers"]
+position = Vector2(2309, 1298)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_14"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@29" type="CollisionShape2D" parent="Triggers/Occ_tree_14_0"]
+shape = SubResource("RectangleShape2D_e8i6x")
+
+[node name="Occ_tree_15_0" type="Area2D" parent="Triggers"]
+position = Vector2(1526, 955.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_15"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@31" type="CollisionShape2D" parent="Triggers/Occ_tree_15_0"]
+shape = SubResource("RectangleShape2D_anchd")
+
+[node name="Occ_tree_16_0" type="Area2D" parent="Triggers"]
+position = Vector2(2410, 1385)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_16"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@33" type="CollisionShape2D" parent="Triggers/Occ_tree_16_0"]
+shape = SubResource("RectangleShape2D_35elr")
+
+[node name="Occ_tree_17_0" type="Area2D" parent="Triggers"]
+position = Vector2(434, 809)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_17"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@35" type="CollisionShape2D" parent="Triggers/Occ_tree_17_0"]
+shape = SubResource("RectangleShape2D_anxqt")
+
+[node name="Occ_tree_18_0" type="Area2D" parent="Triggers"]
+position = Vector2(1994, 1568.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_18"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@37" type="CollisionShape2D" parent="Triggers/Occ_tree_18_0"]
+shape = SubResource("RectangleShape2D_jeoe0")
+
+[node name="Occ_tree_19_0" type="Area2D" parent="Triggers"]
+position = Vector2(2036, 723.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_19"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@39" type="CollisionShape2D" parent="Triggers/Occ_tree_19_0"]
+shape = SubResource("RectangleShape2D_60j0q")
+
+[node name="Occ_tree_20_0" type="Area2D" parent="Triggers"]
+position = Vector2(814, 929.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_20"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@41" type="CollisionShape2D" parent="Triggers/Occ_tree_20_0"]
+shape = SubResource("RectangleShape2D_l8bj2")
+
+[node name="Occ_tree_21_0" type="Area2D" parent="Triggers"]
+position = Vector2(245, 930)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_21"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@43" type="CollisionShape2D" parent="Triggers/Occ_tree_21_0"]
+shape = SubResource("RectangleShape2D_q6y6c")
+
+[node name="Occ_tree_22_0" type="Area2D" parent="Triggers"]
+position = Vector2(1393, 951.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_22"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@45" type="CollisionShape2D" parent="Triggers/Occ_tree_22_0"]
+shape = SubResource("RectangleShape2D_taypl")
+
+[node name="Occ_tree_23_0" type="Area2D" parent="Triggers"]
+position = Vector2(336, 1259)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_23"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@47" type="CollisionShape2D" parent="Triggers/Occ_tree_23_0"]
+shape = SubResource("RectangleShape2D_bx46r")
+
+[node name="Occ_tree_24_0" type="Area2D" parent="Triggers"]
+position = Vector2(508, 1486.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_24"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@49" type="CollisionShape2D" parent="Triggers/Occ_tree_24_0"]
+shape = SubResource("RectangleShape2D_rrx57")
+
+[node name="Occ_tree_25_0" type="Area2D" parent="Triggers"]
+position = Vector2(213, 1534.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_25"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@51" type="CollisionShape2D" parent="Triggers/Occ_tree_25_0"]
+shape = SubResource("RectangleShape2D_6riqy")
+
+[node name="Occ_tree_26_0" type="Area2D" parent="Triggers"]
+position = Vector2(2702, 745.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_26"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@53" type="CollisionShape2D" parent="Triggers/Occ_tree_26_0"]
+shape = SubResource("RectangleShape2D_q85vq")
+
+[node name="Occ_tree_27_0" type="Area2D" parent="Triggers"]
+position = Vector2(2005, 1322)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_27"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@55" type="CollisionShape2D" parent="Triggers/Occ_tree_27_0"]
+shape = SubResource("RectangleShape2D_j7uq6")
+
+[node name="Occ_tree_28_0" type="Area2D" parent="Triggers"]
+position = Vector2(1200, 1440.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_28"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@57" type="CollisionShape2D" parent="Triggers/Occ_tree_28_0"]
+shape = SubResource("RectangleShape2D_cy48d")
+
+[node name="Occ_tree_29_0" type="Area2D" parent="Triggers"]
+position = Vector2(81, 1464.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_29"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@59" type="CollisionShape2D" parent="Triggers/Occ_tree_29_0"]
+shape = SubResource("RectangleShape2D_amqru")
+
+[node name="Occ_tree_30_0" type="Area2D" parent="Triggers"]
+position = Vector2(1663, 717.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_30"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@61" type="CollisionShape2D" parent="Triggers/Occ_tree_30_0"]
+shape = SubResource("RectangleShape2D_kaogq")
+
+[node name="Occ_tree_31_0" type="Area2D" parent="Triggers"]
+position = Vector2(2620, 1311.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_31"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@63" type="CollisionShape2D" parent="Triggers/Occ_tree_31_0"]
+shape = SubResource("RectangleShape2D_0kvc1")
+
+[node name="Occ_tree_32_0" type="Area2D" parent="Triggers"]
+position = Vector2(510, 843.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_32"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@65" type="CollisionShape2D" parent="Triggers/Occ_tree_32_0"]
+shape = SubResource("RectangleShape2D_od3ks")
+
+[node name="Occ_tree_33_0" type="Area2D" parent="Triggers"]
+position = Vector2(1139, 1609)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_33"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@67" type="CollisionShape2D" parent="Triggers/Occ_tree_33_0"]
+shape = SubResource("RectangleShape2D_cft0t")
+
+[node name="Occ_tree_34_0" type="Area2D" parent="Triggers"]
+position = Vector2(1667, 1465.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_34"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@69" type="CollisionShape2D" parent="Triggers/Occ_tree_34_0"]
+shape = SubResource("RectangleShape2D_88cab")
+
+[node name="Occ_tree_35_0" type="Area2D" parent="Triggers"]
+position = Vector2(2451, 1499.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_35"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@71" type="CollisionShape2D" parent="Triggers/Occ_tree_35_0"]
+shape = SubResource("RectangleShape2D_e5ybn")
+
+[node name="Occ_tree_36_0" type="Area2D" parent="Triggers"]
+position = Vector2(667, 1282.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_36"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@73" type="CollisionShape2D" parent="Triggers/Occ_tree_36_0"]
+shape = SubResource("RectangleShape2D_icbjd")
+
+[node name="Occ_tree_37_0" type="Area2D" parent="Triggers"]
+position = Vector2(2053, 1211)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_37"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@75" type="CollisionShape2D" parent="Triggers/Occ_tree_37_0"]
+shape = SubResource("RectangleShape2D_ouict")
+
+[node name="Occ_tree_38_0" type="Area2D" parent="Triggers"]
+position = Vector2(2026, 1425)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_38"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@77" type="CollisionShape2D" parent="Triggers/Occ_tree_38_0"]
+shape = SubResource("RectangleShape2D_k742j")
+
+[node name="Occ_tree_39_0" type="Area2D" parent="Triggers"]
+position = Vector2(1574, 1222)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_39"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@79" type="CollisionShape2D" parent="Triggers/Occ_tree_39_0"]
+shape = SubResource("RectangleShape2D_u5xge")
+
+[node name="Occ_tree_40_0" type="Area2D" parent="Triggers"]
+position = Vector2(274, 1450.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_40"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@81" type="CollisionShape2D" parent="Triggers/Occ_tree_40_0"]
+shape = SubResource("RectangleShape2D_leign")
+
+[node name="Occ_tree_41_0" type="Area2D" parent="Triggers"]
+position = Vector2(2569, 1576)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_41"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@83" type="CollisionShape2D" parent="Triggers/Occ_tree_41_0"]
+shape = SubResource("RectangleShape2D_ridrm")
+
+[node name="Occ_tree_42_0" type="Area2D" parent="Triggers"]
+position = Vector2(1740, 1551.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_42"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@85" type="CollisionShape2D" parent="Triggers/Occ_tree_42_0"]
+shape = SubResource("RectangleShape2D_q0p0k")
+
+[node name="Occ_tree_43_0" type="Area2D" parent="Triggers"]
+position = Vector2(756, 1468.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_43"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@87" type="CollisionShape2D" parent="Triggers/Occ_tree_43_0"]
+shape = SubResource("RectangleShape2D_bo72l")
+
+[node name="Occ_tree_44_0" type="Area2D" parent="Triggers"]
+position = Vector2(1811, 960)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_44"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@89" type="CollisionShape2D" parent="Triggers/Occ_tree_44_0"]
+shape = SubResource("RectangleShape2D_g4fhl")
+
+[node name="Occ_tree_45_0" type="Area2D" parent="Triggers"]
+position = Vector2(2714, 936)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_45"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@91" type="CollisionShape2D" parent="Triggers/Occ_tree_45_0"]
+shape = SubResource("RectangleShape2D_jrudl")
+
+[node name="Occ_tree_46_0" type="Area2D" parent="Triggers"]
+position = Vector2(995, 1434.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_46"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@93" type="CollisionShape2D" parent="Triggers/Occ_tree_46_0"]
+shape = SubResource("RectangleShape2D_q6ggv")
+
+[node name="Occ_tree_47_0" type="Area2D" parent="Triggers"]
+position = Vector2(174, 1288)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_47"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@95" type="CollisionShape2D" parent="Triggers/Occ_tree_47_0"]
+shape = SubResource("RectangleShape2D_6mhjn")
+
+[node name="Occ_tree_48_0" type="Area2D" parent="Triggers"]
+position = Vector2(971, 1544)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_48"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@97" type="CollisionShape2D" parent="Triggers/Occ_tree_48_0"]
+shape = SubResource("RectangleShape2D_uxjwv")
+
+[node name="Occ_tree_49_0" type="Area2D" parent="Triggers"]
+position = Vector2(1728, 1391.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_49"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@99" type="CollisionShape2D" parent="Triggers/Occ_tree_49_0"]
+shape = SubResource("RectangleShape2D_8g30d")
+
+[node name="Occ_tree_50_0" type="Area2D" parent="Triggers"]
+position = Vector2(349, 1502.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_50"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@101" type="CollisionShape2D" parent="Triggers/Occ_tree_50_0"]
+shape = SubResource("RectangleShape2D_v3cbq")
+
+[node name="Occ_tree_51_0" type="Area2D" parent="Triggers"]
+position = Vector2(2159, 1321)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_51"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@103" type="CollisionShape2D" parent="Triggers/Occ_tree_51_0"]
+shape = SubResource("RectangleShape2D_ej3ys")
+
+[node name="Occ_tree_52_0" type="Area2D" parent="Triggers"]
+position = Vector2(2470, 1311)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_52"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@105" type="CollisionShape2D" parent="Triggers/Occ_tree_52_0"]
+shape = SubResource("RectangleShape2D_pyo5b")
+
+[node name="Occ_tree_53_0" type="Area2D" parent="Triggers"]
+position = Vector2(719, 753.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_53"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@107" type="CollisionShape2D" parent="Triggers/Occ_tree_53_0"]
+shape = SubResource("RectangleShape2D_753he")
+
+[node name="Occ_tree_54_0" type="Area2D" parent="Triggers"]
+position = Vector2(426, 1332.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_54"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@109" type="CollisionShape2D" parent="Triggers/Occ_tree_54_0"]
+shape = SubResource("RectangleShape2D_f11xu")
+
+[node name="Occ_tree_55_0" type="Area2D" parent="Triggers"]
+position = Vector2(48, 934)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_55"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@111" type="CollisionShape2D" parent="Triggers/Occ_tree_55_0"]
+shape = SubResource("RectangleShape2D_ym0kj")
+
+[node name="Occ_tree_56_0" type="Area2D" parent="Triggers"]
+position = Vector2(181, 1408.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_56"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@113" type="CollisionShape2D" parent="Triggers/Occ_tree_56_0"]
+shape = SubResource("RectangleShape2D_daluh")
+
+[node name="Occ_tree_57_0" type="Area2D" parent="Triggers"]
+position = Vector2(419, 917)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_57"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@115" type="CollisionShape2D" parent="Triggers/Occ_tree_57_0"]
+shape = SubResource("RectangleShape2D_3yiyv")
+
+[node name="Occ_tree_58_0" type="Area2D" parent="Triggers"]
+position = Vector2(1793, 1328)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_58"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@117" type="CollisionShape2D" parent="Triggers/Occ_tree_58_0"]
+shape = SubResource("RectangleShape2D_y2l4t")
+
+[node name="Occ_tree_59_0" type="Area2D" parent="Triggers"]
+position = Vector2(1285, 1612)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_59"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@119" type="CollisionShape2D" parent="Triggers/Occ_tree_59_0"]
+shape = SubResource("RectangleShape2D_mhx3u")
+
+[node name="Occ_tree_60_0" type="Area2D" parent="Triggers"]
+position = Vector2(1028, 920)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_60"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@121" type="CollisionShape2D" parent="Triggers/Occ_tree_60_0"]
+shape = SubResource("RectangleShape2D_ykqef")
+
+[node name="Occ_tree_61_0" type="Area2D" parent="Triggers"]
+position = Vector2(598, 804)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_61"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@123" type="CollisionShape2D" parent="Triggers/Occ_tree_61_0"]
+shape = SubResource("RectangleShape2D_d6q7m")
+
+[node name="Occ_tree_62_0" type="Area2D" parent="Triggers"]
+position = Vector2(1835, 1496)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_62"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@125" type="CollisionShape2D" parent="Triggers/Occ_tree_62_0"]
+shape = SubResource("RectangleShape2D_rq3wv")
+
+[node name="Occ_tree_63_0" type="Area2D" parent="Triggers"]
+position = Vector2(857, 854)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_63"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@127" type="CollisionShape2D" parent="Triggers/Occ_tree_63_0"]
+shape = SubResource("RectangleShape2D_ynxmx")
+
+[node name="Occ_tree_64_0" type="Area2D" parent="Triggers"]
+position = Vector2(322, 866.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_64"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@129" type="CollisionShape2D" parent="Triggers/Occ_tree_64_0"]
+shape = SubResource("RectangleShape2D_e7pwe")
+
+[node name="Occ_tree_65_0" type="Area2D" parent="Triggers"]
+position = Vector2(2546, 1481)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_65"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@131" type="CollisionShape2D" parent="Triggers/Occ_tree_65_0"]
+shape = SubResource("RectangleShape2D_dj8e0")
+
+[node name="Occ_tree_66_0" type="Area2D" parent="Triggers"]
+position = Vector2(879, 1543)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_66"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@133" type="CollisionShape2D" parent="Triggers/Occ_tree_66_0"]
+shape = SubResource("RectangleShape2D_bcp7o")
+
+[node name="Occ_tree_67_0" type="Area2D" parent="Triggers"]
+position = Vector2(622, 1203.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_67"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@135" type="CollisionShape2D" parent="Triggers/Occ_tree_67_0"]
+shape = SubResource("RectangleShape2D_8era4")
+
+[node name="Occ_tree_68_0" type="Area2D" parent="Triggers"]
+position = Vector2(2018, 976)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_68"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@137" type="CollisionShape2D" parent="Triggers/Occ_tree_68_0"]
+shape = SubResource("RectangleShape2D_5782u")
+
+[node name="Occ_tree_69_0" type="Area2D" parent="Triggers"]
+position = Vector2(1577, 1481.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_69"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@139" type="CollisionShape2D" parent="Triggers/Occ_tree_69_0"]
+shape = SubResource("RectangleShape2D_hu6m6")
+
+[node name="Occ_tree_70_0" type="Area2D" parent="Triggers"]
+position = Vector2(453, 1207)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_70"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@141" type="CollisionShape2D" parent="Triggers/Occ_tree_70_0"]
+shape = SubResource("RectangleShape2D_ohi61")
+
+[node name="Occ_tree_71_0" type="Area2D" parent="Triggers"]
+position = Vector2(2710, 1414.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_71"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@143" type="CollisionShape2D" parent="Triggers/Occ_tree_71_0"]
+shape = SubResource("RectangleShape2D_wyxqy")
+
+[node name="Occ_tree_72_0" type="Area2D" parent="Triggers"]
+position = Vector2(901, 1283.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_72"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@145" type="CollisionShape2D" parent="Triggers/Occ_tree_72_0"]
+shape = SubResource("RectangleShape2D_smp82")
+
+[node name="Occ_tree_73_0" type="Area2D" parent="Triggers"]
+position = Vector2(83, 1291.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_73"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@147" type="CollisionShape2D" parent="Triggers/Occ_tree_73_0"]
+shape = SubResource("RectangleShape2D_mysoe")
+
+[node name="Occ_tree_74_0" type="Area2D" parent="Triggers"]
+position = Vector2(2677, 1528)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_74"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@149" type="CollisionShape2D" parent="Triggers/Occ_tree_74_0"]
+shape = SubResource("RectangleShape2D_jx28i")
+
+[node name="Occ_tree_75_0" type="Area2D" parent="Triggers"]
+position = Vector2(2220, 747)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_75"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@151" type="CollisionShape2D" parent="Triggers/Occ_tree_75_0"]
+shape = SubResource("RectangleShape2D_mc5iv")
+
+[node name="Occ_tree_76_0" type="Area2D" parent="Triggers"]
+position = Vector2(1105, 1430)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_76"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@153" type="CollisionShape2D" parent="Triggers/Occ_tree_76_0"]
+shape = SubResource("RectangleShape2D_wngbd")
+
+[node name="Occ_tree_77_0" type="Area2D" parent="Triggers"]
+position = Vector2(71, 1571)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_77"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@155" type="CollisionShape2D" parent="Triggers/Occ_tree_77_0"]
+shape = SubResource("RectangleShape2D_bbg2l")
+
+[node name="Occ_tree_78_0" type="Area2D" parent="Triggers"]
+position = Vector2(1478, 716.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_78"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@157" type="CollisionShape2D" parent="Triggers/Occ_tree_78_0"]
+shape = SubResource("RectangleShape2D_wccel")
+
+[node name="Occ_tree_79_0" type="Area2D" parent="Triggers"]
+position = Vector2(1060, 1332)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_79"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@159" type="CollisionShape2D" parent="Triggers/Occ_tree_79_0"]
+shape = SubResource("RectangleShape2D_k1aqk")
+
+[node name="Occ_tree_80_0" type="Area2D" parent="Triggers"]
+position = Vector2(1571, 1336.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_80"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@161" type="CollisionShape2D" parent="Triggers/Occ_tree_80_0"]
+shape = SubResource("RectangleShape2D_qceu2")
+
+[node name="Occ_tree_81_0" type="Area2D" parent="Triggers"]
+position = Vector2(2189, 1531)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_81"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@163" type="CollisionShape2D" parent="Triggers/Occ_tree_81_0"]
+shape = SubResource("RectangleShape2D_e8f2p")
+
+[node name="Occ_tree_82_0" type="Area2D" parent="Triggers"]
+position = Vector2(866, 1427)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_82"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@165" type="CollisionShape2D" parent="Triggers/Occ_tree_82_0"]
+shape = SubResource("RectangleShape2D_t8w8h")
+
+[node name="Occ_tree_83_0" type="Area2D" parent="Triggers"]
+position = Vector2(533, 969)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_83"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@167" type="CollisionShape2D" parent="Triggers/Occ_tree_83_0"]
+shape = SubResource("RectangleShape2D_v5ou2")
+
+[node name="Occ_tree_84_0" type="Area2D" parent="Triggers"]
+position = Vector2(975, 1230.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_84"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@169" type="CollisionShape2D" parent="Triggers/Occ_tree_84_0"]
+shape = SubResource("RectangleShape2D_l4jua")
+
+[node name="Occ_tree_85_0" type="Area2D" parent="Triggers"]
+position = Vector2(2330, 1602)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_85"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@171" type="CollisionShape2D" parent="Triggers/Occ_tree_85_0"]
+shape = SubResource("RectangleShape2D_5dif7")
+
+[node name="Occ_tree_86_0" type="Area2D" parent="Triggers"]
+position = Vector2(1146, 1236.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_86"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@173" type="CollisionShape2D" parent="Triggers/Occ_tree_86_0"]
+shape = SubResource("RectangleShape2D_1xokj")
+
+[node name="Occ_tree_87_0" type="Area2D" parent="Triggers"]
+position = Vector2(613, 696.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_87"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@175" type="CollisionShape2D" parent="Triggers/Occ_tree_87_0"]
+shape = SubResource("RectangleShape2D_g20y4")
+
+[node name="Occ_tree_88_0" type="Area2D" parent="Triggers"]
+position = Vector2(134, 838)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_88"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@177" type="CollisionShape2D" parent="Triggers/Occ_tree_88_0"]
+shape = SubResource("RectangleShape2D_jannu")
+
+[node name="Occ_tree_89_0" type="Area2D" parent="Triggers"]
+position = Vector2(884, 743.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_89"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@179" type="CollisionShape2D" parent="Triggers/Occ_tree_89_0"]
+shape = SubResource("RectangleShape2D_qjdtr")
+
+[node name="Occ_tree_90_0" type="Area2D" parent="Triggers"]
+position = Vector2(50, 755.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_90"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@181" type="CollisionShape2D" parent="Triggers/Occ_tree_90_0"]
+shape = SubResource("RectangleShape2D_3corx")
+
+[node name="Occ_tree_91_0" type="Area2D" parent="Triggers"]
+position = Vector2(2279, 1495.5)
+script = ExtResource("18_650km")
+group_name = "occ_pine_tree_91"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@183" type="CollisionShape2D" parent="Triggers/Occ_tree_91_0"]
+shape = SubResource("RectangleShape2D_vvmer")
+
+[node name="Occ_tree_92_0" type="Area2D" parent="Triggers"]
+position = Vector2(1888, 1369)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_92"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@185" type="CollisionShape2D" parent="Triggers/Occ_tree_92_0"]
+shape = SubResource("RectangleShape2D_3xhua")
+
+[node name="Occ_tree_93_0" type="Area2D" parent="Triggers"]
+position = Vector2(1020, 770)
+script = ExtResource("18_650km")
+group_name = "occ_oak_tree_93"
+fade_alpha = 0.4
+
+[node name="@CollisionShape2D@187" type="CollisionShape2D" parent="Triggers/Occ_tree_93_0"]
+shape = SubResource("RectangleShape2D_utjcv")
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="start" type="Marker2D" parent="Spawns"]
+position = Vector2(1420, 1730)
+metadata/facing = "up"
+
+[node name="gate_out" type="Marker2D" parent="Spawns"]
+position = Vector2(1195, 735)
+metadata/facing = "down"
+
+[node name="escape" type="Marker2D" parent="Spawns"]
+position = Vector2(2450, 1075)
+metadata/facing = "down"

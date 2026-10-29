@@ -1,0 +1,1244 @@
+{
+ "barracks": {
+  "doors": [
+   {
+    "id": "main",
+    "label": "Enter Barracks",
+    "rect": [
+     345,
+     455,
+     100,
+     22
+    ]
+   }
+  ],
+  "edge": [
+   [
+    0,
+    300
+   ],
+   [
+    290,
+    462
+   ],
+   [
+    330,
+    462
+   ],
+   [
+    500,
+    420
+   ],
+   [
+    711,
+    270
+   ]
+  ],
+  "factor": 3,
+  "footprint": [
+   [
+    5,
+    300
+   ],
+   [
+    290,
+    462
+   ],
+   [
+    330,
+    462
+   ],
+   [
+    500,
+    420
+   ],
+   [
+    700,
+    270
+   ],
+   [
+    700,
+    200
+   ],
+   [
+    100,
+    170
+   ]
+  ],
+  "game": "Art/Game/barracks.png",
+  "game_size": [
+   711,
+   478
+  ],
+  "occlusion": [
+   [
+    0,
+    0,
+    711,
+    200
+   ]
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/barracks.png",
+  "processed_size": [
+   2133,
+   1434
+  ],
+  "source": "Art/Source/individual_barracks.png"
+ },
+ "blacksmith": {
+  "doors": [
+   {
+    "id": "main",
+    "label": "Enter Blacksmith",
+    "rect": [
+     150,
+     470,
+     180,
+     40
+    ]
+   }
+  ],
+  "edge": [
+   [
+    0,
+    400
+   ],
+   [
+    340,
+    478
+   ],
+   [
+    480,
+    505
+   ],
+   [
+    629,
+    400
+   ]
+  ],
+  "factor": 3,
+  "footprint": [
+   [
+    40,
+    400
+   ],
+   [
+    340,
+    478
+   ],
+   [
+    480,
+    505
+   ],
+   [
+    600,
+    400
+   ],
+   [
+    600,
+    260
+   ],
+   [
+    300,
+    190
+   ],
+   [
+    70,
+    250
+   ]
+  ],
+  "game": "Art/Game/blacksmith.png",
+  "game_size": [
+   629,
+   514
+  ],
+  "occlusion": [
+   [
+    0,
+    30,
+    629,
+    200
+   ]
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/blacksmith.png",
+  "processed_size": [
+   1889,
+   1542
+  ],
+  "source": "Art/Source/individual_blacksmith.png"
+ },
+ "chapel": {
+  "doors": [
+   {
+    "id": "main",
+    "label": "Enter Chapel",
+    "rect": [
+     95,
+     458,
+     70,
+     40
+    ]
+   }
+  ],
+  "edge": [
+   [
+    0,
+    340
+   ],
+   [
+    120,
+    458
+   ],
+   [
+    150,
+    458
+   ],
+   [
+    430,
+    350
+   ]
+  ],
+  "factor": 3,
+  "footprint": [
+   [
+    20,
+    340
+   ],
+   [
+    120,
+    458
+   ],
+   [
+    150,
+    458
+   ],
+   [
+    420,
+    350
+   ],
+   [
+    420,
+    300
+   ],
+   [
+    240,
+    250
+   ],
+   [
+    60,
+    250
+   ]
+  ],
+  "game": "Art/Game/chapel.png",
+  "game_size": [
+   430,
+   518
+  ],
+  "occlusion": [
+   [
+    0,
+    40,
+    430,
+    230
+   ]
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/chapel.png",
+  "processed_size": [
+   1290,
+   1555
+  ],
+  "source": "Art/Source/individual_chapel.png"
+ },
+ "cobblestone_tile": {
+  "factor": 8,
+  "game": "Art/Game/cobblestone_tile.png",
+  "game_size": [
+   240,
+   240
+  ],
+  "kind": "tile",
+  "processed": "Art/Processed/cobblestone_tile_seamless.png",
+  "source": "Art/Source/individual_cobblestone_tile.png"
+ },
+ "courtyard_garden": {
+  "doors": [],
+  "factor": 3,
+  "footprint": [],
+  "game": "Art/Game/courtyard_garden.png",
+  "game_size": [
+   603,
+   590
+  ],
+  "occlusion": [],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/courtyard_garden.png",
+  "processed_size": [
+   1810,
+   1772
+  ],
+  "source": "Art/Source/individual_courtyard_garden.png"
+ },
+ "fountain": {
+  "doors": [],
+  "factor": 8,
+  "footprint": [
+   [
+    18,
+    112
+   ],
+   [
+    177,
+    112
+   ],
+   [
+    190,
+    160
+   ],
+   [
+    100,
+    180
+   ],
+   [
+    5,
+    160
+   ]
+  ],
+  "game": "Art/Game/fountain.png",
+  "game_size": [
+   195,
+   182
+  ],
+  "occlusion": [],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/fountain.png",
+  "processed_size": [
+   1567,
+   1462
+  ],
+  "source": "Art/Source/individual_fountain.png"
+ },
+ "gatehouse_asset": {
+  "factor": 3,
+  "game": "Art/Game/gatehouse_asset.png",
+  "game_size": [
+   597,
+   540
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/gatehouse_asset.png",
+  "processed_size": [
+   1793,
+   1620
+  ],
+  "source": "Art/Source/individual_gatehouse_asset.png"
+ },
+ "gatehouse_bridge": {
+  "factor": 3,
+  "game": "Art/Game/gatehouse_bridge.png",
+  "game_size": [
+   181,
+   172
+  ],
+  "kind": "ground-layer piece",
+  "origin_in_gatehouse": [
+   186,
+   368
+  ],
+  "processed": "Art/Processed/gatehouse_asset.png",
+  "source": "Art/Source/individual_gatehouse_asset.png"
+ },
+ "gatehouse_main": {
+  "doors": [],
+  "edge": [
+   [
+    0,
+    405
+   ],
+   [
+    120,
+    452
+   ],
+   [
+    235,
+    448
+   ],
+   [
+    372,
+    448
+   ],
+   [
+    500,
+    452
+   ],
+   [
+    597,
+    420
+   ]
+  ],
+  "factor": 3,
+  "foot": [
+   297,
+   448
+  ],
+  "footprint_blocks": [
+   [
+    [
+     12,
+     300
+    ],
+    [
+     235,
+     300
+    ],
+    [
+     235,
+     448
+    ],
+    [
+     120,
+     452
+    ],
+    [
+     12,
+     405
+    ]
+   ],
+   [
+    [
+     372,
+     300
+    ],
+    [
+     594,
+     300
+    ],
+    [
+     594,
+     420
+    ],
+    [
+     500,
+     452
+    ],
+    [
+     372,
+     448
+    ]
+   ]
+  ],
+  "game": "Art/Game/gatehouse_main.png",
+  "game_size": [
+   597,
+   540
+  ],
+  "note": "gatehouse_asset minus drawbridge pixels",
+  "occlusion": [
+   [
+    225,
+    60,
+    150,
+    330
+   ]
+  ],
+  "passage": [
+   235,
+   300,
+   137,
+   148
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/gatehouse_asset.png",
+  "processed_size": [
+   1793,
+   1620
+  ],
+  "source": "Art/Source/individual_gatehouse_asset.png"
+ },
+ "grass_tile": {
+  "factor": 8,
+  "game": "Art/Game/grass_tile.png",
+  "game_size": [
+   240,
+   240
+  ],
+  "kind": "tile",
+  "processed": "Art/Processed/grass_tile_seamless.png",
+  "source": "Art/Source/individual_grass_tile.png"
+ },
+ "great_hall": {
+  "doors": [
+   {
+    "id": "main",
+    "label": "Enter Great Hall",
+    "rect": [
+     330,
+     452,
+     100,
+     36
+    ]
+   }
+  ],
+  "edge": [
+   [
+    0,
+    300
+   ],
+   [
+    290,
+    465
+   ],
+   [
+    420,
+    465
+   ],
+   [
+    698,
+    280
+   ]
+  ],
+  "factor": 3,
+  "footprint": [
+   [
+    10,
+    300
+   ],
+   [
+    290,
+    465
+   ],
+   [
+    420,
+    465
+   ],
+   [
+    690,
+    280
+   ],
+   [
+    690,
+    230
+   ],
+   [
+    350,
+    200
+   ],
+   [
+    60,
+    200
+   ]
+  ],
+  "game": "Art/Game/great_hall.png",
+  "game_size": [
+   698,
+   522
+  ],
+  "occlusion": [
+   [
+    0,
+    60,
+    698,
+    230
+   ]
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/great_hall.png",
+  "processed_size": [
+   2094,
+   1567
+  ],
+  "source": "Art/Source/individual_great_hall.png"
+ },
+ "heraldic_banner": {
+  "doors": [],
+  "factor": 20,
+  "footprint": [],
+  "game": "Art/Game/heraldic_banner.png",
+  "game_size": [
+   47,
+   110
+  ],
+  "occlusion": [],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/heraldic_banner.png",
+  "processed_size": [
+   954,
+   2207
+  ],
+  "source": "Art/Source/individual_heraldic_banner.png"
+ },
+ "keep_asset": {
+  "doors": [
+   {
+    "id": "main",
+    "label": "Enter Keep",
+    "rect": [
+     120,
+     468,
+     85,
+     70
+    ]
+   }
+  ],
+  "edge": [
+   [
+    0,
+    440
+   ],
+   [
+    90,
+    500
+   ],
+   [
+    260,
+    512
+   ],
+   [
+    400,
+    472
+   ],
+   [
+    562,
+    420
+   ]
+  ],
+  "factor": 3,
+  "footprint": [
+   [
+    10,
+    440
+   ],
+   [
+    90,
+    500
+   ],
+   [
+    260,
+    512
+   ],
+   [
+    400,
+    472
+   ],
+   [
+    555,
+    420
+   ],
+   [
+    555,
+    300
+   ],
+   [
+    250,
+    200
+   ],
+   [
+    60,
+    190
+   ],
+   [
+    10,
+    330
+   ]
+  ],
+  "game": "Art/Game/keep_asset.png",
+  "game_size": [
+   562,
+   530
+  ],
+  "occlusion": [
+   [
+    0,
+    60,
+    562,
+    330
+   ]
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/keep_asset.png",
+  "processed_size": [
+   1687,
+   1591
+  ],
+  "source": "Art/Source/individual_keep_asset.png"
+ },
+ "kitchen_bakery": {
+  "doors": [
+   {
+    "id": "main",
+    "label": "Enter Kitchen",
+    "rect": [
+     250,
+     447,
+     130,
+     60
+    ]
+   }
+  ],
+  "edge": [
+   [
+    0,
+    335
+   ],
+   [
+    250,
+    447
+   ],
+   [
+    380,
+    447
+   ],
+   [
+    560,
+    425
+   ],
+   [
+    617,
+    330
+   ]
+  ],
+  "factor": 3,
+  "footprint": [
+   [
+    15,
+    330
+   ],
+   [
+    250,
+    447
+   ],
+   [
+    380,
+    447
+   ],
+   [
+    560,
+    425
+   ],
+   [
+    600,
+    330
+   ],
+   [
+    600,
+    230
+   ],
+   [
+    150,
+    200
+   ]
+  ],
+  "game": "Art/Game/kitchen_bakery.png",
+  "game_size": [
+   617,
+   534
+  ],
+  "occlusion": [
+   [
+    0,
+    30,
+    617,
+    200
+   ]
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/kitchen_bakery.png",
+  "processed_size": [
+   1852,
+   1602
+  ],
+  "source": "Art/Source/individual_kitchen_bakery.png"
+ },
+ "library_tower": {
+  "doors": [
+   {
+    "id": "main",
+    "label": "Enter Library",
+    "rect": [
+     90,
+     472,
+     70,
+     40
+    ]
+   }
+  ],
+  "edge": [
+   [
+    0,
+    400
+   ],
+   [
+    120,
+    472
+   ],
+   [
+    150,
+    472
+   ],
+   [
+    365,
+    380
+   ]
+  ],
+  "factor": 3,
+  "footprint": [
+   [
+    40,
+    400
+   ],
+   [
+    120,
+    472
+   ],
+   [
+    150,
+    472
+   ],
+   [
+    360,
+    380
+   ],
+   [
+    360,
+    300
+   ],
+   [
+    180,
+    250
+   ],
+   [
+    40,
+    260
+   ]
+  ],
+  "game": "Art/Game/library_tower.png",
+  "game_size": [
+   365,
+   522
+  ],
+  "occlusion": [
+   [
+    0,
+    40,
+    365,
+    260
+   ]
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/library_tower.png",
+  "processed_size": [
+   1097,
+   1568
+  ],
+  "source": "Art/Source/individual_library_tower.png"
+ },
+ "modular_wall": {
+  "doors": [],
+  "factor": 5,
+  "footprint": [
+   [
+    0,
+    108
+   ],
+   [
+    440,
+    108
+   ],
+   [
+    440,
+    168
+   ],
+   [
+    0,
+    168
+   ]
+  ],
+  "game": "Art/Game/modular_wall.png",
+  "game_size": [
+   440,
+   173
+  ],
+  "occlusion": [
+   [
+    0,
+    0,
+    440,
+    112
+   ]
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/modular_wall.png",
+  "processed_size": [
+   2204,
+   865
+  ],
+  "source": "Art/Source/individual_modular_wall.png"
+ },
+ "oak_tree": {
+  "doors": [],
+  "factor": 8,
+  "footprint": [
+   [
+    78,
+    222
+   ],
+   [
+    110,
+    222
+   ],
+   [
+    110,
+    238
+   ],
+   [
+    78,
+    238
+   ]
+  ],
+  "game": "Art/Game/oak_tree.png",
+  "game_size": [
+   188,
+   240
+  ],
+  "occlusion": [
+   [
+    10,
+    0,
+    168,
+    190
+   ]
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/oak_tree.png",
+  "processed_size": [
+   1510,
+   1920
+  ],
+  "source": "Art/Source/individual_oak_tree.png"
+ },
+ "pine_tree": {
+  "doors": [],
+  "factor": 8,
+  "footprint": [
+   [
+    68,
+    250
+   ],
+   [
+    93,
+    250
+   ],
+   [
+    93,
+    262
+   ],
+   [
+    68,
+    262
+   ]
+  ],
+  "game": "Art/Game/pine_tree.png",
+  "game_size": [
+   161,
+   264
+  ],
+  "occlusion": [
+   [
+    10,
+    0,
+    140,
+    205
+   ]
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/pine_tree.png",
+  "processed_size": [
+   1293,
+   2116
+  ],
+  "source": "Art/Source/individual_pine_tree.png"
+ },
+ "river_water_tile": {
+  "factor": 8,
+  "game": "Art/Game/river_water_tile.png",
+  "game_size": [
+   240,
+   240
+  ],
+  "kind": "tile",
+  "processed": "Art/Processed/river_water_tile_seamless.png",
+  "source": "Art/Source/individual_river_water_tile.png"
+ },
+ "stable": {
+  "doors": [
+   {
+    "id": "main",
+    "label": "Enter Stable",
+    "rect": [
+     630,
+     470,
+     70,
+     46
+    ]
+   }
+  ],
+  "edge": [
+   [
+    0,
+    360
+   ],
+   [
+    500,
+    490
+   ],
+   [
+    700,
+    482
+   ],
+   [
+    709,
+    470
+   ]
+  ],
+  "factor": 3,
+  "footprint": [
+   [
+    10,
+    360
+   ],
+   [
+    500,
+    490
+   ],
+   [
+    700,
+    482
+   ],
+   [
+    705,
+    330
+   ],
+   [
+    705,
+    250
+   ],
+   [
+    400,
+    160
+   ],
+   [
+    60,
+    230
+   ]
+  ],
+  "game": "Art/Game/stable.png",
+  "game_size": [
+   709,
+   520
+  ],
+  "occlusion": [
+   [
+    0,
+    40,
+    709,
+    200
+   ]
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/stable.png",
+  "processed_size": [
+   2127,
+   1561
+  ],
+  "source": "Art/Source/individual_stable.png"
+ },
+ "stone_well": {
+  "doors": [],
+  "factor": 14,
+  "footprint": [
+   [
+    8,
+    96
+   ],
+   [
+    94,
+    96
+   ],
+   [
+    94,
+    127
+   ],
+   [
+    8,
+    127
+   ]
+  ],
+  "game": "Art/Game/stone_well.png",
+  "game_size": [
+   102,
+   129
+  ],
+  "occlusion": [],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/stone_well.png",
+  "processed_size": [
+   1434,
+   1818
+  ],
+  "source": "Art/Source/individual_stone_well.png"
+ },
+ "treasure_chest": {
+  "doors": [],
+  "factor": 36,
+  "footprint": [
+   [
+    4,
+    28
+   ],
+   [
+    43,
+    28
+   ],
+   [
+    43,
+    45
+   ],
+   [
+    4,
+    45
+   ]
+  ],
+  "game": "Art/Game/treasure_chest.png",
+  "game_size": [
+   47,
+   47
+  ],
+  "occlusion": [],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/treasure_chest.png",
+  "processed_size": [
+   1723,
+   1720
+  ],
+  "source": "Art/Source/individual_treasure_chest.png"
+ },
+ "wall_torch": {
+  "doors": [],
+  "factor": 36,
+  "footprint": [],
+  "game": "Art/Game/wall_torch.png",
+  "game_size": [
+   26,
+   49
+  ],
+  "occlusion": [],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/wall_torch.png",
+  "processed_size": [
+   965,
+   1771
+  ],
+  "source": "Art/Source/individual_wall_torch.png"
+ },
+ "watchtower": {
+  "doors": [],
+  "edge": [
+   [
+    0,
+    385
+   ],
+   [
+    100,
+    440
+   ],
+   [
+    207,
+    385
+   ]
+  ],
+  "factor": 5,
+  "footprint": [
+   [
+    10,
+    385
+   ],
+   [
+    100,
+    440
+   ],
+   [
+    195,
+    385
+   ],
+   [
+    195,
+    285
+   ],
+   [
+    100,
+    250
+   ],
+   [
+    10,
+    285
+   ]
+  ],
+  "game": "Art/Game/watchtower.png",
+  "game_size": [
+   207,
+   451
+  ],
+  "occlusion": [
+   [
+    0,
+    0,
+    207,
+    230
+   ]
+  ],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/watchtower.png",
+  "processed_size": [
+   1039,
+   2255
+  ],
+  "source": "Art/Source/individual_watchtower.png"
+ },
+ "waterfall": {
+  "doors": [],
+  "factor": 8,
+  "footprint": [
+   [
+    10,
+    200
+   ],
+   [
+    165,
+    200
+   ],
+   [
+    165,
+    258
+   ],
+   [
+    10,
+    258
+   ]
+  ],
+  "game": "Art/Game/waterfall.png",
+  "game_size": [
+   174,
+   263
+  ],
+  "occlusion": [],
+  "pivot": "bottom-center (ground footpoint)",
+  "processed": "Art/Processed/waterfall.png",
+  "processed_size": [
+   1392,
+   2107
+  ],
+  "source": "Art/Source/individual_waterfall.png"
+ }
+}

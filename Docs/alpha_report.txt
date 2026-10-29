@@ -1,0 +1,27 @@
+name | src alpha(min..max, semi%) | game size | game alpha values | magenta px | corners transparent | tiny specks
+barracks           |   0..254 semi 52.77% | 711x478 | [0, 255] | 0 | True | 0 | OK
+blacksmith         |   0..254 semi 59.40% | 629x514 | [0, 255] | 0 | True | 0 | OK
+chapel             |   0..254 semi 34.55% | 430x518 | [0, 255] | 0 | True | 0 | OK
+cobblestone_tile   | 193..249 semi 100.00% | 240x240 | [255] | 0 | None | 0 | OK
+courtyard_garden   |   0..254 semi 81.68% | 603x590 | [0, 255] | 0 | True | 0 | OK
+fountain           |   0..254 semi 45.77% | 195x182 | [0, 255] | 0 | True | 5 | OK
+gatehouse_asset    |   0..254 semi 49.78% | 597x540 | [0, 255] | 0 | True | 0 | OK
+grass_tile         | 225..247 semi 100.00% | 240x240 | [255] | 0 | None | 0 | OK
+great_hall         |   0..254 semi 54.74% | 698x522 | [0, 255] | 0 | True | 0 | OK
+heraldic_banner    |   0..255 semi 27.06% | 47x110 | [0, 255] | 0 | True | 0 | OK
+keep_asset         |   0..254 semi 47.89% | 562x530 | [0, 255] | 0 | True | 0 | OK
+kitchen_bakery     |   0..254 semi 57.10% | 617x534 | [0, 255] | 0 | True | 0 | OK
+library_tower      |   0..254 semi 30.38% | 365x522 | [0, 255] | 0 | True | 0 | OK
+modular_wall       |   0..254 semi 49.48% | 440x173 | [0, 255] | 0 | True | 0 | OK
+oak_tree           |   0..254 semi 55.33% | 188x240 | [0, 255] | 0 | True | 0 | OK
+pine_tree          |   0..254 semi 43.80% | 161x264 | [0, 255] | 0 | True | 0 | OK
+river_water_tile   | 196..247 semi 100.00% | 240x240 | [255] | 0 | None | 0 | OK
+stable             |   0..254 semi 64.50% | 709x520 | [0, 255] | 0 | True | 0 | OK
+stone_well         |   0..254 semi 52.52% | 102x129 | [0, 255] | 0 | True | 0 | OK
+treasure_chest     |   0..254 semi 57.84% | 47x47 | [0, 255] | 0 | True | 0 | OK
+wall_torch         |   0..254 semi 19.08% | 26x49 | [0, 255] | 0 | True | 5 | OK
+watchtower         |   0..254 semi 46.89% | 207x451 | [0, 255] | 0 | True | 0 | OK
+waterfall          |   0..254 semi 61.91% | 174x263 | [0, 255] | 0 | True | 0 | OK
+sprites/tiles needing attention: 0
+gatehouse_main     | derived split | 597x540 | [0, 255]
+gatehouse_bridge   | derived split | 181x172 | [0, 255]

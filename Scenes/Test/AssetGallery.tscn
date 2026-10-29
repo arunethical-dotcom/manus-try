@@ -1,0 +1,605 @@
+[gd_scene load_steps=28 format=3]
+
+[ext_resource type="Script" path="res://Scripts/LevelBase.gd" id="1_5mo52"]
+[ext_resource type="Texture2D" path="res://Art/Game/great_hall.png" id="2_d643y"]
+[ext_resource type="Texture2D" path="res://Art/Game/keep_asset.png" id="3_2a1vy"]
+[ext_resource type="Texture2D" path="res://Art/Game/gatehouse_asset.png" id="4_wiwxs"]
+[ext_resource type="Texture2D" path="res://Art/Game/chapel.png" id="5_3dn7y"]
+[ext_resource type="Texture2D" path="res://Art/Game/library_tower.png" id="6_rbwdi"]
+[ext_resource type="Texture2D" path="res://Art/Game/barracks.png" id="7_nq8g7"]
+[ext_resource type="Texture2D" path="res://Art/Game/blacksmith.png" id="8_26vtj"]
+[ext_resource type="Texture2D" path="res://Art/Game/stable.png" id="9_go43w"]
+[ext_resource type="Texture2D" path="res://Art/Game/kitchen_bakery.png" id="10_s07yk"]
+[ext_resource type="Texture2D" path="res://Art/Game/watchtower.png" id="11_ntsxm"]
+[ext_resource type="Texture2D" path="res://Art/Game/modular_wall.png" id="12_hg5jm"]
+[ext_resource type="Texture2D" path="res://Art/Game/oak_tree.png" id="13_3tcw6"]
+[ext_resource type="Texture2D" path="res://Art/Game/pine_tree.png" id="14_npbup"]
+[ext_resource type="Texture2D" path="res://Art/Game/stone_well.png" id="15_pnpmr"]
+[ext_resource type="Texture2D" path="res://Art/Game/fountain.png" id="16_qhp2c"]
+[ext_resource type="Texture2D" path="res://Art/Game/courtyard_garden.png" id="17_r8nfk"]
+[ext_resource type="Texture2D" path="res://Art/Game/treasure_chest.png" id="18_08fg7"]
+[ext_resource type="Texture2D" path="res://Art/Game/wall_torch.png" id="19_diiyi"]
+[ext_resource type="Texture2D" path="res://Art/Game/heraldic_banner.png" id="20_g7e4l"]
+[ext_resource type="Texture2D" path="res://Art/Game/waterfall.png" id="21_vuuqo"]
+[ext_resource type="Texture2D" path="res://Art/Processed/cobblestone_tile_raw240.png" id="22_mw6sy"]
+[ext_resource type="Texture2D" path="res://Art/Game/cobblestone_tile.png" id="23_erhs5"]
+[ext_resource type="Texture2D" path="res://Art/Processed/grass_tile_raw240.png" id="24_lmkn7"]
+[ext_resource type="Texture2D" path="res://Art/Game/grass_tile.png" id="25_vmdpp"]
+[ext_resource type="Texture2D" path="res://Art/Processed/river_water_tile_raw240.png" id="26_0a4na"]
+[ext_resource type="Texture2D" path="res://Art/Game/river_water_tile.png" id="27_21ph8"]
+
+[node name="Level" type="Node2D"]
+script = ExtResource("1_5mo52")
+level_title = "Asset and alpha gallery"
+bounds = Rect2(0, 0, 3200, 2300)
+
+[node name="Ground" type="Node2D" parent="."]
+
+[node name="BgMagenta_great_hall" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(20, 20, 377, 20, 377, 582, 20, 582)
+
+[node name="BgWhite_great_hall" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(377, 20, 734, 20, 734, 582, 377, 582)
+
+[node name="Img_great_hall" type="Sprite2D" parent="Ground"]
+position = Vector2(28, 52)
+texture = ExtResource("2_d643y")
+centered = false
+
+[node name="@Label@807" type="Label" parent="Ground"]
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 24.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "great_hall 698x522"
+
+[node name="BgMagenta_keep_asset" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(746, 20, 1035, 20, 1035, 590, 746, 590)
+
+[node name="BgWhite_keep_asset" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(1035, 20, 1324, 20, 1324, 590, 1035, 590)
+
+[node name="Img_keep_asset" type="Sprite2D" parent="Ground"]
+position = Vector2(754, 52)
+texture = ExtResource("3_2a1vy")
+centered = false
+
+[node name="@Label@808" type="Label" parent="Ground"]
+offset_left = 750.0
+offset_top = 24.0
+offset_right = 750.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "keep_asset 562x530"
+
+[node name="BgMagenta_gatehouse_asset" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(1336, 20, 1642.5, 20, 1642.5, 600, 1336, 600)
+
+[node name="BgWhite_gatehouse_asset" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(1642.5, 20, 1949, 20, 1949, 600, 1642.5, 600)
+
+[node name="Img_gatehouse_asset" type="Sprite2D" parent="Ground"]
+position = Vector2(1344, 52)
+texture = ExtResource("4_wiwxs")
+centered = false
+
+[node name="@Label@809" type="Label" parent="Ground"]
+offset_left = 1340.0
+offset_top = 24.0
+offset_right = 1340.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "gatehouse_asset 597x540"
+
+[node name="BgMagenta_chapel" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(1961, 20, 2184, 20, 2184, 578, 1961, 578)
+
+[node name="BgWhite_chapel" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(2184, 20, 2407, 20, 2407, 578, 2184, 578)
+
+[node name="Img_chapel" type="Sprite2D" parent="Ground"]
+position = Vector2(1969, 52)
+texture = ExtResource("5_3dn7y")
+centered = false
+
+[node name="@Label@810" type="Label" parent="Ground"]
+offset_left = 1965.0
+offset_top = 24.0
+offset_right = 1965.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "chapel 430x518"
+
+[node name="BgMagenta_library_tower" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(2419, 20, 2609.5, 20, 2609.5, 582, 2419, 582)
+
+[node name="BgWhite_library_tower" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(2609.5, 20, 2800, 20, 2800, 582, 2609.5, 582)
+
+[node name="Img_library_tower" type="Sprite2D" parent="Ground"]
+position = Vector2(2427, 52)
+texture = ExtResource("6_rbwdi")
+centered = false
+
+[node name="@Label@811" type="Label" parent="Ground"]
+offset_left = 2423.0
+offset_top = 24.0
+offset_right = 2423.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "library_tower 365x522"
+
+[node name="BgMagenta_barracks" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(20, 612, 383.5, 612, 383.5, 1130, 20, 1130)
+
+[node name="BgWhite_barracks" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(383.5, 612, 747, 612, 747, 1130, 383.5, 1130)
+
+[node name="Img_barracks" type="Sprite2D" parent="Ground"]
+position = Vector2(28, 644)
+texture = ExtResource("7_nq8g7")
+centered = false
+
+[node name="@Label@812" type="Label" parent="Ground"]
+offset_left = 24.0
+offset_top = 616.0
+offset_right = 24.0
+offset_bottom = 616.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "barracks 711x478"
+
+[node name="BgMagenta_blacksmith" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(759, 612, 1081.5, 612, 1081.5, 1166, 759, 1166)
+
+[node name="BgWhite_blacksmith" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(1081.5, 612, 1404, 612, 1404, 1166, 1081.5, 1166)
+
+[node name="Img_blacksmith" type="Sprite2D" parent="Ground"]
+position = Vector2(767, 644)
+texture = ExtResource("8_26vtj")
+centered = false
+
+[node name="@Label@813" type="Label" parent="Ground"]
+offset_left = 763.0
+offset_top = 616.0
+offset_right = 763.0
+offset_bottom = 616.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "blacksmith 629x514"
+
+[node name="BgMagenta_stable" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(1416, 612, 1778.5, 612, 1778.5, 1172, 1416, 1172)
+
+[node name="BgWhite_stable" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(1778.5, 612, 2141, 612, 2141, 1172, 1778.5, 1172)
+
+[node name="Img_stable" type="Sprite2D" parent="Ground"]
+position = Vector2(1424, 644)
+texture = ExtResource("9_go43w")
+centered = false
+
+[node name="@Label@814" type="Label" parent="Ground"]
+offset_left = 1420.0
+offset_top = 616.0
+offset_right = 1420.0
+offset_bottom = 616.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "stable 709x520"
+
+[node name="BgMagenta_kitchen_bakery" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(2153, 612, 2469.5, 612, 2469.5, 1186, 2153, 1186)
+
+[node name="BgWhite_kitchen_bakery" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(2469.5, 612, 2786, 612, 2786, 1186, 2469.5, 1186)
+
+[node name="Img_kitchen_bakery" type="Sprite2D" parent="Ground"]
+position = Vector2(2161, 644)
+texture = ExtResource("10_s07yk")
+centered = false
+
+[node name="@Label@815" type="Label" parent="Ground"]
+offset_left = 2157.0
+offset_top = 616.0
+offset_right = 2157.0
+offset_bottom = 616.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "kitchen_bakery 617x534"
+
+[node name="BgMagenta_watchtower" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(2798, 612, 2909.5, 612, 2909.5, 1103, 2798, 1103)
+
+[node name="BgWhite_watchtower" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(2909.5, 612, 3021, 612, 3021, 1103, 2909.5, 1103)
+
+[node name="Img_watchtower" type="Sprite2D" parent="Ground"]
+position = Vector2(2806, 644)
+texture = ExtResource("11_ntsxm")
+centered = false
+
+[node name="@Label@816" type="Label" parent="Ground"]
+offset_left = 2802.0
+offset_top = 616.0
+offset_right = 2802.0
+offset_bottom = 616.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "watchtower 207x451"
+
+[node name="BgMagenta_modular_wall" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(20, 1198, 248, 1198, 248, 1411, 20, 1411)
+
+[node name="BgWhite_modular_wall" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(248, 1198, 476, 1198, 476, 1411, 248, 1411)
+
+[node name="Img_modular_wall" type="Sprite2D" parent="Ground"]
+position = Vector2(28, 1230)
+texture = ExtResource("12_hg5jm")
+centered = false
+
+[node name="@Label@817" type="Label" parent="Ground"]
+offset_left = 24.0
+offset_top = 1202.0
+offset_right = 24.0
+offset_bottom = 1202.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "modular_wall 440x173"
+
+[node name="BgMagenta_oak_tree" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(488, 1198, 590, 1198, 590, 1478, 488, 1478)
+
+[node name="BgWhite_oak_tree" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(590, 1198, 692, 1198, 692, 1478, 590, 1478)
+
+[node name="Img_oak_tree" type="Sprite2D" parent="Ground"]
+position = Vector2(496, 1230)
+texture = ExtResource("13_3tcw6")
+centered = false
+
+[node name="@Label@818" type="Label" parent="Ground"]
+offset_left = 492.0
+offset_top = 1202.0
+offset_right = 492.0
+offset_bottom = 1202.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "oak_tree 188x240"
+
+[node name="BgMagenta_pine_tree" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(704, 1198, 792.5, 1198, 792.5, 1502, 704, 1502)
+
+[node name="BgWhite_pine_tree" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(792.5, 1198, 881, 1198, 881, 1502, 792.5, 1502)
+
+[node name="Img_pine_tree" type="Sprite2D" parent="Ground"]
+position = Vector2(712, 1230)
+texture = ExtResource("14_npbup")
+centered = false
+
+[node name="@Label@819" type="Label" parent="Ground"]
+offset_left = 708.0
+offset_top = 1202.0
+offset_right = 708.0
+offset_bottom = 1202.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "pine_tree 161x264"
+
+[node name="BgMagenta_stone_well" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(893, 1198, 952, 1198, 952, 1367, 893, 1367)
+
+[node name="BgWhite_stone_well" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(952, 1198, 1011, 1198, 1011, 1367, 952, 1367)
+
+[node name="Img_stone_well" type="Sprite2D" parent="Ground"]
+position = Vector2(901, 1230)
+texture = ExtResource("15_pnpmr")
+centered = false
+
+[node name="@Label@820" type="Label" parent="Ground"]
+offset_left = 897.0
+offset_top = 1202.0
+offset_right = 897.0
+offset_bottom = 1202.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "stone_well 102x129"
+
+[node name="BgMagenta_fountain" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(1023, 1198, 1128.5, 1198, 1128.5, 1420, 1023, 1420)
+
+[node name="BgWhite_fountain" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(1128.5, 1198, 1234, 1198, 1234, 1420, 1128.5, 1420)
+
+[node name="Img_fountain" type="Sprite2D" parent="Ground"]
+position = Vector2(1031, 1230)
+texture = ExtResource("16_qhp2c")
+centered = false
+
+[node name="@Label@821" type="Label" parent="Ground"]
+offset_left = 1027.0
+offset_top = 1202.0
+offset_right = 1027.0
+offset_bottom = 1202.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "fountain 195x182"
+
+[node name="BgMagenta_courtyard_garden" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(1246, 1198, 1555.5, 1198, 1555.5, 1828, 1246, 1828)
+
+[node name="BgWhite_courtyard_garden" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(1555.5, 1198, 1865, 1198, 1865, 1828, 1555.5, 1828)
+
+[node name="Img_courtyard_garden" type="Sprite2D" parent="Ground"]
+position = Vector2(1254, 1230)
+texture = ExtResource("17_r8nfk")
+centered = false
+
+[node name="@Label@822" type="Label" parent="Ground"]
+offset_left = 1250.0
+offset_top = 1202.0
+offset_right = 1250.0
+offset_bottom = 1202.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "courtyard_garden 603x590"
+
+[node name="BgMagenta_treasure_chest" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(1877, 1198, 1908.5, 1198, 1908.5, 1285, 1877, 1285)
+
+[node name="BgWhite_treasure_chest" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(1908.5, 1198, 1940, 1198, 1940, 1285, 1908.5, 1285)
+
+[node name="Img_treasure_chest" type="Sprite2D" parent="Ground"]
+position = Vector2(1885, 1230)
+texture = ExtResource("18_08fg7")
+centered = false
+
+[node name="@Label@823" type="Label" parent="Ground"]
+offset_left = 1881.0
+offset_top = 1202.0
+offset_right = 1881.0
+offset_bottom = 1202.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "treasure_chest 47x47"
+
+[node name="BgMagenta_wall_torch" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(1952, 1198, 1973, 1198, 1973, 1287, 1952, 1287)
+
+[node name="BgWhite_wall_torch" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(1973, 1198, 1994, 1198, 1994, 1287, 1973, 1287)
+
+[node name="Img_wall_torch" type="Sprite2D" parent="Ground"]
+position = Vector2(1960, 1230)
+texture = ExtResource("19_diiyi")
+centered = false
+
+[node name="@Label@824" type="Label" parent="Ground"]
+offset_left = 1956.0
+offset_top = 1202.0
+offset_right = 1956.0
+offset_bottom = 1202.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "wall_torch 26x49"
+
+[node name="BgMagenta_heraldic_banner" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(2006, 1198, 2037.5, 1198, 2037.5, 1348, 2006, 1348)
+
+[node name="BgWhite_heraldic_banner" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(2037.5, 1198, 2069, 1198, 2069, 1348, 2037.5, 1348)
+
+[node name="Img_heraldic_banner" type="Sprite2D" parent="Ground"]
+position = Vector2(2014, 1230)
+texture = ExtResource("20_g7e4l")
+centered = false
+
+[node name="@Label@825" type="Label" parent="Ground"]
+offset_left = 2010.0
+offset_top = 1202.0
+offset_right = 2010.0
+offset_bottom = 1202.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "heraldic_banner 47x110"
+
+[node name="BgMagenta_waterfall" type="Polygon2D" parent="Ground"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(2081, 1198, 2176, 1198, 2176, 1501, 2081, 1501)
+
+[node name="BgWhite_waterfall" type="Polygon2D" parent="Ground"]
+polygon = PackedVector2Array(2176, 1198, 2271, 1198, 2271, 1501, 2176, 1501)
+
+[node name="Img_waterfall" type="Sprite2D" parent="Ground"]
+position = Vector2(2089, 1230)
+texture = ExtResource("21_vuuqo")
+centered = false
+
+[node name="@Label@826" type="Label" parent="Ground"]
+offset_left = 2085.0
+offset_top = 1202.0
+offset_right = 2085.0
+offset_bottom = 1202.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "waterfall 174x263"
+
+[node name="Tile_cobblestone_tile_raw" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("22_mw6sy")
+polygon = PackedVector2Array(20, 1876, 740, 1876, 740, 2596, 20, 2596)
+
+[node name="@Label@827" type="Label" parent="Ground"]
+offset_left = 20.0
+offset_top = 1852.0
+offset_right = 20.0
+offset_bottom = 1852.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "cobblestone_tile (raw) 3x3"
+
+[node name="Tile_cobblestone_tile_seamless" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("23_erhs5")
+polygon = PackedVector2Array(760, 1876, 1480, 1876, 1480, 2596, 760, 2596)
+
+[node name="@Label@828" type="Label" parent="Ground"]
+offset_left = 760.0
+offset_top = 1852.0
+offset_right = 760.0
+offset_bottom = 1852.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "cobblestone_tile (seamless) 3x3"
+
+[node name="Tile_grass_tile_raw" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("24_lmkn7")
+polygon = PackedVector2Array(1500, 1876, 2220, 1876, 2220, 2596, 1500, 2596)
+
+[node name="@Label@829" type="Label" parent="Ground"]
+offset_left = 1500.0
+offset_top = 1852.0
+offset_right = 1500.0
+offset_bottom = 1852.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "grass_tile (raw) 3x3"
+
+[node name="Tile_grass_tile_seamless" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("25_vmdpp")
+polygon = PackedVector2Array(2240, 1876, 2960, 1876, 2960, 2596, 2240, 2596)
+
+[node name="@Label@830" type="Label" parent="Ground"]
+offset_left = 2240.0
+offset_top = 1852.0
+offset_right = 2240.0
+offset_bottom = 1852.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "grass_tile (seamless) 3x3"
+
+[node name="Tile_river_water_tile_raw" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("26_0a4na")
+polygon = PackedVector2Array(2980, 1876, 3700, 1876, 3700, 2596, 2980, 2596)
+
+[node name="@Label@831" type="Label" parent="Ground"]
+offset_left = 2980.0
+offset_top = 1852.0
+offset_right = 2980.0
+offset_bottom = 1852.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "river_water_tile (raw) 3x3"
+
+[node name="Tile_river_water_tile_seamless" type="Polygon2D" parent="Ground"]
+texture_repeat = 2
+texture = ExtResource("27_21ph8")
+polygon = PackedVector2Array(20, 2656, 740, 2656, 740, 3376, 20, 3376)
+
+[node name="@Label@832" type="Label" parent="Ground"]
+offset_left = 20.0
+offset_top = 2632.0
+offset_right = 20.0
+offset_bottom = 2632.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "river_water_tile (seamless) 3x3"
+
+[node name="Collision" type="Node2D" parent="."]
+
+[node name="World" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="start" type="Marker2D" parent="Spawns"]
+position = Vector2(40, 40)
+metadata/facing = "down"

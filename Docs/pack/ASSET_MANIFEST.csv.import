@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://rgtajb70osqt"
+
+[deps]
+
+files=["res://Docs/pack/ASSET_MANIFEST.width.translation", "res://Docs/pack/ASSET_MANIFEST.height.translation", "res://Docs/pack/ASSET_MANIFEST.image.translation", "res://Docs/pack/ASSET_MANIFEST.usage.translation"]
+
+source_file="res://Docs/pack/ASSET_MANIFEST.csv"
+dest_files=["res://Docs/pack/ASSET_MANIFEST.width.translation", "res://Docs/pack/ASSET_MANIFEST.height.translation", "res://Docs/pack/ASSET_MANIFEST.image.translation", "res://Docs/pack/ASSET_MANIFEST.usage.translation"]
+
+[params]
+
+compress=true
+delimiter=0
