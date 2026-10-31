@@ -1,15 +1,10 @@
 #!/usr/bin/env python3
-"""Builds every game asset + the level layout from the supplied source art.
+"""Builds the generic art: floor atlas (from the supplied top-down tile), generated water + rocky shore atlases and Kael.
 
-  python3 tools/build_assets.py <wall_kit_dir> <floor_tile.png> <blueprint.png>
+  python3 tools/build_assets.py <floor_tile.png>
 
-Scale contract (from the brief):  tile 16x16 px, Kael 28 px tall, viewport 960x540 (60x34 tiles),
-palace ~430 tiles wide x ~320 tiles deep.
-
-The blueprint is traced into wall centre-lines (hand-read coordinates, left half mirrored to the right
-because the plan is symmetric) and into a per-tile ground grid (water / floor / rocky shore) by colour.
-Blueprint px -> world px:  x * SX, y * SY  (non-uniform on purpose: the painted plan is foreshortened,
-the game world is laid out flat so depth gets more room).
+then  python3 tools/build_ring.py <wall_pieces.png> <ring_reference.png>  builds the palace wall ring + layout.
+Scale contract: tile 16x16 px, Kael 28 px tall, viewport 960x540 (60x34 tiles).
 """
 import json, os, sys, shutil
 import numpy as np
@@ -17,66 +12,14 @@ from PIL import Image, ImageDraw
 import cv2
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-KIT, FLOOR, BLUE = sys.argv[1], sys.argv[2], sys.argv[3]
+FLOOR = sys.argv[1]
 SRC = os.path.join(ROOT, "art/source")
 OUT = os.path.join(ROOT, "art/game")
 os.makedirs(SRC, exist_ok=True)
 os.makedirs(OUT, exist_ok=True)
-
 TILE = 16
-SX, SY = 5.0, 7.5          # blueprint px -> world px
-WT, WH = 72, 46            # wall thickness (ground footprint, also top walkway width) / visible face height
-KIT_SCALE = 0.16           # wall-kit texture scale (stone course ~7 px, next to a 16 px floor tile)
-TOWER_SCALE = 0.24
-BP_W, BP_H = 1672, 941
-GW, GH = int(BP_W * SX / TILE), int(BP_H * SY / TILE)   # 522 x 441 tiles
-
-# keep untouched copies of the supplied art
-for f in sorted(os.listdir(KIT)):
-    if f.endswith(".png"):
-        shutil.copy(os.path.join(KIT, f), os.path.join(SRC, "wallkit_" + f))
-shutil.copy(FLOOR, os.path.join(SRC, "floor_tile.png"))
-shutil.copy(BLUE, os.path.join(SRC, "palace_blueprint.png"))
-
-
-def kit(name):
-    return Image.open(os.path.join(KIT, name)).convert("RGBA")
-
-
-def down(im, s):
-    """box-filter downscale (no blur halo), then hard alpha so edges stay pixel-crisp"""
-    w, h = max(1, round(im.width * s)), max(1, round(im.height * s))
-    o = im.resize((w, h), Image.BOX)
-    a = np.array(o)
-    a[..., 3] = np.where(a[..., 3] > 110, 255, 0)
-    return Image.fromarray(a)
-
-
-def crop_alpha(im):
-    a = np.array(im)[..., 3] > 20
-    ys, xs = np.nonzero(a)
-    return im.crop((xs.min(), ys.min(), xs.max() + 1, ys.max() + 1))
-
-
-# ---------------------------------------------------------------- textures from the wall kit
-sw = kit("01_straight_wall.png")
-# one clean run between pillars: 6 merlon periods (80 px each in the source)
-face = sw.crop((302, 380, 302 + 480, 669))
-down(face, KIT_SCALE).save(os.path.join(OUT, "wall_face.png"))
-cw = kit("10_causeway.png")
-top = cw.crop((300, 300, 300 + 540, 750)).convert("RGBA")
-a = np.array(top); a[..., 3] = 255; top = Image.fromarray(a)
-t = down(top, KIT_SCALE)
-t = t.resize((t.width, WT), Image.NEAREST)
-t.save(os.path.join(OUT, "wall_top.png"))
-
-sprites = {}
-for key, fn, s in [("tower", "07_watchtower.png", TOWER_SCALE), ("gatehouse", "08_gatehouse.png", TOWER_SCALE),
-                   ("stairs", "09_stair_wall.png", KIT_SCALE), ("wall_end", "04_wall_end.png", KIT_SCALE),
-                   ("causeway", "10_causeway.png", 0.18)]:
-    im = down(crop_alpha(kit(fn)), s)
-    im.save(os.path.join(OUT, key + ".png"))
-    sprites[key] = [im.width, im.height]
+if os.path.abspath(FLOOR) != os.path.join(SRC, "floor_tile.png"):
+    shutil.copy(FLOOR, os.path.join(SRC, "floor_tile.png"))
 
 # ---------------------------------------------------------------- floor: top-down slab tile
 # crop the walkable top face (drop the transparent margin and the front lip), 8x8 tiles of 16 px
@@ -214,155 +157,3 @@ def kael():
 
 kael()
 
-# ---------------------------------------------------------------- layout traced from the blueprint
-# Wall centre-lines in blueprint px (the visible walkway line). LEFT HALF ONLY; mirrored about x = 836.
-MID = 836
-G = 24   # half width of a gatehouse gap in blueprint px  (24 * 5 = 120 world px)
-OUTER_L = [(MID, 45), (770, 45), (705, 45), (705, 80), (612, 80), (570, 130), (492, 140), (380, 145), (300, 215),
-           (240, 290), (232, 330), (155, 330), (152, 520), (262, 615), (355, 690), (620, 690), (625, 650),
-           (MID - G, 650)]
-INNER_L = [
-    [(575, 140), (575, 215), (530, 240)],
-    [(530, 240), (530, 280), (MID - G, 280)],
-    [(240, 330), (240, 360), (530, 360), (540, 370), (605, 410), (605, 505)],
-    [(540, 360), (750, 360), (775, 345)],
-    [(605, 445), (790, 445)],
-    [(775, 345), (775, 470)],
-    [(620, 505), (620, 580), (740, 580)],
-]
-TOWERS_L = [(770, 45), (612, 80), (492, 140), (380, 145), (300, 215), (155, 330), (152, 520), (262, 615),
-            (355, 690), (620, 690), (530, 240), (530, 360), (655, 280), (775, 345)]
-STAIRS_L = [(420, 360), (700, 445), (MID, 445)]       # (centre on a wall line) -> wall is cut, stair sprite placed
-GATES = [(MID, 650, "outer"), (MID, 280, "inner")]
-TOWN_WALL_Y = 860
-BRIDGE = (MID, 650, 870)   # x, from y, to y (blueprint)
-
-
-def mirror(p):
-    return (2 * MID - p[0], p[1])
-
-
-def W(p):  # blueprint -> world, wall FOOT (visible walkway line + face height)
-    return [round(p[0] * SX), round(p[1] * SY + WH)]
-
-
-walls = []
-outer = OUTER_L + [mirror(p) for p in reversed(OUTER_L)]
-# split the closed outer loop at the gate (first/last points are the gate jambs) and at the top centre
-walls.append(OUTER_L)
-walls.append([mirror(p) for p in OUTER_L])
-for pl in INNER_L:
-    walls.append(pl)
-    walls.append([mirror(p) for p in pl])
-# town wall along the bottom (gap for the causeway)
-walls.append([(0, TOWN_WALL_Y), (MID - 40, TOWN_WALL_Y)])
-walls.append([(MID + 40, TOWN_WALL_Y), (BP_W, TOWN_WALL_Y)])
-towers = TOWERS_L + [mirror(p) for p in TOWERS_L] + [(582, TOWN_WALL_Y), (1090, TOWN_WALL_Y)]
-stairs = STAIRS_L + [mirror(p) for p in STAIRS_L if p[0] != MID]
-
-# cut stair gaps out of horizontal wall segments
-stair_half_bp = sprites["stairs"][0] * 0.5 / SX
-
-
-def cut(pl, cx, cy, half):
-    out, cur = [], [pl[0]]
-    for a, b in zip(pl[:-1], pl[1:]):
-        if abs(a[1] - cy) < 3 and abs(b[1] - cy) < 3 and min(a[0], b[0]) < cx < max(a[0], b[0]):
-            d = 1 if b[0] > a[0] else -1
-            cur.append((cx - d * half, cy))
-            out.append(cur)
-            cur = [(cx + d * half, cy), b]
-        else:
-            cur.append(b)
-    out.append(cur)
-    return [c for c in out if len(c) > 1]
-
-
-for (cx, cy) in stairs:
-    nw = []
-    for pl in walls:
-        nw += cut(pl, cx, cy, stair_half_bp)
-    walls = nw
-# the vertical lane walls also get cut where the centre stairs cross? (stairs sit between them: no cut needed)
-
-layout = {
-    "tile": TILE, "grid_w": GW, "grid_h": GH, "world": [GW * TILE, GH * TILE], "wall_thickness": WT, "wall_height": WH,
-    "walls": [[W(p) for p in pl] for pl in walls],
-    "towers": [W(p) for p in towers],
-    "stairs": [W(p) for p in stairs],
-    "gates": [W((x, y)) + [k] for x, y, k in GATES],
-    "bridge": [round(BRIDGE[0] * SX), round(BRIDGE[1] * SY + WH), round(BRIDGE[2] * SY + WH)],
-    "spawn": [round(MID * SX), round(905 * SY)],
-    "sprites": sprites,
-}
-
-# ---------------------------------------------------------------- ground grid by colour + castle interior
-bp = np.array(Image.open(BLUE).convert("RGB")).astype(int)
-r, g, b = bp[..., 0], bp[..., 1], bp[..., 2]
-water_bp = (b > r + 45) & (b > g + 10)
-inside = np.zeros((BP_H, BP_W), np.uint8)
-cv2.fillPoly(inside, [np.array(outer, np.int32)], 1)
-# blue tower roofs are not water: drop small blue blobs, and inside the walls keep only the pond
-water_bp = cv2.morphologyEx(water_bp.astype(np.uint8), cv2.MORPH_OPEN, np.ones((15, 15), np.uint8)).astype(bool)
-pond = np.zeros_like(inside); cv2.rectangle(pond, (615, 470), (700, 615), 1, -1)
-water_bp &= ~((inside > 0) & (pond == 0))
-inside[TOWN_WALL_Y + 10:, :] = 1          # the paved quay south of the town wall
-grid = []
-for ty in range(GH):
-    row = []
-    for tx in range(GW):
-        x = min(BP_W - 1, int((tx + 0.5) * TILE / SX))
-        y = min(BP_H - 1, int((ty + 0.5) * TILE / SY))
-        if water_bp[y, x] and not (abs(x - MID) < 11 and BRIDGE[1] <= y <= BRIDGE[2] + 12):
-            ch = "W"
-        elif inside[y, x]:
-            ch = "F"
-        else:
-            ch = "S"
-        row.append(ch)
-    grid.append("".join(row))
-# smooth single-tile specks
-gm = np.array([list(r_) for r_ in grid])
-layout["grid"] = grid
-
-# water collision: run-merged rectangles (tile units); the causeway is left walkable
-wm = (gm == "W").astype(np.uint8)
-rects, active = [], {}
-for y in range(GH + 1):
-    runs = {}
-    if y < GH:
-        x = 0
-        while x < GW:
-            if wm[y, x]:
-                x0 = x
-                while x < GW and wm[y, x]:
-                    x += 1
-                runs[(x0, x - x0)] = True
-            else:
-                x += 1
-    for k in list(active):
-        if k not in runs:
-            rects.append(active.pop(k))
-    for k in runs:
-        if k in active:
-            active[k][3] += 1
-        else:
-            active[k] = [k[0], y, k[1], 1]
-layout["water_rects"] = rects
-os.makedirs(os.path.join(ROOT, "data"), exist_ok=True)
-json.dump(layout, open(os.path.join(ROOT, "data/layout.json"), "w"))
-
-# ---------------------------------------------------------------- minimap image (1 px per tile, walls drawn)
-mm = np.zeros((GH, GW, 3), np.uint8)
-mm[gm == "W"] = (40, 100, 170)
-mm[gm == "F"] = (196, 186, 164)
-mm[gm == "S"] = (130, 114, 92)
-for pl in layout["walls"]:
-    pts = np.array([[p[0] / TILE, (p[1] - WT * 0.5) / TILE] for p in pl], np.int32)
-    cv2.polylines(mm, [pts], False, (92, 80, 70), 3)
-for t_ in layout["towers"]:
-    cv2.circle(mm, (int(t_[0] / TILE), int((t_[1] - 20) / TILE)), 4, (50, 80, 150), -1)
-for gx, gy, _ in layout["gates"]:
-    cv2.rectangle(mm, (int(gx / TILE) - 8, int(gy / TILE) - 5), (int(gx / TILE) + 8, int(gy / TILE)), (60, 50, 44), -1)
-Image.fromarray(mm).save(os.path.join(OUT, "minimap.png"))
-print("grid", GW, "x", GH, "tiles; world", GW * TILE, "x", GH * TILE, "px; walls", len(walls), "water rects", len(rects))
