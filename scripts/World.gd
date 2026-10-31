@@ -310,6 +310,8 @@ func _capture(mm) -> void:
 		(player.get_node("Cam") as Camera2D).zoom = Vector2(z, z)
 		var c := player.get_node("Cam") as Camera2D
 		c.limit_left = -100000; c.limit_top = -100000; c.limit_right = 100000; c.limit_bottom = 100000
+	if args.has("hideui"):
+		mm.visible = false
 	if args.has("bigmap"):
 		mm.toggle()
 	if args.has("hideplayer"):
