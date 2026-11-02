@@ -3,7 +3,7 @@
 The outer palace wall ring, built from your wall pieces (`art/source/walls/pieces/`) joined into one picture
 (`art/source/walls/ring_final.png`, transparent background). Walls only.
 
-- Walk: WASD / arrows, **Shift** run, **M** expand / collapse the minimap.
+- Walk: WASD / arrows, **Shift** run, **E** climb onto / off the wall at a gate tower, **M** expand / collapse the minimap.
 - Scale: tile 16 px, Kael 28 px, viewport 960x540. Only the walls are big: the ring is 6604 x 3712 px
   (413 x 232 tiles), towers ~600 px tall.
 - World: 493 x 322 tiles. Two gates: the gatehouse in the south (spawn just outside it) and the gate in the north.
@@ -17,6 +17,18 @@ The outer palace wall ring, built from your wall pieces (`art/source/walls/piece
 - `tools/build_walls.py`: collision from the art (bands along the inside and outside edges of the ring and under each
   wall), sealed except at the two gate arches (the build fails otherwise); per-pixel ground map for draw order
   (`shaders/wall_front.gdshader` redraws wall pixels standing in front of Kael); baked shadows; minimap.
+
+## Collision (two levels, sectioned polygons)
+`tools/build_levels.py` writes the colliders into `data/layout.json`; at runtime they are plain CollisionPolygon2D
+shapes, independent of the PNGs:
+- **Ground level** (178 sections, one per tower / wall stretch piece): exactly the ground each wall and tower stands
+  on. Wall faces, tops and roofs are free to walk behind; both gate arches are open; the ring is sealed elsewhere.
+- **Wall-walk level** (309 sections): the paved battlements are walkable all the way round (one connected loop,
+  through a passage in every tower on the walk); parapets and drop-offs block.
+- **Access:** the art has no stairs, so the four gate towers are the access points: stand at the tower and press
+  **E** to climb onto the wall or back down. On the wall-walk, Kael draws over the wall top; inside a tower passage
+  the walls fade so he stays visible.
+- `godot --path . -- --test` flood-fills both levels and checks gates, inside, access points and the walk loop.
 
 ## See-through (CrossCode style)
 `tools/build_objects.py` splits the wall art into objects (52: each tower, each wall stretch, the gatehouses) and
@@ -35,8 +47,9 @@ stores the object id per pixel. When Kael walks behind any of them, all the wall
 ```
 python3 tools/build_assets.py art/source/floor_tile.png       # floor, earth, Kael
 FULL_ALPHA=1 python3 tools/build_walls.py art/source/walls/ring_final_design.png art/source/walls/ring_final_x4.png
-python3 tools/build_collision.py                               # invisible walls = only each wall's ground footprint
+python3 tools/build_collision.py                               # ground lines (draw order) from the wall footprints
 python3 tools/build_objects.py                                 # split walls into objects (towers / stretches) for see-through
+python3 tools/build_levels.py                                  # collision: sectioned polygons, ground + wall-walk levels
 python3 tools/build_ground.py                                  # stage 2 ground (after build_walls)
 tools/shots.sh                                                 # docs/screenshots
 godot --path . -- --test                                       # reachability test
