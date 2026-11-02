@@ -17,6 +17,7 @@ var player: CharacterBody2D
 var walls_body: StaticBody2D
 var front: Array = []
 var back: Array = []
+var sh_layer: Node2D
 ## CrossCode-style see-through: the whole object (tower / wall stretch / gatehouse) Kael stands behind fades
 var objmap: Image
 var fade_img: Image
@@ -95,6 +96,7 @@ func _update_fade(foot: Vector2, dt: float) -> void:
 		for id in range(256):
 			fade[id] = v
 		fade_img.fill(Color(v, 0, 0, 1))
+		sh_layer.modulate.a = 1.0 - v          # the walls' ground shadows fade with them
 		changed = true
 	if changed:
 		fade_tex.update(fade_img)
@@ -182,7 +184,7 @@ func _rect_col(body: Node, r: Rect2) -> void:
 
 # ------------------------------------------------------------------ walls
 func _walls() -> void:
-	var sh_layer := Node2D.new(); sh_layer.name = "Shadows"; sh_layer.z_index = 1; add_child(sh_layer)
+	sh_layer = Node2D.new(); sh_layer.name = "Shadows"; sh_layer.z_index = 1; add_child(sh_layer)
 	var w_layer := Node2D.new(); w_layer.name = "Walls"; w_layer.z_index = 2; add_child(w_layer)
 	var f_layer := Node2D.new(); f_layer.name = "Front"; f_layer.z_index = 4; add_child(f_layer)
 	objmap = Image.new()
