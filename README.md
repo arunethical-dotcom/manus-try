@@ -35,6 +35,7 @@ stores the object id per pixel. When Kael walks behind any of them, all the wall
 ```
 python3 tools/build_assets.py art/source/floor_tile.png       # floor, earth, Kael
 FULL_ALPHA=1 python3 tools/build_walls.py art/source/walls/ring_final_design.png art/source/walls/ring_final_x4.png
+python3 tools/build_collision.py                               # invisible walls = only each wall's ground footprint
 python3 tools/build_objects.py                                 # split walls into objects (towers / stretches) for see-through
 python3 tools/build_ground.py                                  # stage 2 ground (after build_walls)
 tools/shots.sh                                                 # docs/screenshots
