@@ -22,9 +22,9 @@ The outer palace wall ring, built from your wall pieces (`art/source/walls/piece
 - `tools/build_ground.py` paints the whole world from your grass tile sheets (`art/source/ground/grass_sheet_*.png`):
   seamless grass base, soft organic meadow / clover / flower / dirt patches, and a stone avenue (the floor tile)
   from the north gate through the south gate. Saved as 1024 px WebP chunks in `art/game/ground/`; the minimap shows it.
-  Mud roads from your mud tile sheets (`mud_sheet_*.png`), laid out after `reference_layout_2.png`: a ring road
-  inside the walls, cross streets, diagonals to the corners, a round plaza at the centre and a road out of the
-  north gate. Layout references: `art/source/ground/reference_layout.png`, `reference_layout_2.png`.
+  Mud roads: your mud tiles (`mud_sheet_*.png`) laid evenly on a 128 px grid, in exactly the shape of your road
+  plan (`road_plan.png`) scaled into the ring; its central spine runs from the north gate to the south gate,
+  plus a road out of the north gate. The stone avenue now only runs outside the south gate. Layout references: `art/source/ground/reference_layout.png`, `reference_layout_2.png`.
 
 ## Rebuild
 ```

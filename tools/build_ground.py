@@ -153,9 +153,10 @@ for i, t in enumerate(mseam):                                       # slightly c
     lum = t.mean(-1, keepdims=True)
     mseam[i] = (lum + (t - lum) * 0.8) * 0.92
 print("mud tiles", len(mt))
-# mud field: per 128-px cell pick a tile (mostly calm), blend cells with the low-frequency mask for variety
+# mud field: the tiles laid evenly on a regular 128 px grid, cycling through them in a fixed order
 gyc, gxc = (WH + S - 1) // S, (WW + S - 1) // S
-pick = np.where(rng.rand(gyc, gxc) < 0.8, rng.randint(0, 7, (gyc, gxc)), rng.randint(7, len(mseam), (gyc, gxc)))
+ORDER = [0, 1, 2, 3, 4, 5, 6, 0, 2, 4, 1, 3, 5, 6, 7, 8, 9, 10, 11]
+pick = np.array([[ORDER[(yy * 7 + xx * 3) % len(ORDER)] for xx in range(gxc)] for yy in range(gyc)])
 MUD = np.zeros((gyc * S, gxc * S, 3), np.float32)
 for yy in range(gyc):
     for xx in range(gxc):
@@ -184,40 +185,38 @@ IX0, IX1, IY0, IY1 = xs8.min() * K8, xs8.max() * K8, ys8.min() * K8, ys8.max() *
 print("interior box", IX0, IY0, IX1, IY1)
 dist = cv2.distanceTransform(inside8, cv2.DIST_L2, 5) * K8          # px from the wall's inner edge
 
-ringroad = ((dist > 260) & (dist < 400)).astype(np.float32)   # ring road: 260..400 px from the inner wall edge
-road8 = np.zeros_like(inside8, np.float32)
-def P(u, v):
-    return (int((IX0 + u * (IX1 - IX0)) / K8), int((IY0 + v * (IY1 - IY0)) / K8))
-def street(pts, w):
-    m = np.zeros_like(inside8)
-    cv2.polylines(m, [np.array([P(*q) for q in pts], np.int32)], False, 1, max(1, int(w / K8)))
-    return m.astype(np.float32)
-plaza = (0.5, 0.56)
-for pts, w in (([(0.0, 0.56), (1.0, 0.56)], 170),                  # main cross street through the plaza
-               ([(0.0, 0.30), (1.0, 0.30)], 140),                  # upper street in front of the palace
-               ([(0.0, 0.80), (0.38, 0.80)], 130), ([(0.62, 0.80), (1.0, 0.80)], 130),
-               ([plaza, (0.12, 0.12)], 130), ([plaza, (0.88, 0.12)], 130),   # diagonals to the corners
-               ([plaza, (0.10, 0.92)], 130), ([plaza, (0.90, 0.92)], 130),
-               ([(0.25, 0.30), (0.25, 0.80)], 120), ([(0.75, 0.30), (0.75, 0.80)], 120)):
-    road8 = np.maximum(road8, street(pts, w))
-cx8, cy8 = P(*plaza)
-cv2.circle(road8, (cx8, cy8), int(380 / K8), 1.0, -1)              # round plaza
-road8 *= inside8 * (dist > 330)                                     # streets end on the ring road
-road8 = np.maximum(road8, ringroad)
-# fill thin grass slivers between streets (islands smaller than ~0.15 MP inside the ring)
-isl = ((road8 < 0.5) & (inside8 > 0)).astype(np.uint8)
-ni, li, sti, _ = cv2.connectedComponentsWithStats(isl, connectivity=4)
-for i in range(1, ni):
-    if sti[i, cv2.CC_STAT_AREA] * K8 * K8 < 150000:
-        road8[li == i] = 1.0
-# outside: road from the north gate to the north edge
-nx8, ny8 = int(nx / K8), int(ny / K8)
-cv2.line(road8, (nx8, ny8), (nx8, 0), 1.0, int(170 / K8))
-# full resolution with an irregular edge
-rm = cv2.resize(road8, (WW, WH), interpolation=cv2.INTER_LINEAR)
-nz = cv2.resize(rng.rand(WH // 24 + 2, WW // 24 + 2).astype(np.float32), (WW, WH), interpolation=cv2.INTER_CUBIC)
-rmask = (rm + (nz - 0.5) * 0.45) > 0.5
-rmask = cv2.morphologyEx(rmask.astype(np.uint8), cv2.MORPH_OPEN, np.ones((5, 5), np.uint8)).astype(bool)
+# road network = the supplied road plan (art/source/ground/road_plan.png, orange on magenta), its bounding box
+# stretched onto the interior of the ring; its central spine runs on the gate axis.
+pa = np.array(Image.open(os.path.join(SRC, "road_plan.png")).convert("RGB")).astype(int)
+pm = ((pa[..., 1] > 110) & (pa[..., 0] > 180) & (pa[..., 2] < 180)).astype(np.uint8)
+pm = cv2.morphologyEx(pm, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
+pys, pxs = np.nonzero(pm)
+pm = pm[pys.min():pys.max() + 1, pxs.min():pxs.max() + 1]
+MARG = 120                                            # px kept between the plan and the wall foot
+bx0, bx1 = IX0 + MARG, IX1 - MARG
+by0, by1 = IY0 + MARG, IY1 + 40                       # bottom: the spine runs down into the south gate
+axis = (sx + nx) / 2
+half = max(axis - bx0, bx1 - axis)                    # keep the plan symmetric about the gate axis
+bx0, bx1 = axis - half, axis + half
+# the plan, scaled straight to full resolution (clean edges, exactly its shape)
+PW, PH = int(bx1 - bx0), int(by1 - by0)
+pr = cv2.resize(cv2.GaussianBlur(pm.astype(np.float32), (0, 0), 0.6), (PW, PH), interpolation=cv2.INTER_CUBIC) > 0.5
+rmask = np.zeros((WH, WW), bool)
+X0p, Y0p = int(bx0), int(by0)
+yb, xb = min(WH, Y0p + PH), min(WW, X0p + PW)
+rmask[Y0p:yb, X0p:xb] = pr[:yb - Y0p, :xb - X0p]
+# the plan's central spine continues straight down to the south gate (same width)
+ax_ = int(axis)
+yl = int(np.nonzero(rmask[:, ax_])[0].max())
+row = rmask[yl - 8]
+l_ = ax_
+while row[l_ - 1]: l_ -= 1
+r_ = ax_
+while row[r_ + 1]: r_ += 1
+rmask[yl - 8:int(sy) + 40, l_:r_ + 1] = True
+L["plaza"] = [int(axis), int((by0 + by1) / 2)]
+# outside: road from the north gate to the north edge, same width as the plan's main lines
+rmask[0:max(0, ny - 40), int(nx) - 75:int(nx) + 75] = True
 soft = cv2.GaussianBlur(rmask.astype(np.float32), (0, 0), 1.2)[..., None]
 ground = ground * (1 - soft) + MUD * soft
 # dark rim + shade on the grass side, like the tiles' own edges
@@ -225,13 +224,12 @@ edge = cv2.dilate(rmask.astype(np.uint8), np.ones((3, 3), np.uint8)).astype(bool
 shade = cv2.GaussianBlur((cv2.dilate(rmask.astype(np.uint8), np.ones((13, 13), np.uint8)) > 0).astype(np.float32), (0, 0), 3)
 ground *= (1 - 0.18 * shade * (~rmask))[..., None]
 ground[edge] = ground[edge] * 0.45 + np.array([70, 40, 20], np.float32) * 0.55
-L["plaza"] = [int(cx8 * K8), int(cy8 * K8)]
 
 # ---------------------------------------------------------------- stone avenue (supplied floor tile), with a dark kerb
 floor = np.array(Image.open(os.path.join(ROOT, "art/game/floor_atlas.png")).convert("RGB")).astype(np.float32)
 fl = np.tile(floor, (WH // 128 + 2, WW // 128 + 2, 1))
 ax = int((sx + nx) / 2)
-y_top, y_bot = ny - 120, WH
+y_top, y_bot = sy - 60, WH
 x0, x1 = ax - AW, ax + AW
 ground[y_top:y_bot, x0:x1] = fl[y_top:y_bot, x0 - ax % 128 + 128:x1 - ax % 128 + 128]
 kerb = np.array([92, 78, 60], np.float32)
