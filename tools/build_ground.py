@@ -108,6 +108,31 @@ for k, count, rr in (("grass", 140, (200, 420)), ("clover", 40, (100, 220)), ("f
         rx = rng.randint(*rr); ry = int(rx * rng.uniform(0.6, 1.0))
         stamp(groups[k][rng.randint(len(groups[k]))], cx, cy, rx, ry)
 
+# ---------------------------------------------------------------- uneven greenery: large soft colour zones
+# (lush dark green, sunny yellow-green, dry olive, cool blue-green), so the grass is not one flat colour
+def lowfreq(cell, seed):
+    r = np.random.RandomState(seed)
+    g = r.rand(WH // cell + 3, WW // cell + 3).astype(np.float32)
+    return cv2.resize(g, (WW + 3 * cell, WH + 3 * cell), interpolation=cv2.INTER_CUBIC)[cell:cell + WH, cell:cell + WW]
+def zone(n, lo, hi):
+    return np.clip((n - lo) / (hi - lo), 0, 1) ** 1.5
+n1, n2, n3 = lowfreq(900, 11), lowfreq(520, 12), lowfreq(1400, 13)
+fine = lowfreq(160, 14)
+LUSH, SUN, DRY, COOL = (np.array(v, np.float32) for v in ([0.70, 0.92, 0.62], [1.22, 1.16, 0.72], [1.18, 1.06, 0.62], [0.82, 0.98, 1.10]))
+for y0 in range(0, WH, 256):                     # in strips (memory)
+    sl = slice(y0, min(WH, y0 + 256))
+    g = ground[sl]
+    lush = (0.50 * zone(n1[sl], 0.55, 0.85))[..., None]
+    sun = (0.45 * zone(n2[sl], 0.60, 0.90))[..., None]
+    dry = (0.60 * zone(1 - n1[sl], 0.62, 0.92) * zone(n3[sl], 0.35, 0.7))[..., None]
+    cool = (0.35 * zone(n3[sl], 0.68, 0.95))[..., None]
+    g = g * (1 - lush + lush * LUSH)
+    g = g * (1 - sun + sun * SUN)
+    g = g * (1 - dry) + g.mean(-1, keepdims=True) * DRY * dry
+    g = g * (1 - cool + cool * COOL)
+    ground[sl] = g * (0.90 + 0.20 * fine[sl])[..., None]
+del n1, n2, n3, fine
+
 # ---------------------------------------------------------------- mud roads (supplied mud tiles), layout after
 # art/source/ground/reference_layout_2.png: ring road inside the walls, two cross streets, diagonals to the corners,
 # a round plaza at the centre, and a road out of the north gate.
