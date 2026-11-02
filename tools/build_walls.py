@@ -33,7 +33,7 @@ HW, TB = 200, 112                    # wall height above its inner base, and foo
 KX, KY, HCAP = 0.50, 0.20, 700       # shadow projection
 
 # gate openings in design px: (x0, x1, y_top_of_opening, y_base)
-GATES_D = {"south": (836, 895, 830, 894), "north": (846, 884, 115, 168)}
+GATES_D = {"south": (834, 897, 834, 901), "north": (846, 884, 115, 168)}
 
 src = np.array(Image.open(sys.argv[1]).convert("RGB"))
 rgba, _ = key(src)
