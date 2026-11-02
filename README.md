@@ -6,21 +6,22 @@ The outer palace wall ring, assembled from the wall kit in `art/source/kit/` (yo
 - Walk: WASD / arrows, **Shift** run, **M** expand / collapse the minimap.
 - Scale: tile 16 px, Kael 28 px, viewport 960x540 (60x34 tiles). Only the walls are big: a curtain wall is
   ~300 px tall (about 11 Kaels), towers ~430 px.
-- World: 482 x 298 tiles; the ring itself is ~401 x 217 tiles.
+- World: 518 x 308 tiles; the ring itself is ~438 x 228 tiles.
 - Two gates: the gatehouse in the south (spawn is just outside it) and the open gate in the north.
 
 ## How it is built
 - `tools/build_kit.py` cuts every piece off its magenta backdrop, scales the pieces to one common size (the kit's
   pieces are drawn at different scales; they are normalised by tower width / merlon size) and assembles the left
-  half: gatehouse + straight walls with towers, diagonal SW corner, four steep side runs, diagonal NW corner, north
-  wall with the open gate. The right half is the mirror image. Pieces are used at (or below) their native
+  half after the ring design: the gatehouse set back with an L-step (corner piece) down to the south wall, straight
+  walls, a diagonal SW corner, four steep side runs, two diagonals at the NW, the north wall and an L-step forward
+  to the open gate flanked by towers. Where two pieces would each bring a tower to the same join, one is trimmed. The right half is the mirror image. Pieces are used at (or below) their native
   resolution, so nothing is upscaled.
 - Collision: a band above the base line of every piece; the build fails if the ring is not sealed apart from the
   two gate arches.
 - Draw order: every wall pixel knows the ground point it stands on (`depth_*.png`). Kael is drawn over the walls and
   then the wall pixels standing in front of him are drawn again on top (`shaders/wall_front.gdshader`).
 - Shadows are baked from the same ground map (one light from the upper-left).
-- Kit pieces not used in this layout: `curve`, `corner_l`, `side`, `diag_towers_b`, `wall_tower`.
+- Kit pieces not used in this layout: `curve`, `side`, `diag_towers_b`, `wall_tower`.
 
 ## Rebuild
 ```

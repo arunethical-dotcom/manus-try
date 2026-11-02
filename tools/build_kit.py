@@ -32,7 +32,7 @@ N_SOUTH, N_SIDE = 3, 4               # straight walls per side of the south gate
 
 # per piece: scale (native px -> game px) and anchors in native px
 SC = {"wall_long": 0.46, "wall_tower": 0.577, "tower": 0.36, "gatehouse": 0.55, "gate_open": 0.54,
-      "diag_towers": 0.605, "side_run": 0.577}
+      "diag_towers": 0.605, "side_run": 0.577, "corner_l": 0.52}
 
 
 def keyed(name):
@@ -74,7 +74,7 @@ def scaled(n, mirror):
 P = []   # placements: dict(n, m, x, y, img, gate)
 
 
-def place(n, ax, ay, X, Y, mirror=False, crop_w=None, gate=None):
+def place(n, ax, ay, X, Y, mirror=False, crop_w=None, gate=None, crop_l=0, crop_b=None, z=None):
     """put native anchor (ax, ay) of piece n at game point (X, Y); returns game pos of native point fn(nx, ny)"""
     img = scaled(n, mirror)
     s = SC[n]
@@ -84,7 +84,12 @@ def place(n, ax, ay, X, Y, mirror=False, crop_w=None, gate=None):
     x0, y0 = X - ax * s, Y - ay * s
     if crop_w is not None:
         img = img[:, :int(crop_w)]
-    P.append(dict(n=n, m=mirror, x=int(round(x0)), y=int(round(y0)), img=img, gate=gate))
+    if crop_b is not None:
+        img = img[:int(crop_b * s)]
+    cl = int(crop_l)
+    if cl:
+        img = img[:, cl:]
+    P.append(dict(n=n, m=mirror, x=int(round(x0)) + cl, y=int(round(y0)), img=img, gate=gate, z=z))
 
     def at(nx, ny):
         if mirror:
@@ -97,36 +102,55 @@ def tower(X, Y):
     place("tower", 208, 1199, X, Y + 18)
 
 
-# ---------------------------------------------------------------- left half (x < 0); south base line y = 0
+# ---------------------------------------------------------------- left half (x < 0), following the ring design
+# south: gatehouse set back, an L-step down to the south wall on each side (corner_l), straight wall,
+# a diagonal corner, steep side runs, two diagonals at the north-west, the north wall and an L-step forward to the
+# open gate flanked by towers.
 g = place("gatehouse", 636, 714, 0, 0, gate=("south", 530, 742, 640, 714))
 xl, _ = g(0, 714)
+c = place("corner_l", 1008, 664, xl + 10, 0)
+tx, ty = c(150, 1007)
+SOUTH_Y = ty - 16
+xl = tx
 for i in range(N_SOUTH):
-    tower(xl, 0)
-    w = place("wall_long", 1592, 671, xl + 6, 0)
+    w = place("wall_long", 1592, 671, xl + 30, SOUTH_Y)
     xl, _ = w(0, 671)
-# SW corner: the diagonal wall rising up-left (mirrored), its low tower on the end of the south wall
-d = place("diag_towers", 120, 947, xl + 10, 14, mirror=True)
-cx, cy = d(1090, 605)
-# west wall: steep runs rising up-right, a tower on every join
+# SW corner: diagonal rising up-left (mirrored); its high tower is dropped, the first side run's big tower
+# stands on the corner instead (that run starts at the tower: its lower stub is cut off)
+d = place("diag_towers", 120, 947, xl + 10, SOUTH_Y + 14, mirror=True, crop_l=240 * SC["diag_towers"])
+cx, cy = d(1048, 600)
+zc = d(120, 947)[1] + 1
+# west wall: steep runs rising up-right
 for i in range(N_SIDE):
-    r = place("side_run", 180, 1290, cx, cy + 4)
+    if i == 0:
+        r = place("side_run", 95, 945, cx, cy, crop_b=930, z=zc + 2000)
+    else:
+        r = place("side_run", 180, 1290, cx, cy + 4)
     cx, cy = r(538, 150)
-# NW corner: diagonal rising up-right
-d = place("diag_towers", 120, 947, cx, cy + 6)
-nx, ny = d(1090, 605)
+# NW: two diagonals rising up-right; the first one's high tower is cut, the second one's low tower stands there
+d = place("diag_towers", 120, 947, cx, cy + 6, crop_w=945 * SC["diag_towers"])
+jx, jy = d(1048, 600)
+zz = d(120, 947)[1] + 1
+d = place("diag_towers", 120, 947, jx, jy, z=zz)
+cx, cy = d(1090, 605)
+nx, ny = cx, cy
 NORTH_Y = ny - 14
-# north wall to the axis, the open gate in the middle
+# north wall: L-step forward to the gate; the gate section sits further north
+step = 1008 - 150
+GATE_Y = NORTH_Y + 16 - (1007 - 664) * SC["corner_l"]
 gate_l = -516 * SC["gate_open"]
+cl_tower_x = gate_l - 10 - step * SC["corner_l"]
 x = nx
-while x < gate_l - 4:
+while x < cl_tower_x - 4:
     wl = SRC["wall_long"].shape[1] * SC["wall_long"]
-    cw = min(wl, gate_l + 24 - x)
+    cw = min(wl, cl_tower_x + 24 - x)
     place("wall_long", 0, 671, x, NORTH_Y, crop_w=cw)
     x += cw - 6
-    if x < gate_l - 4:
+    if x < cl_tower_x - 40:
         tower(x, NORTH_Y)
-place("gate_open", 516, 542, 0, NORTH_Y, gate=("north", 430, 602, 330, 542))
-tower(gate_l + 10, NORTH_Y)
+place("corner_l", 1008, 664, gate_l - 10, GATE_Y)
+place("gate_open", 516, 542, 0, GATE_Y, gate=("north", 430, 602, 330, 542))
+tower(gate_l + 10, GATE_Y)
 
 # mirror the left half (everything placed left of the axis) about x = 0
 for p in list(P):
@@ -153,7 +177,7 @@ G = np.zeros((WH, WW), np.int32)
 FP = np.zeros((WH // CELL + 1, WW // CELL + 1), bool)
 gate_px = {}
 # paint back to front: by the lowest point of each piece (towers come after the walls they sit on)
-order = sorted(P, key=lambda p: (p["y"] + p["img"].shape[0], p["n"] == "tower"))
+order = sorted(P, key=lambda p: (p["z"] if p.get("z") is not None else p["y"] + p["img"].shape[0], p["n"] == "tower"))
 for p in order:
     im = p["img"]; h, w = im.shape[:2]
     X, Y = p["x"] + OX, p["y"] + OY
@@ -225,6 +249,16 @@ if os.environ.get("DEBUG") or leak:
     dbg[FP] = (255, 60, 60)
     Image.fromarray(dbg).save("/tmp/na/fp_debug.png")
     Image.fromarray(np.dstack([RGB, A.astype(np.uint8) * 255])).resize((WW // 5, WH // 5), Image.LANCZOS).save("/tmp/na/ring_preview.png")
+if os.environ.get("DEBUG"):
+    from PIL import ImageDraw
+    big = Image.fromarray(np.dstack([RGB, A.astype(np.uint8) * 255])); big.save("/tmp/na/nobox.png")
+    dd = ImageDraw.Draw(big)
+    for i, p in enumerate(P):
+        X, Y = p["x"] + OX, p["y"] + OY
+        h, w = p["img"].shape[:2]
+        dd.rectangle([X, Y, X + w, Y + h], outline=(255, 0, 0), width=4)
+        dd.text((X + 6, Y + 6), "%d %s" % (i, p["n"]), fill=(255, 255, 0))
+    big.save("/tmp/na/boxes.png")
 if leak:
     sys.exit("ring not sealed")
 G = np.where(A, G, 0)
