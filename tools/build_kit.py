@@ -56,8 +56,8 @@ def keyed(name):
 
 
 SRC = {n: keyed(n) for n in ["wall_long", "wall_tower", "gatehouse", "gate_open", "diag_towers", "diag_towers_b",
-                             "corner_l", "side_run"]}
-P = RL.layout(SRC)       # pieces on the design's tower positions (see ring_layout.py)
+                             "corner_l", "side_run", "tower"]}
+P = RL.layout_v2(SRC)    # pieces fitted between the design's measured tower roofs (see ring_layout.py)
 for p_ in P:
     p_["m"] = False
 
