@@ -79,23 +79,16 @@ func _atlas(ts: TileSet, name: String, cells: int) -> int:
 	return ts.add_source(src)
 
 func _ground() -> void:
-	var ts := TileSet.new()
-	ts.tile_size = Vector2i(TILE, TILE)
-	var sf := _atlas(ts, "floor_atlas", 8)
-	var ss := _atlas(ts, "shore_atlas", 4)
-	var g := TileMapLayer.new()
+	# stage 2: painted ground (tools/build_ground.py) in 1024 px chunks
+	var g := Node2D.new()
 	g.name = "Ground"
-	g.tile_set = ts
 	add_child(g)
-	var grid: Array = L["grid"]
-	for y in grid.size():
-		var row: String = grid[y]
-		for x in row.length():
-			var c := row[x]
-			if c == "F":
-				g.set_cell(Vector2i(x, y), sf, Vector2i(x % 8, y % 8))
-			else:
-				g.set_cell(Vector2i(x, y), ss, Vector2i(x % 4, y % 4))
+	for c in L["ground_chunks"]:
+		var sp := Sprite2D.new()
+		sp.texture = load("res://art/game/ground/g_%d_%d.webp" % [int(c[0]), int(c[1])])
+		sp.centered = false
+		sp.position = Vector2(c[0], c[1])
+		g.add_child(sp)
 
 func _rect_col(body: Node, r: Rect2) -> void:
 	var cs := CollisionShape2D.new()

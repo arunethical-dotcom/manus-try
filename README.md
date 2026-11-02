@@ -18,10 +18,17 @@ The outer palace wall ring, built from your wall pieces (`art/source/walls/piece
   wall), sealed except at the two gate arches (the build fails otherwise); per-pixel ground map for draw order
   (`shaders/wall_front.gdshader` redraws wall pixels standing in front of Kael); baked shadows; minimap.
 
+## Stage 2: ground
+- `tools/build_ground.py` paints the whole world from your grass tile sheets (`art/source/ground/grass_sheet_*.png`):
+  seamless grass base, soft organic meadow / clover / flower / dirt patches, and a stone avenue (the floor tile)
+  from the north gate through the south gate. Saved as 1024 px WebP chunks in `art/game/ground/`; the minimap shows it.
+  The layout reference for the next steps is `art/source/ground/reference_layout.png`.
+
 ## Rebuild
 ```
 python3 tools/build_assets.py art/source/floor_tile.png       # floor, earth, Kael
 FULL_ALPHA=1 python3 tools/build_walls.py art/source/walls/ring_final_design.png art/source/walls/ring_final_x4.png
+python3 tools/build_ground.py                                  # stage 2 ground (after build_walls)
 tools/shots.sh                                                 # docs/screenshots
 godot --path . -- --test                                       # reachability test
 ```
