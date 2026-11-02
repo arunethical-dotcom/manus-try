@@ -257,32 +257,48 @@ def tower_at(SRC, put, t):
 
 
 def side_v(SRC, put, ta, tb, tag):
-    """steep west-wall run between design towers ta (lower) and tb (upper): the kit run without its big tower,
-    scaled to the tower width horizontally and stretched vertically, rows sheared so both ends land on the towers"""
-    im = SRC["side_run"].copy()
-    im[400:, 40:330, 3] = 0                      # big tower (a loose tower stands there instead)
-    ys, xs = np.nonzero(im[..., 3])
-    im = im[:, :]
-    s = DT[ta][2] * M / 251
-    A = (183, 1061); B = (538, 150)              # native ground points: run foot and run top
+    """steep west-wall run between design towers ta (lower) and tb (upper): a clean slice of the kit run's walkway
+    (rows 600..840, right of its big tower) is de-skewed to vertical, repeated to the needed length and skewed onto
+    the line between the two towers' feet. Upright loose towers cover both ends."""
+    im = SRC["side_run"]
+    K = 142.0 / 609.0                                   # native run: x shift per row (rises to the right)
+    r0, r1, c0, c1 = 620, 900, 300, 540
+    strip = im[r0:r1, c0 - 80:c1 + 80].copy()
+    # de-skew: shift each row right by K*(row offset) so the walkway runs straight down
+    h, w = strip.shape[:2]
+    pad = int(K * h) + 2
+    flat = np.zeros((h, w + pad, 4), np.uint8)
+    for y in range(h):
+        o = int(round(K * (h - 1 - y)))
+        flat[y, o:o + w] = strip[y]
+    flat = flat[:, 80 + pad // 2: 80 + pad // 2 + (c1 - c0)]
+    # seamless repeat: the vertical period of the wall pattern (rows y and y+p most alike)
+    g = flat[..., :3].astype(np.float32).mean(-1) * (flat[..., 3] > 0)
+    best, per = 1e18, 60
+    for p_ in range(70, h - 20):
+        d = np.abs(g[:h - p_] - g[p_:]).mean()
+        if d < best:
+            best, per = d, p_
+    flat = flat[:per]
+    s = DT[ta][2] * M / 372 * 372 / 251                  # same scale as the kit tower width
     st_a = DT[ta][2] * M / 372; st_b = DT[tb][2] * M / 372
-    TA = (dpt(ta)[0], dpt(ta)[1] + 1100 * st_a)
-    TB = (dpt(tb)[0], dpt(tb)[1] + 1100 * st_b)
-    sy = (TA[1] - TB[1]) / (A[1] - B[1])
-    H, W = im.shape[:2]
-    big = cv2.resize(im, (int(W * s), int(H * sy)), interpolation=cv2.INTER_AREA)
-    big[..., 3] = np.where(big[..., 3] > 127, 255, 0)
-    # shear rows: at row of A no shift, at row of B shift so that B.x lands on TB.x
-    ya, yb = A[1] * sy, B[1] * sy
-    xa, xb = A[0] * s, B[0] * s
-    want = (TB[0] - TA[0]) - (xb - xa)
-    pad = int(abs(want)) + 2
-    out = np.zeros((big.shape[0], big.shape[1] + 2 * pad, 4), np.uint8)
-    for y in range(big.shape[0]):
-        t = min(1.0, max(0.0, (ya - y) / (ya - yb)))
-        o = int(round(pad + want * t))
-        out[y, o:o + big.shape[1]] = big[y]
-    put(tag, out, TA[0] - xa - pad, TA[1] - ya, s=s)
+    TA = (dpt(ta)[0], dpt(ta)[1] + 1000 * st_a)          # wall foot just above the lower tower's base
+    TB = (dpt(tb)[0], dpt(tb)[1] + 700 * st_b)           # wall top behind the upper tower
+    L = TA[1] - TB[1]
+    fs = cv2.resize(flat, (max(1, int(flat.shape[1] * s)), max(1, int(flat.shape[0] * s))), interpolation=cv2.INTER_AREA)
+    fs[..., 3] = np.where(fs[..., 3] > 127, 255, 0)
+    reps = int(np.ceil(L / fs.shape[0])) + 1
+    col = np.concatenate([fs] * reps, axis=0)[:int(L) + 1]
+    H, W = col.shape[:2]
+    dx = TB[0] - TA[0]
+    padx = int(abs(dx)) + 2
+    out = np.zeros((H, W + padx, 4), np.uint8)
+    for y in range(H):
+        t = (H - 1 - y) / max(1, H - 1)                 # 0 at the foot (bottom row), 1 at the top
+        o = int(round((padx if dx < 0 else 0) + dx * t))
+        out[y, o:o + W] = col[y]
+    gx = TA[0] - W / 2 - (padx if dx < 0 else 0)
+    put(tag, out, gx, TB[1], s=s)
 
 
 RIGHT = {"gL": (913, 619, 60), "t623": (1053, 707, 55), "t276": (1413, 706, 56), "t168": (1511, 668, 57),
@@ -324,7 +340,7 @@ def _half(SRC, with_gates):
         if crop_b_tower or crop_a_tower:
             W = simg.shape[1]
             right_is_b = TB[0] > TA[0]
-            hw = int((b[2] if crop_b_tower else a[2]) * 0.5 * s * 1.05)
+            hw = int((b[2] if crop_b_tower else a[2]) * 0.5 * s * 0.15)
             end_x = (TB if crop_b_tower else TA)[0] - gx
             if (crop_b_tower and right_is_b) or (crop_a_tower and not right_is_b):
                 cut = int(end_x - hw)
@@ -363,7 +379,7 @@ def _half(SRC, with_gates):
     # west wall: 43 -> 68 -> 81, steep runs; their small top tower is cut, a big tower stands on each design tower
     side_v(SRC, put, "t43", "t68", "side1")
     side_v(SRC, put, "t68", "t81", "side2")
-    for t in ("t43", "t68", "s92"):
+    for t in ("t43", "t68", "s92", "t168", "t276", "t81", "t222", "t361", "t619"):
         tower_at(SRC, put, t)
     # NW: 81 -> 222 -> 361, diagonal "/" pieces
     dT = ANCH["diag_towers"]
