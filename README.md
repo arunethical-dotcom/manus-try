@@ -1,26 +1,27 @@
 # Palace walls (Godot 4.4)
 
-The outer palace wall ring, built from the single whole-ring image `art/source/walls/ring_magenta.png`. Walls only.
+The outer palace wall ring, built from your wall pieces (`art/source/walls/pieces/`) joined into one picture
+(`art/source/walls/ring_final.png`, transparent background). Walls only.
 
 - Walk: WASD / arrows, **Shift** run, **M** expand / collapse the minimap.
-- Scale: tile 16 px, Kael 28 px, viewport 960x540. Only the walls are big: 1 image px = 4 game px.
-- World: 493 x 306 tiles (the ring ~413 x 216).
-- Two gates: the gatehouse in the south (spawn just outside it) and the small gate in the north.
+- Scale: tile 16 px, Kael 28 px, viewport 960x540. Only the walls are big: the ring is 6604 x 3712 px
+  (413 x 232 tiles), towers ~600 px tall.
+- World: 493 x 322 tiles. Two gates: the gatehouse in the south (spawn just outside it) and the gate in the north.
 
 ## How it is built
-- The ring image is keyed off its magenta backdrop and upscaled 4x (Real-ESRGAN anime 6B, run in numpy:
-  `tools/upscale/`), then made crisp pixel art by `tools/pixelize.py` (2x2 game-pixel blocks, 48-colour palette). Because it is one picture there are no joins between pieces.
+- `ring_final.png` was assembled by hand-tuned joins of the six pieces (left half, mirrored about the gate axis):
+  matched scale/position per piece, optimal-seam cuts through plain wall, merlon rows re-tiled where repeats did not
+  divide evenly, tower outlines restored, magenta fringe removed. The one-off join scripts are in `tools/ringjoin/`.
+- For the game it is scaled to 6604 px wide and saved on magenta as `ring_final_x4.png` (+ a 1/4 copy
+  `ring_final_design.png` used for gate coordinates).
 - `tools/build_walls.py`: collision from the art (bands along the inside and outside edges of the ring and under each
   wall), sealed except at the two gate arches (the build fails otherwise); per-pixel ground map for draw order
-  (`shaders/wall_front.gdshader` redraws the wall pixels standing in front of Kael); baked shadows; minimap.
-- The older kit-assembly path (`tools/build_kit.py`, `tools/ring_layout.py`, `art/source/kit/`) is kept but not used.
+  (`shaders/wall_front.gdshader` redraws wall pixels standing in front of Kael); baked shadows; minimap.
 
 ## Rebuild
 ```
 python3 tools/build_assets.py art/source/floor_tile.png       # floor, earth, Kael
-W=RealESRGAN_x4plus_anime_6B.pth python3 tools/upscale/esrgan_np.py art/source/walls/ring_magenta.png art/source/walls/ring_magenta_x4.png alpha.png   # ~11 min CPU
-python3 tools/pixelize.py art/source/walls/ring_magenta_x4.png art/source/walls/ring_magenta_px.png   # crisp 2x2-pixel art, 48 colours
-python3 tools/build_walls.py art/source/walls/ring_magenta.png art/source/walls/ring_magenta_px.png
+FULL_ALPHA=1 python3 tools/build_walls.py art/source/walls/ring_final_design.png art/source/walls/ring_final_x4.png
 tools/shots.sh                                                 # docs/screenshots
 godot --path . -- --test                                       # reachability test
 ```
