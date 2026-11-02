@@ -18,6 +18,11 @@ The outer palace wall ring, built from your wall pieces (`art/source/walls/piece
   wall), sealed except at the two gate arches (the build fails otherwise); per-pixel ground map for draw order
   (`shaders/wall_front.gdshader` redraws wall pixels standing in front of Kael); baked shadows; minimap.
 
+## See-through (CrossCode style)
+`tools/build_objects.py` splits the wall art into objects (52: each tower, each wall stretch, the gatehouses) and
+stores the object id per pixel. When Kael walks behind one, that whole object fades smoothly to see-through and back
+when he leaves (`shaders/wall_back.gdshader`, `wall_front.gdshader`, `World.gd _update_fade`).
+
 ## Stage 2: ground
 - `tools/build_ground.py` paints the whole world from your grass tile sheets (`art/source/ground/grass_sheet_*.png`):
   seamless grass base, soft organic meadow / clover / flower / dirt patches, and a stone avenue (the floor tile)
@@ -30,6 +35,7 @@ The outer palace wall ring, built from your wall pieces (`art/source/walls/piece
 ```
 python3 tools/build_assets.py art/source/floor_tile.png       # floor, earth, Kael
 FULL_ALPHA=1 python3 tools/build_walls.py art/source/walls/ring_final_design.png art/source/walls/ring_final_x4.png
+python3 tools/build_objects.py                                 # split walls into objects (towers / stretches) for see-through
 python3 tools/build_ground.py                                  # stage 2 ground (after build_walls)
 tools/shots.sh                                                 # docs/screenshots
 godot --path . -- --test                                       # reachability test

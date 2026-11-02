@@ -17,7 +17,12 @@ var player: CharacterBody2D
 var walls_body: StaticBody2D
 var front: Array = []
 var back: Array = []
-const SEE_R := Vector2(58, 70)          # see-through ellipse around Kael (CrossCode style)
+## CrossCode-style see-through: the whole object (tower / wall stretch / gatehouse) Kael stands behind fades
+var objmap: Image
+var fade_img: Image
+var fade_tex: ImageTexture
+var fade := PackedFloat32Array()
+const FADE_SPEED := 5.0
 var tex := {}
 var args := {}
 
@@ -47,28 +52,52 @@ func _ready() -> void:
 	elif args.has("test"):
 		_test()
 
-func _process(_dt: float) -> void:
+func _process(dt: float) -> void:
 	if player == null:
 		return
 	var foot := player.global_position
-	var body := foot + Vector2(0, -14)
-	var near := Rect2(body - SEE_R, SEE_R * 2.0)
+	var pr := Rect2(foot - Vector2(12, 34), Vector2(24, 38))
 	var ch: float = L["chunk"]
-	for i in front.size():
-		var fs: Sprite2D = front[i]
-		var bs: Sprite2D = back[i]
-		var on: bool = Rect2(fs.position, Vector2(ch, ch)).intersects(near)
-		fs.visible = on
-		var fm := fs.material as ShaderMaterial
-		var bm := bs.material as ShaderMaterial
+	for f in front:
+		var sp: Sprite2D = f
+		var on: bool = Rect2(sp.position, Vector2(ch, ch)).intersects(pr)
+		sp.visible = on
 		if on:
-			fm.set_shader_parameter("player_y", foot.y - 1.0)
-			fm.set_shader_parameter("player_c", body)
-			bm.set_shader_parameter("player_y", foot.y - 1.0)
-			bm.set_shader_parameter("player_c", body)
-		elif bs.get_meta("on", false):
-			bm.set_shader_parameter("player_y", 100000.0)
-		bs.set_meta("on", on)
+			(sp.material as ShaderMaterial).set_shader_parameter("player_y", foot.y - 1.0)
+	_update_fade(foot, dt)
+
+## which objects cover Kael: sample his body; a wall pixel there whose ground line is south of his feet hides him
+func _update_fade(foot: Vector2, dt: float) -> void:
+	var hide := {}
+	for oy in [-2, -8, -14, -20, -26]:
+		for ox in [-6, 0, 6]:
+			var p := (foot + Vector2(ox, oy)) * 0.5
+			var x := int(p.x); var y := int(p.y)
+			if x < 0 or y < 0 or x >= objmap.get_width() or y >= objmap.get_height():
+				continue
+			var c := objmap.get_pixel(x, y)
+			var id := int(round(c.b * 255.0))
+			if id == 0:
+				continue
+			var g := (int(round(c.r * 255.0)) * 256 + int(round(c.g * 255.0))) * 2
+			if g > foot.y + 1:
+				hide[id] = int(hide.get(id, 0)) + 1
+	# fade the object that covers most of Kael (plus any other that covers most of him too)
+	var best := 0
+	for k in hide:
+		best = maxi(best, int(hide[k]))
+	var changed := false
+	for id in range(1, 256):
+		var n_ := int(hide.get(id, 0))
+		var target := 1.0 if (n_ >= 4 and (n_ == best or n_ >= 8)) else 0.0
+		var v := fade[id]
+		if v != target:
+			v = move_toward(v, target, (1000.0 if args.has("capture") else FADE_SPEED) * dt)
+			fade[id] = v
+			fade_img.set_pixel(id, 0, Color(v, 0, 0, 1))
+			changed = true
+	if changed:
+		fade_tex.update(fade_img)
 
 ## Fill the screen: the 960x540 view is scaled up (fractional, aspect kept) to the window, which is sized to the
 ## usable screen area and maximized. (Running inside the editor's Game tab, the view scales to the tab instead.)
@@ -156,6 +185,12 @@ func _walls() -> void:
 	var sh_layer := Node2D.new(); sh_layer.name = "Shadows"; sh_layer.z_index = 1; add_child(sh_layer)
 	var w_layer := Node2D.new(); w_layer.name = "Walls"; w_layer.z_index = 2; add_child(w_layer)
 	var f_layer := Node2D.new(); f_layer.name = "Front"; f_layer.z_index = 4; add_child(f_layer)
+	objmap = Image.new()
+	objmap.load_png_from_buffer(FileAccess.get_file_as_bytes("res://data/objmap.bin"))   # PNG data, kept un-imported
+	fade.resize(256)
+	fade_img = Image.create(256, 1, false, Image.FORMAT_RGBA8)
+	fade_img.fill(Color(0, 0, 0, 1))
+	fade_tex = ImageTexture.create_from_image(fade_img)
 	var shader: Shader = load("res://shaders/wall_front.gdshader")
 	var back_shader: Shader = load("res://shaders/wall_back.gdshader")
 	for c in L["chunks"]:
@@ -169,6 +204,7 @@ func _walls() -> void:
 			var bm := ShaderMaterial.new()
 			bm.shader = back_shader
 			bm.set_shader_parameter("depth_tex", t("walls/depth_" + id))
+			bm.set_shader_parameter("fade_tex", fade_tex)
 			bs.material = bm
 			w_layer.add_child(bs)
 			back.append(bs)
@@ -176,6 +212,7 @@ func _walls() -> void:
 			var m := ShaderMaterial.new()
 			m.shader = shader
 			m.set_shader_parameter("depth_tex", t("walls/depth_" + id))
+			m.set_shader_parameter("fade_tex", fade_tex)
 			fs.material = m
 			fs.visible = false
 			f_layer.add_child(fs)
