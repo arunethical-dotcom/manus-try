@@ -82,20 +82,20 @@ func _update_fade(foot: Vector2, dt: float) -> void:
 			var g := (int(round(c.r * 255.0)) * 256 + int(round(c.g * 255.0))) * 2
 			if g > foot.y + 1:
 				hide[id] = int(hide.get(id, 0)) + 1
-	# fade the object that covers most of Kael (plus any other that covers most of him too)
-	var best := 0
+	# when Kael is behind any wall, ALL walls fade together (rest of the scene stays solid)
+	var behind := false
 	for k in hide:
-		best = maxi(best, int(hide[k]))
+		if int(hide[k]) >= 4:
+			behind = true
+	var target := 1.0 if behind else 0.0
+	var v := fade[0]
 	var changed := false
-	for id in range(1, 256):
-		var n_ := int(hide.get(id, 0))
-		var target := 1.0 if (n_ >= 4 and (n_ == best or n_ >= 8)) else 0.0
-		var v := fade[id]
-		if v != target:
-			v = move_toward(v, target, (1000.0 if args.has("capture") else FADE_SPEED) * dt)
+	if v != target:
+		v = move_toward(v, target, (1000.0 if args.has("capture") else FADE_SPEED) * dt)
+		for id in range(256):
 			fade[id] = v
-			fade_img.set_pixel(id, 0, Color(v, 0, 0, 1))
-			changed = true
+		fade_img.fill(Color(v, 0, 0, 1))
+		changed = true
 	if changed:
 		fade_tex.update(fade_img)
 

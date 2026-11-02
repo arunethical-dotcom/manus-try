@@ -20,8 +20,8 @@ The outer palace wall ring, built from your wall pieces (`art/source/walls/piece
 
 ## See-through (CrossCode style)
 `tools/build_objects.py` splits the wall art into objects (52: each tower, each wall stretch, the gatehouses) and
-stores the object id per pixel. When Kael walks behind one, that whole object fades smoothly to see-through and back
-when he leaves (`shaders/wall_back.gdshader`, `wall_front.gdshader`, `World.gd _update_fade`).
+stores the object id per pixel. When Kael walks behind any of them, all the walls fade together to see-through
+(the rest of the scene stays solid) and come back when he steps out (`shaders/wall_back.gdshader`, `wall_front.gdshader`, `World.gd _update_fade`).
 
 ## Stage 2: ground
 - `tools/build_ground.py` paints the whole world from your grass tile sheets (`art/source/ground/grass_sheet_*.png`):

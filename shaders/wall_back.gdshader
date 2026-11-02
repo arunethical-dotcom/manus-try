@@ -3,7 +3,7 @@ shader_type canvas_item;
 // standing behind fade as a whole (CrossCode style): fade_tex.r[id] = 0 (solid) .. 1 (fully see-through).
 uniform sampler2D depth_tex : filter_nearest;
 uniform sampler2D fade_tex : filter_nearest;
-uniform float see_alpha = 0.35;
+uniform float see_alpha = 0.25;
 
 void fragment() {
 	vec4 c = texture(TEXTURE, UV);
