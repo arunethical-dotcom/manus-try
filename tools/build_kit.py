@@ -25,14 +25,14 @@ for f in os.listdir(OUT):
     os.remove(os.path.join(OUT, f))
 
 TILE, CH, CELL, K = 16, 512, 8, 1
+KIT_NAMES = None
 MX, MT, MB = 640, 560, 720           # world margins around the ring (px)
 T = 48                               # footprint depth above a base line (px)
 KX, KY, HCAP = 0.50, 0.20, 700       # shadow projection
 N_SOUTH, N_SIDE = 3, 4               # straight walls per side of the south gate, side runs per side wall
 
-# per piece: scale (native px -> game px) and anchors in native px
-SC = {"wall_long": 0.46, "wall_tower": 0.577, "tower": 0.36, "gatehouse": 0.55, "gate_open": 0.54,
-      "diag_towers": 0.605, "side_run": 0.577, "corner_l": 0.52}
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ring_layout as RL
 
 
 def keyed(name):
@@ -55,112 +55,11 @@ def keyed(name):
     return out
 
 
-SRC = {n: keyed(n) for n in SC}
-SCALED = {}
-
-
-def scaled(n, mirror):
-    k = (n, mirror)
-    if k not in SCALED:
-        im = SRC[n][:, ::-1] if mirror else SRC[n]
-        s = SC[n]
-        w, h = max(1, int(round(im.shape[1] * s))), max(1, int(round(im.shape[0] * s)))
-        rgb = cv2.resize(im[..., :3], (w, h), interpolation=cv2.INTER_AREA)
-        a = cv2.resize(im[..., 3], (w, h), interpolation=cv2.INTER_AREA)
-        SCALED[k] = np.dstack([rgb, np.where(a > 127, 255, 0).astype(np.uint8)])
-    return SCALED[k]
-
-
-P = []   # placements: dict(n, m, x, y, img, gate)
-
-
-def place(n, ax, ay, X, Y, mirror=False, crop_w=None, gate=None, crop_l=0, crop_b=None, z=None):
-    """put native anchor (ax, ay) of piece n at game point (X, Y); returns game pos of native point fn(nx, ny)"""
-    img = scaled(n, mirror)
-    s = SC[n]
-    W0 = SRC[n].shape[1]
-    if mirror:
-        ax = W0 - 1 - ax
-    x0, y0 = X - ax * s, Y - ay * s
-    if crop_w is not None:
-        img = img[:, :int(crop_w)]
-    if crop_b is not None:
-        img = img[:int(crop_b * s)]
-    cl = int(crop_l)
-    if cl:
-        img = img[:, cl:]
-    P.append(dict(n=n, m=mirror, x=int(round(x0)) + cl, y=int(round(y0)), img=img, gate=gate, z=z))
-
-    def at(nx, ny):
-        if mirror:
-            nx = W0 - 1 - nx
-        return x0 + nx * s, y0 + ny * s
-    return at
-
-
-def tower(X, Y):
-    place("tower", 208, 1199, X, Y + 18)
-
-
-# ---------------------------------------------------------------- left half (x < 0), following the ring design
-# south: gatehouse set back, an L-step down to the south wall on each side (corner_l), straight wall,
-# a diagonal corner, steep side runs, two diagonals at the north-west, the north wall and an L-step forward to the
-# open gate flanked by towers.
-g = place("gatehouse", 636, 714, 0, 0, gate=("south", 530, 742, 640, 714))
-xl, _ = g(0, 714)
-c = place("corner_l", 1008, 664, xl + 10, 0)
-tx, ty = c(150, 1007)
-SOUTH_Y = ty - 16
-xl = tx
-for i in range(N_SOUTH):
-    w = place("wall_long", 1592, 671, xl + 30, SOUTH_Y)
-    xl, _ = w(0, 671)
-# SW corner: diagonal rising up-left (mirrored); its high tower is dropped, the first side run's big tower
-# stands on the corner instead (that run starts at the tower: its lower stub is cut off)
-d = place("diag_towers", 120, 947, xl + 10, SOUTH_Y + 14, mirror=True, crop_l=240 * SC["diag_towers"])
-cx, cy = d(1048, 600)
-zc = d(120, 947)[1] + 1
-# west wall: steep runs rising up-right
-for i in range(N_SIDE):
-    if i == 0:
-        r = place("side_run", 95, 945, cx, cy, crop_b=930, z=zc + 2000)
-    else:
-        r = place("side_run", 180, 1290, cx, cy + 4)
-    cx, cy = r(538, 150)
-# NW: two diagonals rising up-right; the first one's high tower is cut, the second one's low tower stands there
-d = place("diag_towers", 120, 947, cx, cy + 6, crop_w=945 * SC["diag_towers"])
-jx, jy = d(1048, 600)
-zz = d(120, 947)[1] + 1
-d = place("diag_towers", 120, 947, jx, jy, z=zz)
-cx, cy = d(1090, 605)
-nx, ny = cx, cy
-NORTH_Y = ny - 14
-# north wall: L-step forward to the gate; the gate section sits further north
-step = 1008 - 150
-GATE_Y = NORTH_Y + 16 - (1007 - 664) * SC["corner_l"]
-gate_l = -516 * SC["gate_open"]
-cl_tower_x = gate_l - 10 - step * SC["corner_l"]
-x = nx
-while x < cl_tower_x - 4:
-    wl = SRC["wall_long"].shape[1] * SC["wall_long"]
-    cw = min(wl, cl_tower_x + 24 - x)
-    place("wall_long", 0, 671, x, NORTH_Y, crop_w=cw)
-    x += cw - 6
-    if x < cl_tower_x - 40:
-        tower(x, NORTH_Y)
-place("corner_l", 1008, 664, gate_l - 10, GATE_Y)
-place("gate_open", 516, 542, 0, GATE_Y, gate=("north", 430, 602, 330, 542))
-tower(gate_l + 10, GATE_Y)
-
-# mirror the left half (everything placed left of the axis) about x = 0
-for p in list(P):
-    if p["n"] in ("gatehouse", "gate_open"):
-        continue
-    q = dict(p)
-    q["img"] = p["img"][:, ::-1]
-    q["x"] = -(p["x"] + p["img"].shape[1])
-    q["m"] = not p["m"]
-    P.append(q)
+SRC = {n: keyed(n) for n in ["wall_long", "wall_tower", "gatehouse", "gate_open", "diag_towers", "diag_towers_b",
+                             "corner_l", "side_run"]}
+P = RL.layout(SRC)       # pieces on the design's tower positions (see ring_layout.py)
+for p_ in P:
+    p_["m"] = False
 
 # ---------------------------------------------------------------- world frame
 x0 = min(p["x"] for p in P); x1 = max(p["x"] + p["img"].shape[1] for p in P)
@@ -199,7 +98,7 @@ for p in order:
     gate = p["gate"]
     if gate:
         nm, ga0, ga1, gyt, gyb = gate
-        s = SC[p["n"]]
+        s = p["s"]
         gx0, gx1 = X + ga0 * s, X + ga1 * s
         gate_px[nm] = (int(gx0), int(gx1), int(Y + gyt * s), int(Y + gyb * s))
     cols = []
@@ -208,7 +107,7 @@ for p in order:
         sub = a[:, c0:c0 + CELL]
         rows = np.nonzero(sub.any(axis=1))[0]
         # skip thin edge columns (roof eaves, flag poles): they are not wall bases
-        thin = cnt[c0:c0 + CELL].max() < 0.3 * cnt.max() if p["n"] in ("tower", "gatehouse", "gate_open", "wall_long") else False
+        thin = cnt[c0:c0 + CELL].max() < 0.3 * cnt.max() if p["n"].split("_")[0] in ("tower", "gatehouse", "gate", "wall") else False
         cols.append(int(rows.max()) + Y if len(rows) and not thin else None)
     for i, b in enumerate(cols):
         if b is None:
@@ -224,21 +123,76 @@ for p in order:
 print("pieces", len(P))
 # keep the gate openings clear
 for gx0, gx1, gyt, gyb in gate_px.values():
-    FP[(gyt - 40) // CELL:(gyb + 60) // CELL + 1, (gx0 + 8) // CELL:(gx1 - 8) // CELL + 1] = False
+    FP[(gyt - 130) // CELL:(gyb + 60) // CELL + 1, (gx0 + 8) // CELL:(gx1 - 8) // CELL + 1] = False
 
 # close hairline gaps where two pieces meet
-FP = cv2.morphologyEx(FP.astype(np.uint8), cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8)).astype(bool)
+FP = cv2.morphologyEx(FP.astype(np.uint8), cv2.MORPH_CLOSE, np.ones((13, 13), np.uint8)).astype(bool)
 for gx0, gx1, gyt, gyb in gate_px.values():
-    FP[(gyt - 40) // CELL:(gyb + 60) // CELL + 1, (gx0 + 8) // CELL:(gx1 - 8) // CELL + 1] = False
+    FP[(gyt - 130) // CELL:(gyb + 60) // CELL + 1, (gx0 + 8) // CELL:(gx1 - 8) // CELL + 1] = False
 
 # ---------------------------------------------------------------- seal check (interior only reachable through the gates)
-plug = FP.copy()
-for gx0, gx1, gyt, gyb in gate_px.values():
-    plug[(gyt - 40) // CELL:(gyb + 60) // CELL + 1, gx0 // CELL:gx1 // CELL + 1] = True
-seed = ((gate_px["south"][3] + gate_px["north"][3]) // 2 // CELL, (WW // 2) // CELL)
-n_, lab = cv2.connectedComponents((~plug).astype(np.uint8), connectivity=4)
-inside = lab == lab[seed]
-leak = inside[0].any() or inside[-1].any() or inside[:, 0].any() or inside[:, -1].any()
+def sealed(fp):
+    plug = fp.copy()
+    for gx0, gx1, gyt, gyb in gate_px.values():
+        plug[(gyt - 130) // CELL:(gyb + 60) // CELL + 1, gx0 // CELL:gx1 // CELL + 1] = True
+    seed = ((gate_px["south"][3] + gate_px["north"][3]) // 2 // CELL, (WW // 2) // CELL)
+    n_, lab = cv2.connectedComponents((~plug).astype(np.uint8), connectivity=4)
+    inside = lab == lab[seed]
+    leak = inside[0].any() or inside[-1].any() or inside[:, 0].any() or inside[:, -1].any()
+    return plug, seed, inside, leak
+
+
+def bridge_gaps(fp, max_d=45):
+    """join neighbouring footprint pieces that do not touch (the pieces meet at a different height than their ground
+    lines), never across a gate opening"""
+    fp = fp.copy()
+    n, lab, st, _ = cv2.connectedComponentsWithStats(fp.astype(np.uint8), connectivity=8)
+    ids = [i for i in range(1, n) if st[i, cv2.CC_STAT_AREA] >= 40]
+    keep = np.isin(lab, ids)
+    fp &= keep
+    n, lab, st, _ = cv2.connectedComponentsWithStats(fp.astype(np.uint8), connectivity=8)
+    comp = list(range(1, n))
+    gates = [(gx0 // CELL - 2, gx1 // CELL + 2, (gyt - 60) // CELL, (gyb + 80) // CELL) for gx0, gx1, gyt, gyb in gate_px.values()]
+    pairs = []
+    for i in comp:
+        dt, _ = cv2.distanceTransformWithLabels((lab != i).astype(np.uint8), cv2.DIST_L2, 3, labelType=cv2.DIST_LABEL_PIXEL)
+        for j in comp:
+            if j <= i:
+                continue
+            ys, xs = np.nonzero(lab == j)
+            k = int(np.argmin(dt[ys, xs]))
+            d = float(dt[ys[k], xs[k]])
+            if d < max_d:
+                # the closest point of i to that pixel
+                y0, x0 = int(ys[k]), int(xs[k])
+                r = int(d) + 3
+                sub = (lab[max(0, y0 - r):y0 + r + 1, max(0, x0 - r):x0 + r + 1] == i)
+                yy, xx = np.nonzero(sub)
+                q = int(np.argmin((yy + max(0, y0 - r) - y0) ** 2 + (xx + max(0, x0 - r) - x0) ** 2))
+                pairs.append((d, i, j, (int(xx[q]) + max(0, x0 - r), int(yy[q]) + max(0, y0 - r)), (x0, y0)))
+    pairs.sort()
+    for d, i, j, pa, pb in pairs:
+        mx, my = (pa[0] + pb[0]) // 2, (pa[1] + pb[1]) // 2
+        if any(g[0] <= mx <= g[1] and g[2] <= my <= g[3] for g in gates):
+            continue
+        cv2.line(fp_u8 := np.zeros(fp.shape, np.uint8), pa, pb, 1, 3)
+        fp |= fp_u8 > 0
+    return fp
+
+
+# thin gaps where two pieces meet: bridge them (away from the gate openings), then grow by as few cells as needed
+FP = bridge_gaps(FP)
+grow = 0
+while True:
+    base_fp = FP if grow == 0 else cv2.dilate(FP.astype(np.uint8), cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * grow + 1, 2 * grow + 1))).astype(bool)
+    for gx0, gx1, gyt, gyb in gate_px.values():
+        base_fp[(gyt - 130) // CELL:(gyb + 60) // CELL + 1, (gx0 + 8) // CELL:(gx1 - 8) // CELL + 1] = False
+    plug, seed, inside, leak = sealed(base_fp)
+    if not leak or grow >= 3:
+        break
+    grow += 1
+FP = base_fp
+print("footprint grown by", grow, "cells to seal")
 print("interior cells", int(inside.sum()), " leaks:", bool(leak))
 if os.environ.get("DEBUG") or leak:
     dbg = np.zeros(FP.shape + (3,), np.uint8)
