@@ -1,32 +1,25 @@
 # Palace walls (Godot 4.4)
 
-The outer palace wall ring, assembled from the wall kit in `art/source/kit/` (your new pieces), laid out after
-`art/source/walls/ring_design.png`. Walls only.
+The outer palace wall ring, built from the single whole-ring image `art/source/walls/ring_magenta.png`. Walls only.
 
 - Walk: WASD / arrows, **Shift** run, **M** expand / collapse the minimap.
-- Scale: tile 16 px, Kael 28 px, viewport 960x540 (60x34 tiles). Only the walls are big: a curtain wall is
-  ~300 px tall (about 11 Kaels), towers ~430 px.
-- World: 528 x 317 tiles (the ring itself ~448 x 237).
-- Two gates: the gatehouse in the south (spawn is just outside it) and the open gate in the north.
+- Scale: tile 16 px, Kael 28 px, viewport 960x540. Only the walls are big: 1 image px = 4 game px.
+- World: 493 x 306 tiles (the ring ~413 x 216).
+- Two gates: the gatehouse in the south (spawn just outside it) and the small gate in the north.
 
 ## How it is built
-- Grid-fitted to the design: every tower roof in `art/source/walls/ring_design.png` was measured (24 towers, `DT`/`RIGHT`
-  in `tools/ring_layout.py`). Each kit piece is placed so its tower roofs land on those measured roofs (mean error
-  < 1 design px, see `docs/screenshots/00_grid_design_vs_built.png`). Between two towers the wall is resampled and
-  sheared column by column so both ends hit their towers; towers themselves are never distorted. The west/east
-  walls are the kit's steep run stretched between upright loose towers. The south straight walls use the design's
-  measured wall top/base (y 733..855). Left and right halves are fitted separately (the design is not perfectly
-  symmetric). Fully deterministic: same inputs, same output.
-- `tools/build_kit.py` cuts the pieces off the magenta backdrop, builds the world, the ground map, shadows, collision
-  (sealed except at the two gate arches; the build fails otherwise) and the minimap.
-- Draw order: every wall pixel knows the ground point it stands on (`depth_*.png`); wall pixels in front of Kael are
-  redrawn on top of him (`shaders/wall_front.gdshader`).
+- The ring image is keyed off its magenta backdrop and upscaled 4x (Real-ESRGAN anime 6B, run in numpy:
+  `tools/upscale/`). Because it is one picture there are no joins between pieces.
+- `tools/build_walls.py`: collision from the art (bands along the inside and outside edges of the ring and under each
+  wall), sealed except at the two gate arches (the build fails otherwise); per-pixel ground map for draw order
+  (`shaders/wall_front.gdshader` redraws the wall pixels standing in front of Kael); baked shadows; minimap.
+- The older kit-assembly path (`tools/build_kit.py`, `tools/ring_layout.py`, `art/source/kit/`) is kept but not used.
 
 ## Rebuild
 ```
-python3 tools/build_assets.py art/source/floor_tile.png    # floor, earth, Kael
-python3 tools/build_kit.py                                  # wall ring, collision, minimap, data/layout.json
-tools/capture.sh out.png --pos=x,y [--zoom=z] [--bigmap] [--hideui]   # screenshot
-tools/shots.sh                                              # docs/screenshots
-godot --path . -- --test                                    # reachability test
+python3 tools/build_assets.py art/source/floor_tile.png       # floor, earth, Kael
+W=RealESRGAN_x4plus_anime_6B.pth python3 tools/upscale/esrgan_np.py art/source/walls/ring_magenta.png art/source/walls/ring_magenta_x4.png alpha.png   # ~11 min CPU
+python3 tools/build_walls.py art/source/walls/ring_magenta.png art/source/walls/ring_magenta_x4.png
+tools/shots.sh                                                 # docs/screenshots
+godot --path . -- --test                                       # reachability test
 ```
