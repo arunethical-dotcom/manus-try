@@ -30,6 +30,8 @@ func _ready() -> void:
 		var kv := s.split("=", true, 1)
 		args[kv[0]] = kv[1] if kv.size() > 1 else "1"
 	_inputs()
+	if not args.has("capture") and not args.has("test"):
+		_fit_window()
 	L = JSON.parse_string(FileAccess.get_file_as_string("res://data/layout.json"))
 	_ground()
 	_walls()
@@ -53,6 +55,24 @@ func _process(_dt: float) -> void:
 		sp.visible = on
 		if on:
 			(sp.material as ShaderMaterial).set_shader_parameter("player_y", foot.y - 1.0)
+
+## Fill the screen: the 960x540 view is scaled up (fractional, aspect kept) to the window, which is sized to the
+## usable screen area and maximized. (Running inside the editor's Game tab, the view scales to the tab instead.)
+func _fit_window() -> void:
+	var win := get_window()
+	if win.mode == Window.MODE_FULLSCREEN or win.mode == Window.MODE_EXCLUSIVE_FULLSCREEN:
+		return
+	var scr := DisplayServer.window_get_current_screen()
+	var r := DisplayServer.screen_get_usable_rect(scr)
+	if r.size.x > 0 and r.size.y > 0:
+		win.size = r.size
+		win.position = r.position
+	win.mode = Window.MODE_MAXIMIZED
+
+func _unhandled_input(e: InputEvent) -> void:
+	if e is InputEventKey and e.pressed and not e.echo and e.physical_keycode == KEY_F11:
+		var win := get_window()
+		win.mode = Window.MODE_MAXIMIZED if win.mode == Window.MODE_FULLSCREEN else Window.MODE_FULLSCREEN
 
 func _inputs() -> void:
 	var map := {
