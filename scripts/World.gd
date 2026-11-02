@@ -36,6 +36,7 @@ func _ready() -> void:
 	_ground()
 	_walls()
 	_player()
+	_grade()
 	var mm = load("res://scripts/Minimap.gd").new()
 	mm.setup(self)
 	add_child(mm)
@@ -69,7 +70,26 @@ func _fit_window() -> void:
 		win.position = r.position
 	win.mode = Window.MODE_MAXIMIZED
 
+var grade_rect: ColorRect
+
+## colour grading over the world (below the minimap); G toggles it to compare
+func _grade() -> void:
+	var cl := CanvasLayer.new()
+	cl.layer = 5
+	add_child(cl)
+	grade_rect = ColorRect.new()
+	grade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	grade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var m := ShaderMaterial.new()
+	m.shader = load("res://shaders/grade.gdshader")
+	grade_rect.material = m
+	cl.add_child(grade_rect)
+	if args.has("nograde"):
+		grade_rect.visible = false
+
 func _unhandled_input(e: InputEvent) -> void:
+	if e is InputEventKey and e.pressed and not e.echo and e.physical_keycode == KEY_G:
+		grade_rect.visible = not grade_rect.visible
 	if e is InputEventKey and e.pressed and not e.echo and e.physical_keycode == KEY_F11:
 		var win := get_window()
 		win.mode = Window.MODE_MAXIMIZED if win.mode == Window.MODE_FULLSCREEN else Window.MODE_FULLSCREEN
