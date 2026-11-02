@@ -16,6 +16,8 @@ var L: Dictionary
 var player: CharacterBody2D
 var walls_body: StaticBody2D
 var front: Array = []
+var back: Array = []
+const SEE_R := Vector2(58, 70)          # see-through ellipse around Kael (CrossCode style)
 var tex := {}
 var args := {}
 
@@ -49,13 +51,24 @@ func _process(_dt: float) -> void:
 	if player == null:
 		return
 	var foot := player.global_position
-	var pr := Rect2(foot - Vector2(12, 34), Vector2(24, 38))
-	for f in front:
-		var sp: Sprite2D = f
-		var on: bool = Rect2(sp.position, Vector2(L["chunk"], L["chunk"])).intersects(pr)
-		sp.visible = on
+	var body := foot + Vector2(0, -14)
+	var near := Rect2(body - SEE_R, SEE_R * 2.0)
+	var ch: float = L["chunk"]
+	for i in front.size():
+		var fs: Sprite2D = front[i]
+		var bs: Sprite2D = back[i]
+		var on: bool = Rect2(fs.position, Vector2(ch, ch)).intersects(near)
+		fs.visible = on
+		var fm := fs.material as ShaderMaterial
+		var bm := bs.material as ShaderMaterial
 		if on:
-			(sp.material as ShaderMaterial).set_shader_parameter("player_y", foot.y - 1.0)
+			fm.set_shader_parameter("player_y", foot.y - 1.0)
+			fm.set_shader_parameter("player_c", body)
+			bm.set_shader_parameter("player_y", foot.y - 1.0)
+			bm.set_shader_parameter("player_c", body)
+		elif bs.get_meta("on", false):
+			bm.set_shader_parameter("player_y", 100000.0)
+		bs.set_meta("on", on)
 
 ## Fill the screen: the 960x540 view is scaled up (fractional, aspect kept) to the window, which is sized to the
 ## usable screen area and maximized. (Running inside the editor's Game tab, the view scales to the tab instead.)
@@ -144,6 +157,7 @@ func _walls() -> void:
 	var w_layer := Node2D.new(); w_layer.name = "Walls"; w_layer.z_index = 2; add_child(w_layer)
 	var f_layer := Node2D.new(); f_layer.name = "Front"; f_layer.z_index = 4; add_child(f_layer)
 	var shader: Shader = load("res://shaders/wall_front.gdshader")
+	var back_shader: Shader = load("res://shaders/wall_back.gdshader")
 	for c in L["chunks"]:
 		var pos := Vector2(c["x"], c["y"])
 		var id := "%d_%d" % [int(c["x"]), int(c["y"])]
@@ -151,7 +165,13 @@ func _walls() -> void:
 			sh_layer.add_child(_chunk_sprite(t("walls/shadow_" + id), pos))
 		if c.has("wall"):
 			var wt := t("walls/wall_" + id)
-			w_layer.add_child(_chunk_sprite(wt, pos))
+			var bs := _chunk_sprite(wt, pos)
+			var bm := ShaderMaterial.new()
+			bm.shader = back_shader
+			bm.set_shader_parameter("depth_tex", t("walls/depth_" + id))
+			bs.material = bm
+			w_layer.add_child(bs)
+			back.append(bs)
 			var fs := _chunk_sprite(wt, pos)
 			var m := ShaderMaterial.new()
 			m.shader = shader
