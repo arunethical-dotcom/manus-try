@@ -21,8 +21,9 @@ The outer palace wall ring, built from your wall pieces (`art/source/walls/piece
 ## Collision (two levels, sectioned polygons)
 `tools/build_levels.py` writes the colliders into `data/layout.json`; at runtime they are plain CollisionPolygon2D
 shapes, independent of the PNGs:
-- **Ground level** (`tools/build_barrier.py`, 144 sections): the lower band of the wall faces, panels and buttresses
-  (as in the pink / red reference), joined along the wall line where towers interrupt it. Wall faces, tops and roofs are free to walk behind; both gate arches are open; the ring is sealed elsewhere.
+- **Ground level** (`tools/build_barrier.py`, 126 sections): exactly the strip painted in
+  `art/source/walls/barrier_reference.png` (pink panels / red buttresses), registered onto the wall art and snapped to
+  its full-resolution pixels down to the wall's foot; gatehouse piers added, arches open. Wall faces, tops and roofs are free to walk behind; both gate arches are open; the ring is sealed elsewhere.
 - **Wall-walk level** (309 sections): the paved battlements are walkable all the way round (one connected loop,
   through a passage in every tower on the walk); parapets and drop-offs block.
 - **Access:** the art has no stairs, so the four gate towers are the access points: stand at the tower and press

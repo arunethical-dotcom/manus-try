@@ -35,12 +35,35 @@ hgt = runb - np.arange(WH, dtype=np.int32)[:, None]
 del runb
 band = A & (hgt >= 0) & (hgt <= LEVEL)
 tower = (ID >= 1) & (ID <= TOWERS)
-B = band & ~tower                                   # the wall strip, as drawn (towers not part of it)
-B = cv2.morphologyEx(B.astype(np.uint8), cv2.MORPH_OPEN, np.ones((5, 5), np.uint8)).astype(bool)
-# gate arches open
+# the barrier is exactly the strip painted in the reference (art/source/walls/barrier_reference.png, pink panels / red
+# buttresses), registered onto the art (scale REF_S, offset REF_O), then snapped to the full-resolution art pixels
+REF = os.path.join(ROOT, "art/source/walls/barrier_reference.png")
+REF_S, REF_O = 4.09, (134, 131)
+r = np.array(Image.open(REF).convert("RGB")).astype(np.int16)
+pink = (r[..., 0] > 180) & (r[..., 2] > 120) & (r[..., 1] < 120)
+red = (r[..., 0] > 170) & (r[..., 1] < 110) & (r[..., 2] < 110)
+Mr = (pink | red).astype(np.float32)
+Xg = (np.arange(WW, dtype=np.float32) / REF_S - REF_O[0])
+Yg = (np.arange(WH, dtype=np.float32) / REF_S - REF_O[1])
+B = np.zeros((WH, WW), bool)
+for y0_ in range(0, WH, 512):                     # in strips (memory)
+    ys_ = slice(y0_, min(WH, y0_ + 512))
+    U, V = np.meshgrid(Xg, Yg[ys_])
+    B[ys_] = cv2.remap(Mr, U, V, cv2.INTER_LINEAR, borderValue=0) > 0.35
+B = cv2.dilate(B.astype(np.uint8), np.ones((9, 9), np.uint8)).astype(bool)   # reference is ~4x coarser
+B &= A                                             # snap to the art: its real silhouette
+# reach the real foot of the wall: carry every barrier column down through the solid art below it
+flag = np.zeros(WW, bool)
+for yy in range(WH):
+    flag = (flag & Sx[yy]) | B[yy]
+    B[yy] = flag & A[yy]
+B = cv2.morphologyEx(B.astype(np.uint8), cv2.MORPH_OPEN, np.ones((3, 3), np.uint8)).astype(bool)
+# the gatehouses are not painted in the reference: their piers get the lower-band barrier, only the arch stays open
 for g in L["gates"].values():
     gx, gy = g
-    B[gy - 200:gy + 40, gx - 60:gx + 61] = False
+    reg = np.zeros((WH, WW), bool); reg[gy - 420:gy + 60, gx - 330:gx + 331] = True
+    B |= reg & band
+    B[gy - 420:gy + 60, gx - 62:gx + 63] = False
 
 K = 4
 def check(block):
@@ -76,7 +99,7 @@ def bridge(B):
                 continue
             pa, pb = a_[k[0]], b_[k[1]]
             mid = (pa + pb) / 2
-            if any(abs(mid[0] - gx) < 10 and abs(mid[1] - gy) < 30 for gx, gy in gates):
+            if any(abs(mid[0] - gx) < 25 and abs(mid[1] - gy) < 70 for gx, gy in gates):
                 continue
             pairs.append((float(d[k]), i, j, tuple(int(v) for v in pa), tuple(int(v) for v in pb)))
     pairs.sort()
@@ -99,11 +122,7 @@ def bridge(B):
 same, sealed = check(B)
 print("strip only: gates open", same, " sealed", sealed)
 if not sealed:
-    B = B | (band & tower)          # the towers interrupt the strip: their base band joins it
-    for g in L["gates"].values():
-        gx, gy = g
-        B[gy - 200:gy + 40, gx - 60:gx + 61] = False
-    B = bridge(B)
+    B = bridge(B)                   # only where the reference leaves a gap the player could slip through
     same, sealed = check(B)
     print("strip joined along the wall line: gates open", same, " sealed", sealed)
 used_towers = False
