@@ -159,6 +159,18 @@ for _ in range(8):
     secids = np.where(secids == 0, cv2.dilate(secids, np.ones((9, 9), np.uint8)), secids)
 ground = P_.section_polys(B, secids, "ground", SEC, TOWERS)
 L["colliders"]["ground"] = ground
+# climb points must stand clear of the barrier: move them towards the ring interior until free
+gm = np.zeros((WH, WW), np.uint8)
+for p in ground:
+    cv2.fillPoly(gm, [np.array(p["poly"], np.int32)], 1)
+bk = cv2.dilate(gm, np.ones((15, 21), np.uint8))
+for a in L["access"]:
+    x, y = a["ground"]
+    if bk[y, x] or bk[y - 6, x]:
+        d = -1 if a["gate"] == "south" else 1
+        while bk[y, x] or bk[y - 6, x]:
+            y += d * 4
+        a["ground"] = [x, y + d * 16]
 json.dump(L, open(os.path.join(ROOT, "data/layout.json"), "w"))
 print("ground barrier sections:", len(ground), " towers in barrier:", used_towers)
 
