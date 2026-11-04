@@ -21,8 +21,8 @@ The outer palace wall ring, built from your wall pieces (`art/source/walls/piece
 ## Collision (two levels, sectioned polygons)
 `tools/build_levels.py` writes the colliders into `data/layout.json`; at runtime they are plain CollisionPolygon2D
 shapes, independent of the PNGs:
-- **Ground level** (178 sections, one per tower / wall stretch piece): exactly the ground each wall and tower stands
-  on. Wall faces, tops and roofs are free to walk behind; both gate arches are open; the ring is sealed elsewhere.
+- **Ground level** (`tools/build_barrier.py`, 144 sections): the lower band of the wall faces, panels and buttresses
+  (as in the pink / red reference), joined along the wall line where towers interrupt it. Wall faces, tops and roofs are free to walk behind; both gate arches are open; the ring is sealed elsewhere.
 - **Wall-walk level** (309 sections): the paved battlements are walkable all the way round (one connected loop,
   through a passage in every tower on the walk); parapets and drop-offs block.
 - **Access:** the art has no stairs, so the four gate towers are the access points: stand at the tower and press
@@ -51,6 +51,7 @@ python3 tools/soften_outline.py                                # thin warm-brown
 python3 tools/build_collision.py                               # ground lines (draw order) from the wall footprints
 python3 tools/build_objects.py                                 # split walls into objects (towers / stretches) for see-through
 python3 tools/build_levels.py                                  # collision: sectioned polygons, ground + wall-walk levels
+python3 tools/build_barrier.py                                 # ground barrier = lower band of the wall faces (panels + buttresses)
 python3 tools/build_ground.py                                  # stage 2 ground (after build_walls)
 tools/shots.sh                                                 # docs/screenshots
 godot --path . -- --test                                       # reachability test
