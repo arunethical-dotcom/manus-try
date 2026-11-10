@@ -51,6 +51,7 @@ func _ready() -> void:
 	L = JSON.parse_string(FileAccess.get_file_as_string("res://data/layout.json"))
 	_ground()
 	_walls()
+	_keep_exterior()
 	_player()
 	_grade()
 	var mm = load("res://scripts/Minimap.gd").new()
@@ -76,6 +77,7 @@ func _process(dt: float) -> void:
 			(sp.material as ShaderMaterial).set_shader_parameter("player_y", ey - 1.0)
 	_update_fade(foot, ey, dt)
 	_update_access(foot)
+	_update_keep(foot)
 
 ## which objects cover Kael: sample his body; a wall pixel there whose ground line is south of his feet hides him
 func _update_fade(foot: Vector2, ey: float, dt: float) -> void:
@@ -176,6 +178,9 @@ func _grade() -> void:
 
 func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed("interact"):
+		if near_keep:
+			get_tree().change_scene_to_file("res://scenes/Keep.tscn")
+			return
 		_use_access()
 	if e is InputEventKey and e.pressed and not e.echo and e.physical_keycode == KEY_G:
 		grade_rect.visible = not grade_rect.visible
@@ -317,6 +322,9 @@ func _player() -> void:
 	player.add_child(cam)
 	var sp0: Array = L["spawn"]
 	player.position = Vector2(sp0[0], sp0[1])
+	if Engine.has_meta("from_keep") and keep_sprite:
+		Engine.remove_meta("from_keep")
+		player.position = keep_door + Vector2(0, 48)
 	player.z_index = 3
 	player.collision_layer = 0
 	player.collision_mask = 1
@@ -427,7 +435,8 @@ func _test() -> void:
 			fails += 1
 		print("%s  wall-walk: access point %d (%s gate tower)  (nearest reachable %.0f px)" % ["PASS" if ok else "FAIL", i, acc[i]["gate"], d])
 	# the wall-walk must stay on the walls: it may not reach the ring interior or the outside ground
-	var leak := _near(seen1, w0, Vector2(ins[0], ins[1])) < 400.0 or _near(seen1, w0, Vector2(L["spawn"][0], L["spawn"][1])) < 100.0
+	var pz: Array = L["plaza"]                # open courtyard, far from every wall
+	var leak := _near(seen1, w0, Vector2(pz[0], pz[1])) < 400.0 or _near(seen1, w0, Vector2(L["spawn"][0], L["spawn"][1])) < 100.0
 	print("%s  wall-walk stays on the walls" % ["FAIL" if leak else "PASS"])
 	if leak:
 		fails += 1
@@ -440,3 +449,52 @@ func _test() -> void:
 	print("wall-walk reachable cells: ", seen1.size(), "  extent x %d..%d  y %d..%d" % [mnx, mxx, mny, mxy])
 	print("failures: ", fails)
 	get_tree().quit()
+
+# ------------------------------------------------------------------ Red Keep (prototype)
+## The keep exterior (art/game/keep/exterior.png, tools/build_keep_proto.py) stands on the gate axis at 1:1 scale so
+## its bricks match the ring wall. Collision = its whole silhouette; it draws over Kael only when he is behind it.
+## E at its gate enters the interior prototype (scenes/Keep.tscn).
+const KEEP_AXIS_X := 3944.0
+const KEEP_DOOR_Y := 3100.0
+var keep_sprite: Sprite2D
+var keep_bottom: Array = []
+var keep_door := Vector2.ZERO
+var near_keep := false
+
+func _keep_exterior() -> void:
+	if not FileAccess.file_exists("res://data/keep_proto.json"):
+		return
+	var K: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/keep_proto.json"))
+	var ex: Dictionary = K["exterior"]
+	keep_bottom = ex["bottom"]
+	var tl := Vector2(KEEP_AXIS_X - float(ex["door_x"]), KEEP_DOOR_Y - float(ex["door_y"]))
+	keep_door = Vector2(KEEP_AXIS_X, KEEP_DOOR_Y)
+	keep_sprite = Sprite2D.new()
+	keep_sprite.name = "RedKeep"
+	keep_sprite.texture = t("keep/exterior")
+	keep_sprite.centered = false
+	keep_sprite.position = tl
+	keep_sprite.z_index = 2
+	add_child(keep_sprite)
+	var bm := BitMap.new()
+	bm.create_from_image_alpha(keep_sprite.texture.get_image(), 0.5)
+	for poly in bm.opaque_to_polygons(Rect2i(Vector2i.ZERO, bm.get_size()), 2.0):
+		var cp := CollisionPolygon2D.new()
+		var pts := PackedVector2Array()
+		for q in poly:
+			pts.append(q + tl)
+		cp.polygon = pts
+		walls_body.add_child(cp)
+
+func _update_keep(foot: Vector2) -> void:
+	if keep_sprite == null:
+		return
+	var col := int(foot.x - keep_sprite.position.x)
+	var behind := false
+	if col >= 0 and col < keep_bottom.size():
+		behind = foot.y < keep_sprite.position.y + float(keep_bottom[col]) and int(keep_bottom[col]) >= 0
+	keep_sprite.z_index = 4 if behind else 2
+	near_keep = level == 0 and foot.distance_to(keep_door + Vector2(0, 14)) < 56.0
+	if near_keep and hint:
+		hint.visible = true
+		hint.text = "E: sneak into the Red Keep (through the river drain)"
