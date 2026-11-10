@@ -118,7 +118,7 @@ FL['outside'] = FL['grass'] * 0.45
 y0, x0, y1, x1 = bT[9]                       # plain wall face: brick band only (no crenels, no grass)
 face = key(TIL[y0 + 78:y1 - 26, x0 + 6:x1 - 6])[..., :3]
 FACE = np.asarray(Image.fromarray(face.astype(np.uint8)).resize((round(face.shape[1] * 32 / face.shape[0]), 32), Image.LANCZOS)).astype(np.float32)
-CAP = np.array([233, 184, 119], np.float32); CAP_D = np.array([196, 146, 92], np.float32); OUTL = np.array([57, 41, 33], np.float32)
+CAP = np.array([233, 184, 119], np.float32); CAP_TOP = key(TIL[bT[13][0] + 40:bT[13][0] + 70, bT[13][1] + 30:bT[13][3] - 30])[..., :3].reshape(-1, 3).mean(0); CAP_D = np.array([196, 146, 92], np.float32); OUTL = np.array([57, 41, 33], np.float32)
 
 def tiled(tex, x0, y0, w, h):
     th, tw = tex.shape[:2]
@@ -334,8 +334,16 @@ def render(level):
     if level == 'L1':
         capm = wall | CBAND | DRUM
     cm = np.kron(capm, np.ones((T, T), bool))
-    stone = CAP + (np.indices((H, W))[0] % T < 2)[..., None] * (CAP_D - CAP)
+    yy, xx = np.indices((H, W))
+    rnd = (np.sin((xx // 32) * 12.9898 + (yy // 16) * 78.233) * 43758.5453) % 1.0
+    stone = CAP_TOP[None, None, :] * (0.95 + 0.07 * rnd)[..., None]
+    joint = ((xx + (yy // 16 % 2) * 16) % 32 == 0) | (yy % 16 == 0)
+    stone = np.where(joint[..., None], CAP_TOP * 0.84, stone)
     img[..., :3] = np.where(cm[..., None], stone, img[..., :3])
+    below_open = capm & ~np.roll(capm, -1, 0) & (facerow == 0)          # cap whose lower edge is open (no face below)
+    lip = np.kron(below_open, np.ones((T, T), bool)) & (yy % T >= T - 5)
+    img[..., :3] = np.where((lip & (yy % T == T - 5))[..., None], np.array([255, 244, 214], np.float32), img[..., :3])
+    img[..., :3] = np.where((lip & (yy % T > T - 5))[..., None], CAP_TOP * 0.72, img[..., :3])
     for k in (1, 2):
         fm = np.kron(facerow == k, np.ones((T, T), bool))
         ft = tiled(FACE, 0, (k - 1) * T, W, H)    # row band of the face texture
@@ -353,6 +361,30 @@ def render(level):
     walk &= ~(wall | (facerow > 0))
     if level != 'L-1':
         walk &= ~(CBAND | DRUM)
+    # ambient occlusion: floor darkens under walls/faces (light from the top-left -> also a soft shadow to the right)
+    solidpx = np.kron(capm | (facerow > 0) | (~walk & ~inroom & (level == 'L-1')), np.ones((T, T), bool))
+    shade = np.ones((H, W), np.float32)
+    for k in range(1, 15):
+        shade = np.where(np.roll(solidpx, k, 0) & ~solidpx, np.minimum(shade, 0.52 + 0.48 * k / 15), shade)
+    for k in range(1, 9):
+        shade = np.where(np.roll(solidpx, k, 1) & ~solidpx, np.minimum(shade, 0.70 + 0.30 * k / 9), shade)
+    img[..., :3] *= shade[..., None]
+    # torches on the inner faces (art = iron sconce; the flame + light are added in the game)
+    torches = []
+    if level != 'L-1' or True:
+        for i, (x0, y0, x1, y1, lab, z) in enumerate(rooms):
+            if z == 'court' or 'corridor' in lab or (x1 - x0) < 7:
+                continue
+            row = int(y0) + 1
+            xs = [x for x in range(int(x0) + 2, int(x1) - 2) if facerow[row, x] == 1 and facerow[row, x - 1] == 1 and facerow[row, x + 1] == 1]
+            if not xs: continue
+            n = max(1, min(3, (int(x1) - int(x0)) // 10))
+            picks = [xs[int((j + 0.5) * len(xs) / n)] for j in range(n)]
+            for x in picks:
+                px, py = x * T + 8, row * T + 10
+                img[py:py + 9, px - 1:px + 2, :3] = (40, 34, 30); img[py + 1:py + 8, px, :3] = (90, 80, 70)
+                img[py - 1:py + 1, px - 3:px + 4, :3] = (40, 34, 30)
+                torches.append([px, py - 2])
     # door thresholds
     tc = {'d': (150, 95, 50), 'L': (190, 40, 40), 'G': (40, 40, 40)}
     for (rx, ry, rw, rh), t in thr:
@@ -375,8 +407,56 @@ def render(level):
             bx0, bx1 = int(math.floor(x + 0.15)), int(math.ceil(x + pw / T - 0.15))
             by1 = int(math.ceil(y + ph / T - 0.2)); by0 = max(int(math.floor(y + ph / T * 0.45)), by1 - 3)
             walk[by0:by1, bx0:bx1] = False
-    # links / exits must stand on walkable ground
-    return img, walk, gates, rooms, owner
+    # ---- visibility regions: floor areas separated by walls and doorways; walls/faces/doors belong to the rooms they touch
+    floor = ~wall & (facerow == 0)
+    if level == 'L0':
+        floor &= (inroom | (INSIDE & ~CBAND)) & ~DRUM & ~MOAT
+        floor[BR[1]:BR[3], BR[0]:BR[2]] = True
+    elif level == 'L1':
+        floor &= inroom & ~DRUM
+    else:
+        floor &= (inroom | tun | drain)
+    doorc = np.zeros((MH, MW), bool)
+    for (rx, ry, rw, rh), t in thr:
+        doorc[ry:ry + rh, rx:rx + rw] = True
+    lab, nreg = ndimage.label(floor & ~doorc)
+    assert nreg < 255, nreg
+    slots = np.zeros((3, MH, MW), np.int32)
+    slots[0] = lab
+    offs = sorted([(dx, dy) for dx in range(-3, 4) for dy in range(-3, 4)], key=lambda o: o[0] ** 2 + o[1] ** 2)
+    fill = ~(floor & ~doorc)                     # only non-floor cells (walls, faces, doors, outside) take neighbours
+    for dx, dy in offs:
+        sh_ = np.roll(np.roll(lab, dy, 0), dx, 1)
+        ok = fill & (sh_ > 0)
+        for k in range(3):
+            put = ok & (slots[k] == 0)
+            if k > 0:
+                for j in range(k): put &= (sh_ != slots[j])
+            if k > 0: put &= (slots[0] > 0)
+            put &= ~((slots[:k] == sh_).any(0)) if k > 0 else True
+            slots[k] = np.where(put, sh_, slots[k])
+            ok &= ~put & (slots[k] != sh_)
+    # cells still unassigned (drum interiors, thick curtain, ground just outside) take the nearest region within 9 cells
+    dist, (iy, ix) = ndimage.distance_transform_edt(slots[0] == 0, return_indices=True)
+    far = (slots[0] == 0) & (dist <= 9)
+    slots[0] = np.where(far, slots[0][iy, ix], slots[0])
+    names = ['']
+    for r in range(1, nreg + 1):
+        o = owner[lab == r]; o = o[o >= 0]
+        if len(o) == 0: names.append('Courtyard' if level == 'L0' else ''); continue
+        raw = rooms[np.bincount(o).argmax()][4].replace('-\n', '')
+        parts = []
+        for ln in raw.split('\n'):
+            ln = ln.strip()
+            if ln.startswith('(') or ln.startswith('+') or ',' in ln or (len(ln.split()) >= 3 and ln[:1].islower()):
+                break
+            parts.append(ln.split('(')[0].strip())
+        nm = ' '.join(parts).replace(' - ', ' ').strip()
+        nm = ' '.join(w[:1].upper() + w[1:].lower() for w in nm.split())
+        names.append(nm)
+    regimg = np.dstack([slots[0], slots[1], slots[2], np.full((MH, MW), 255)]).astype(np.uint8)
+    tor_reg = [int(lab[min(MH - 1, (ty + 24) // T), tx // T]) for tx, ty in torches]
+    return img, walk, gates, rooms, owner, regimg, names, [[a, b, r] for (a, b), r in zip(torches, tor_reg)]
 
 def rects(block):
     """merge blocked cells into rectangles (row runs, then stacked)"""
@@ -403,7 +483,10 @@ def rects(block):
 data = {'tile': T, 'size': [MW, MH], 'levels': {}}
 DYN = {}
 for lv, fn in (('L0', 'L0'), ('L1', 'L1'), ('L-1', 'Lm1')):
-    img, walk, gates, rooms, owner = render(lv)
+    img, walk, gates, rooms, owner, regimg, names, torches = render(lv)
+    import io
+    buf = io.BytesIO(); Image.fromarray(regimg, 'RGBA').save(buf, 'PNG')
+    open(os.path.join(ROOT, 'data/keep_%s_regions.bin' % fn), 'wb').write(buf.getvalue())
     Image.fromarray(np.clip(img, 0, 255).astype(np.uint8), 'RGBA').convert('RGB').save(os.path.join(OUT, fn + '.png'), optimize=True)
     for (a, pa, b, pb, lab) in LINKS:
         for l, p in ((a, pa), (b, pb)):
@@ -423,7 +506,8 @@ for lv, fn in (('L0', 'L0'), ('L1', 'L1'), ('L-1', 'Lm1')):
                     if all((xx - a) ** 2 + (yy - b) ** 2 > 2.2 ** 2 for a, b in taken):
                         taken.append((xx, yy)); pts.append([int(xx * T), int(yy * T)])
         stages.append({'id': sid, 'origin': [org[0] * T, org[1] * T], 'points': pts, 't': t})
-    data['levels'][lv] = {'image': 'res://art/game/keep/%s.png' % fn, 'solid': rects(~walk),
+    data['levels'][lv] = {'image': 'res://art/game/keep/%s.png' % fn, 'solid': rects(~walk), 'regions': 'res://data/keep_%s_regions.bin' % fn,
+                          'region_names': names, 'torches': torches,
                           'fire': stages}
     if lv == 'L0':
         GID = {(120, 114): 'main_outer', (120, 102): 'main_inner', (84, 42): 'lane_w', (168, 42): 'lane_e', (123, 39): 'hold_gate', (123, 45): 'kings_door'}
@@ -455,6 +539,11 @@ save(prop('portcullis', 6), 'ov_portcullis.png'); save(prop('door_locked', 6), '
 # fx sheets: frames bottom-centred in equal cells
 def strip(idxs, w, name):
     fr = [shrink(piece(UTL, bU[i]), w) for i in idxs]
+    for f in fr:                                   # flames/smoke: no magenta left in the colours
+        c = f[..., :3]; pink = (c[..., 2] > c[..., 1] + 25) & (c[..., 0] > 120)
+        c[..., 2] = np.where(pink, np.minimum(c[..., 2], c[..., 1]), c[..., 2])
+        a = f[..., 3]; mag = (c[..., 0] > 200) & (c[..., 1] < 90) & (a > 0)
+        f[..., 3] = np.where(mag & pink, 0, a)
     ch = max(f.shape[0] for f in fr); cw = max(f.shape[1] for f in fr)
     out = np.zeros((ch, cw * len(fr), 4), np.float32)
     for k, f in enumerate(fr):

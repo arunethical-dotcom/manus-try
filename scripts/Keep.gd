@@ -36,6 +36,13 @@ var interact: Dictionary = {}
 var won := false
 var dead := false
 var smoke_t := 0.0
+var fog := {}                    # level -> {sprite, reg, alpha, aimg, atex, visited, n}
+var torches: Array = []          # {node, light, flame, level, reg}
+var cur_reg := 0
+var fade_rect: ColorRect
+var toast: Label
+var toast_t := 0.0
+var hint_box: PanelContainer
 
 func t(p: String) -> Texture2D:
 	if not tex.has(p):
@@ -107,8 +114,41 @@ func _build_level(lv: String) -> void:
 		rs.size = Vector2(r[2], r[3]); cs.shape = rs; cs.position = Vector2(r[0] + r[2] * 0.5, r[1] + r[3] * 0.5)
 		body.add_child(cs)
 	levels[lv] = n
+	# room reveal fog
+	var reg := Image.new()
+	reg.load_png_from_buffer(FileAccess.get_file_as_bytes(String(L["regions"])))
+	var fs := Sprite2D.new(); fs.name = "Fog"; fs.centered = false; fs.z_index = 10; fs.light_mask = 0
+	fs.texture = ImageTexture.create_from_image(reg); fs.scale = Vector2(16, 16)
+	fs.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	var aimg := Image.create(256, 1, false, Image.FORMAT_RGBA8); aimg.fill(Color(1, 0, 0, 1))
+	var atex := ImageTexture.create_from_image(aimg)
+	var m := ShaderMaterial.new(); m.shader = load("res://shaders/keep_fog.gdshader")
+	m.set_shader_parameter("alpha_tex", atex); m.set_shader_parameter("reg_tex", fs.texture); m.set_shader_parameter("cells", Vector2(reg.get_width(), reg.get_height()))
+	fs.material = m
+	n.add_child(fs)
+	var al := PackedFloat32Array(); al.resize(256); al.fill(1.0)
+	fog[lv] = {"sprite": fs, "reg": reg, "alpha": al, "aimg": aimg, "atex": atex, "visited": {}, "names": L["region_names"]}
+	# wall torches: flame + flickering light, lit only while their room is in view
+	for tc in L["torches"]:
+		var tn := Node2D.new(); tn.position = Vector2(tc[0], tc[1])
+		var fl := Sprite2D.new(); fl.texture = t("res://art/game/keep/fx_fire_m.png"); fl.hframes = 4
+		fl.scale = Vector2(0.5, 0.5); fl.centered = false
+		fl.offset = Vector2(-fl.texture.get_width() / 8.0, -fl.texture.get_height())
+		tn.add_child(fl)
+		var lt := PointLight2D.new(); lt.texture = light_tex; lt.texture_scale = 1.05; lt.energy = 0.95
+		lt.color = Color(1.0, 0.68, 0.36); lt.position = Vector2(0, 6); lt.enabled = false
+		tn.add_child(lt)
+		fx.add_child(tn)
+		torches.append({"flame": fl, "light": lt, "level": lv, "reg": int(tc[2]), "x": float(tc[0])})
+
+func _go(lv: String, pos: Vector2) -> void:
+	var tw := create_tween()
+	tw.tween_property(fade_rect, "color:a", 1.0, 0.22)
+	tw.tween_callback(func(): _goto(lv, pos))
+	tw.tween_property(fade_rect, "color:a", 0.0, 0.35)
 
 func _goto(lv: String, pos: Vector2) -> void:
+	cur_reg = -1
 	for k in levels:
 		(levels[k] as Node2D).visible = (k == lv)
 	cur = lv
@@ -216,43 +256,76 @@ func _player() -> void:
 	var cs := CollisionShape2D.new(); var rs := RectangleShape2D.new(); rs.size = Vector2(12, 6)
 	cs.shape = rs; cs.position = Vector2(0, -3)
 	player.add_child(cs)
-	var lt := PointLight2D.new(); lt.texture = light_tex; lt.texture_scale = 1.1; lt.energy = 0.55; lt.color = Color(1.0, 0.9, 0.75)
+	var lt := PointLight2D.new(); lt.texture = light_tex; lt.texture_scale = 0.7; lt.energy = 0.45; lt.color = Color(1.0, 0.85, 0.65)
 	lt.position = Vector2(0, -12)
 	player.add_child(lt)
 	cam = Camera2D.new(); cam.position = Vector2(0, -14)
 	var sz: Array = D["size"]
 	cam.limit_left = 0; cam.limit_top = 0; cam.limit_right = int(sz[0]) * 16; cam.limit_bottom = int(sz[1]) * 16
-	cam.position_smoothing_enabled = true; cam.position_smoothing_speed = 8.0
+	cam.position_smoothing_enabled = true; cam.position_smoothing_speed = 7.0
+	cam.zoom = Vector2(2, 2)
 	if args.has("zoom"):
 		var z := float(args["zoom"]); cam.zoom = Vector2(z, z)
 	player.add_child(cam)
-	player.z_index = 3; player.collision_layer = 0
+	player.z_index = 11; player.collision_layer = 0
 	add_child(player)
 
 # ------------------------------------------------------------------ HUD
-func _label(sz: int, pos: Vector2, parent: Node) -> Label:
+func _label(sz: int, pos: Vector2, parent: Node, col: Color = Color(0.95, 0.92, 0.85)) -> Label:
 	var l := Label.new()
 	l.add_theme_font_size_override("font_size", sz)
-	l.add_theme_color_override("font_outline_color", Color.BLACK)
-	l.add_theme_constant_override("outline_size", 5)
+	l.add_theme_color_override("font_color", col)
+	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	l.add_theme_constant_override("outline_size", 4)
 	l.position = pos
 	parent.add_child(l)
 	return l
 
+func _panel_style(alpha: float = 0.78) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.07, 0.05, 0.05, alpha)
+	sb.border_color = Color(0.74, 0.57, 0.31, 0.95)
+	sb.set_border_width_all(1)
+	sb.set_corner_radius_all(3)
+	sb.content_margin_left = 9; sb.content_margin_right = 9; sb.content_margin_top = 5; sb.content_margin_bottom = 6
+	return sb
+
 func _hud() -> void:
+	var vg := CanvasLayer.new(); vg.layer = 8; add_child(vg)
+	var vr := ColorRect.new(); vr.set_anchors_preset(Control.PRESET_FULL_RECT); vr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var vm := ShaderMaterial.new(); vm.shader = load("res://shaders/vignette.gdshader"); vr.material = vm
+	vg.add_child(vr)
 	var cl := CanvasLayer.new(); cl.layer = 10; add_child(cl)
-	hud_obj = _label(13, Vector2(10, 8), cl)
-	hud_stage = _label(13, Vector2(10, 28), cl)
-	hud_banner = _label(18, Vector2(0, 60), cl)
-	hud_banner.size = Vector2(960, 30); hud_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hud_banner.add_theme_color_override("font_color", Color(1.0, 0.85, 0.5))
-	hud_hint = _label(15, Vector2(0, 500), cl)
-	hud_hint.size = Vector2(960, 24); hud_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var bg := ColorRect.new(); bg.color = Color(0, 0, 0, 0.6); bg.position = Vector2(838, 10); bg.size = Vector2(112, 12)
-	cl.add_child(bg)
-	hp_bar = ColorRect.new(); hp_bar.color = Color(0.85, 0.2, 0.15); hp_bar.position = Vector2(840, 12); hp_bar.size = Vector2(108, 8)
-	cl.add_child(hp_bar)
+	var pc := PanelContainer.new(); pc.position = Vector2(10, 10); pc.add_theme_stylebox_override("panel", _panel_style())
+	cl.add_child(pc)
+	var vb := VBoxContainer.new(); vb.add_theme_constant_override("separation", 1); pc.add_child(vb)
+	hud_obj = _label(11, Vector2.ZERO, vb)
+	hud_obj.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; hud_obj.custom_minimum_size = Vector2(300, 0)
+	hud_stage = _label(10, Vector2.ZERO, vb, Color(0.92, 0.66, 0.38))
+	toast = _label(17, Vector2(0, 30), cl, Color(1.0, 0.86, 0.55))
+	toast.size = Vector2(960, 26); toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; toast.modulate.a = 0
+	hud_banner = _label(14, Vector2(0, 92), cl, Color(1.0, 0.9, 0.7))
+	hud_banner.size = Vector2(960, 24); hud_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint_box = PanelContainer.new(); hint_box.add_theme_stylebox_override("panel", _panel_style(0.85))
+	cl.add_child(hint_box)
+	hud_hint = _label(12, Vector2.ZERO, hint_box)
+	var hb := PanelContainer.new(); hb.position = Vector2(822, 12); hb.add_theme_stylebox_override("panel", _panel_style())
+	cl.add_child(hb)
+	var hbg := Control.new(); hbg.custom_minimum_size = Vector2(110, 7); hb.add_child(hbg)
+	var back := ColorRect.new(); back.color = Color(0.25, 0.07, 0.06); back.size = Vector2(110, 7); hbg.add_child(back)
+	hp_bar = ColorRect.new(); hp_bar.color = Color(0.86, 0.24, 0.16); hp_bar.size = Vector2(110, 7); hbg.add_child(hp_bar)
+	var fl := CanvasLayer.new(); fl.layer = 20; add_child(fl)
+	fade_rect = ColorRect.new(); fade_rect.color = Color(0, 0, 0, 1); fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fl.add_child(fade_rect)
+	create_tween().tween_property(fade_rect, "color:a", 0.0, 0.8)
 	_update_stage_label()
+
+func _toast(s: String) -> void:
+	if s == "":
+		return
+	toast.text = s
+	toast_t = 2.2
 
 func _objective(s: String) -> void:
 	hud_obj.text = "Objective: " + s
@@ -263,10 +336,14 @@ func _banner(s: String, dur: float = 5.0) -> void:
 
 func _update_stage_label() -> void:
 	var s := "%s" % LV_NAME[cur] if cur != "" else ""
+	if cur != "" and cur_reg > 0:
+		var nm := String(fog[cur]["names"][cur_reg])
+		if nm != "":
+			s += "  -  " + nm
 	if lit:
 		var st: Array = _stages_sorted()
 		var nm := String(st[max(0, stage_i - 1)]["id"]) if stage_i > 0 else "-"
-		s += "    Fire: %s   (%d s since the oil was lit)" % [nm, int(fire_t)]
+		s += "     Fire %s  |  %d s" % [nm, int(fire_t)]
 	hud_stage.text = s
 
 # ------------------------------------------------------------------ fire
@@ -298,7 +375,7 @@ func _start_stage(st: Dictionary) -> void:
 	for p in pts:
 		var pos := _v(p) + Vector2(randf_range(-4, 4), randf_range(-3, 3))
 		var delay := org.distance_to(pos) / 90.0
-		var f := {"level": lv, "pos": pos, "t0": fire_t + delay * SPEED, "node": null, "light": i % 5 == 0}
+		var f := {"level": lv, "pos": pos, "t0": fire_t + delay * SPEED, "node": null, "light": i % 8 == 0}
 		flames.append(f)
 		i += 1
 	match String(st["id"]):
@@ -334,8 +411,8 @@ func _spawn_flame(f: Dictionary) -> void:
 	var cs := CollisionShape2D.new(); var c := CircleShape2D.new(); c.radius = 9; cs.shape = c; cs.position = Vector2(0, -3)
 	ar.add_child(cs); n.add_child(ar)
 	if f["light"]:
-		var lt := PointLight2D.new(); lt.texture = light_tex; lt.texture_scale = 1.4; lt.energy = 1.1
-		lt.color = Color(1.0, 0.55, 0.2); lt.position = Vector2(0, -10); lt.name = "L"
+		var lt := PointLight2D.new(); lt.texture = light_tex; lt.texture_scale = 1.8; lt.energy = 0.5
+		lt.color = Color(1.0, 0.5, 0.18); lt.position = Vector2(0, -10); lt.name = "L"
 		n.add_child(lt)
 	host.add_child(n)
 	f["node"] = n
@@ -346,7 +423,53 @@ func _grow(f: Dictionary) -> void:
 	fs.offset = Vector2(-fs.texture.get_width() / 8.0, -fs.texture.get_height() + 4)
 	f["big"] = true
 
+func _update_fog(dt: float) -> void:
+	var F: Dictionary = fog[cur]
+	var reg: Image = F["reg"]
+	var c := Vector2i(int(player.position.x / 16.0), int(player.position.y / 16.0 - 0.2))
+	if c.x >= 0 and c.y >= 0 and c.x < reg.get_width() and c.y < reg.get_height():
+		var id := int(round(reg.get_pixel(c.x, c.y).r * 255.0))
+		if id > 0 and id != cur_reg:
+			if cur_reg != -1 or true:
+				var nm := String(F["names"][id])
+				if not F["visited"].has(id) or cur_reg == -1:
+					_toast(nm)
+			cur_reg = id
+			F["visited"][id] = true
+			_update_stage_label()
+	var al: PackedFloat32Array = F["alpha"]
+	var aimg: Image = F["aimg"]
+	var changed := false
+	var n: int = (F["names"] as Array).size()
+	for i in range(1, n):
+		var target := 1.0
+		if i == cur_reg:
+			target = 0.0
+		elif F["visited"].has(i):
+			target = 0.8
+		if al[i] != target:
+			al[i] = move_toward(al[i], target, (100.0 if args.has("capture") else 4.0) * dt)
+			aimg.set_pixel(i, 0, Color(al[i], 0, 0, 1))
+			changed = true
+	F["alpha"] = al
+	if changed:
+		(F["atex"] as ImageTexture).update(aimg)
+	var fr := int(Time.get_ticks_msec() / 120)
+	for tc in torches:
+		if tc["level"] != cur:
+			continue
+		var on: bool = al[int(tc["reg"])] < 0.5
+		var lt: PointLight2D = tc["light"]
+		lt.enabled = on
+		if on:
+			lt.energy = 0.85 + 0.12 * sin(Time.get_ticks_msec() * 0.011 + tc["x"]) + 0.05 * sin(Time.get_ticks_msec() * 0.031 + tc["x"] * 0.3)
+			(tc["flame"] as Sprite2D).frame = (fr + int(tc["x"])) % 4
+
 func _process(dt: float) -> void:
+	_update_fog(dt)
+	if toast_t > 0:
+		toast_t -= dt
+		toast.modulate.a = clampf(minf(2.2 - toast_t, toast_t) * 3.0, 0.0, 1.0)
 	if banner_t > 0:
 		banner_t -= dt
 		if banner_t <= 0:
@@ -371,7 +494,7 @@ func _process(dt: float) -> void:
 				(n.get_node("F") as Sprite2D).frame = (frame + int(f["pos"].x)) % 4
 				var lt := n.get_node_or_null("L") as PointLight2D
 				if lt:
-					lt.energy = 1.0 + 0.25 * sin(Time.get_ticks_msec() * 0.013 + f["pos"].x)
+					lt.energy = 0.5 + 0.12 * sin(Time.get_ticks_msec() * 0.013 + f["pos"].x)
 				if player.position.distance_to(f["pos"]) < 13.0:
 					near = true
 		if near and not dead and not won:
@@ -402,7 +525,7 @@ func _smoke() -> void:
 		return
 	var f: Dictionary = live[randi() % live.size()]
 	var s := Sprite2D.new(); s.texture = t("res://art/game/keep/fx_smoke.png"); s.hframes = 5; s.frame = randi() % 5
-	s.position = f["pos"] + Vector2(randf_range(-6, 6), -20); s.modulate = Color(0.55, 0.55, 0.6, 0.0); s.z_index = 4
+	s.position = f["pos"] + Vector2(randf_range(-6, 6), -20); s.modulate = Color(0.55, 0.55, 0.6, 0.0); s.z_index = 2
 	(levels[cur].get_node("FX") as Node2D).add_child(s)
 	var tw := create_tween().set_parallel(true)
 	tw.tween_property(s, "position", s.position + Vector2(randf_range(-20, 20), -70), 3.0)
@@ -436,7 +559,11 @@ func _check_interact() -> void:
 		for e in D["exits"]:
 			if String(e["level"]) == cur and p.distance_to(_v(e["pos"])) < 32:
 				interact = {"kind": "exit", "text": "E: " + String(e["label"])}
-	hud_hint.text = String(interact.get("text", ""))
+	var ht := String(interact.get("text", ""))
+	hud_hint.text = ht.replace("E: ", "[E]  ")
+	hint_box.visible = ht != ""
+	hint_box.reset_size()
+	hint_box.position = Vector2(480 - hint_box.size.x * 0.5, 498)
 
 func _unhandled_input(e: InputEvent) -> void:
 	if not e.is_action_pressed("interact") or interact.is_empty() or dead:
@@ -445,10 +572,12 @@ func _unhandled_input(e: InputEvent) -> void:
 		"ignite":
 			_ignite()
 		"link":
-			_goto(String(interact["to"]), interact["pos"])
+			_go(String(interact["to"]), interact["pos"])
 		"exit":
 			Engine.set_meta("from_keep", true)
-			get_tree().change_scene_to_file("res://scenes/Main.tscn")
+			var tw := create_tween()
+			tw.tween_property(fade_rect, "color:a", 1.0, 0.4)
+			tw.tween_callback(func(): get_tree().change_scene_to_file("res://scenes/Main.tscn"))
 
 # ------------------------------------------------------------------ capture (previews)
 func _capture() -> void:
