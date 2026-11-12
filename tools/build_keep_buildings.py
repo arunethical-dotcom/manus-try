@@ -56,7 +56,10 @@ data = {}
 # ---------------------------------------------------------------- The Holdfast (plan: moat rect 350,310 340x220)
 src = np.asarray(Image.open(os.path.join(SRC, 'holdfast_src.png')).convert('RGB'))
 rgba = np.dstack([src, key_checker(src.astype(int))])
-x0, y0 = W(350, 310); x1, y1 = W(350 + 340, 310 + 220)
+# Size and place taken from the reference town render (user, 12 Nov): the Holdfast spans the north-west corner from the
+# west wall to the Throne Hall. Reference->world: x = 558 + X*3.56 (tower extents), y = 705 + Y*3.19 (gate to gate).
+# Reference Holdfast: x 205..810, moat bottom y 550  ->  world x 1288..3420 (kept clear of the Throne Hall), base y 2460.
+x0, x1, y1 = 1288, 3420, 2460
 w = round(x1 - x0); s = w / rgba.shape[1]
 img = scaled(rgba, w); h = img.shape[0]
 pos = (round(x0), round(y1 - h))
