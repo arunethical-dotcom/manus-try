@@ -56,17 +56,25 @@ data = {}
 # ---------------------------------------------------------------- The Holdfast (plan: moat rect 350,310 340x220)
 src = np.asarray(Image.open(os.path.join(SRC, 'holdfast_src.png')).convert('RGB'))
 rgba = np.dstack([src, key_checker(src.astype(int))])
+# crop away the outer ring of wooden stakes and its curb: keep the castle, the moat pit, the iron fence and both bridges
+CROP = [(285,0),(1150,0),(1150,330),(1240,405),(1310,500),(1340,545),(1448,545),(1448,665),(1310,665),(1310,870),(1250,935),
+        (1170,990),(690,996),(690,1076),(572,1076),(572,996),(240,992),(170,935),(130,880),(128,455),(200,402),(285,372)]
+cm = Image.new('L', (rgba.shape[1], rgba.shape[0]), 0); ImageDraw.Draw(cm).polygon(CROP, fill=255)
+rgba[..., 3] = np.minimum(rgba[..., 3], np.asarray(cm))
+ys_, xs_ = np.where(rgba[..., 3] > 0)
+CX0, CY0 = xs_.min(), ys_.min()
+rgba = rgba[CY0:ys_.max() + 1, CX0:xs_.max() + 1]
 # Size and place taken from the reference town render (user, 12 Nov): the Holdfast spans the north-west corner from the
 # west wall to the Throne Hall. Reference->world: x = 558 + X*3.56 (tower extents), y = 705 + Y*3.19 (gate to gate).
 # Reference Holdfast: x 205..810, moat bottom y 550  ->  world x 1288..3420 (kept clear of the Throne Hall), base y 2460.
-x0, x1, y1 = 1288, 3420, 2460
+x0, x1, y1 = 1288, 3420, 2460                  # fitted: the cropped Holdfast spans exactly this, base on y1
 w = round(x1 - x0); s = w / rgba.shape[1]
 img = scaled(rgba, w); h = img.shape[0]
 pos = (round(x0), round(y1 - h))
 Image.fromarray(img).save(os.path.join(OUT, 'holdfast.png'))
 # collision: the spiked moat oval (everything opaque below the oval's top rim); towers above the rim are walk-behind
 H0, W0 = rgba.shape[:2]
-cx, cy, rx, ry = 724, 672, 726, 412           # oval of the moat in the source image
+cx, cy, rx, ry = 724 - CX0, 672 - CY0, 726, 412   # oval of the moat in the source image
 yy, xx = np.indices((H0, W0))
 oval = ((xx - cx) / rx) ** 2 + ((yy - cy) / ry) ** 2 <= 1.0
 col_mask = oval & (rgba[..., 3] > 0)
