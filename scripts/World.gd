@@ -324,7 +324,7 @@ func _player() -> void:
 	player.position = Vector2(sp0[0], sp0[1])
 	if Engine.has_meta("from_keep") and keep_sprite:
 		Engine.remove_meta("from_keep")
-		player.position = keep_door + Vector2(0, 48)
+		player.position = keep_door + Vector2(0, 40)
 	player.z_index = 3
 	player.collision_layer = 0
 	player.collision_mask = 1
@@ -450,51 +450,46 @@ func _test() -> void:
 	print("failures: ", fails)
 	get_tree().quit()
 
-# ------------------------------------------------------------------ Red Keep (prototype)
-## The keep exterior (art/game/keep/exterior.png, tools/build_keep_proto.py) stands on the gate axis at 1:1 scale so
-## its bricks match the ring wall. Collision = its whole silhouette; it draws over Kael only when he is behind it.
-## E at its gate enters the interior prototype (scenes/Keep.tscn).
-const KEEP_AXIS_X := 3944.0
-const KEEP_DOOR_Y := 3100.0
-var keep_sprite: Sprite2D
-var keep_bottom: Array = []
+# ------------------------------------------------------------------ Red Keep buildings
+## Placed from the master plan (design/keep/red-keep-plan.html) by tools/build_keep_buildings.py -> data/keep_buildings.json.
+## Each building blocks only its ground footprint and draws over Kael when his feet are north of its z_line.
+## E at the Throne Hall door enters the interior prototype (scenes/Keep.tscn).
+var keep_sprites: Array = []          # [Sprite2D, z_line]
 var keep_door := Vector2.ZERO
+var keep_sprite: Sprite2D             # kept for the return-from-keep spawn
 var near_keep := false
 
 func _keep_exterior() -> void:
-	if not FileAccess.file_exists("res://data/keep_proto.json"):
+	if not FileAccess.file_exists("res://data/keep_buildings.json"):
 		return
-	var K: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/keep_proto.json"))
-	var ex: Dictionary = K["exterior"]
-	keep_bottom = ex["bottom"]
-	var tl := Vector2(KEEP_AXIS_X - float(ex["door_x"]), KEEP_DOOR_Y - float(ex["door_y"]))
-	keep_door = Vector2(KEEP_AXIS_X, KEEP_DOOR_Y)
-	keep_sprite = Sprite2D.new()
-	keep_sprite.name = "RedKeep"
-	keep_sprite.texture = t("keep/exterior")
-	keep_sprite.centered = false
-	keep_sprite.position = tl
-	keep_sprite.z_index = 2
-	add_child(keep_sprite)
-	var bm := BitMap.new()
-	bm.create_from_image_alpha(keep_sprite.texture.get_image(), 0.5)
-	for poly in bm.opaque_to_polygons(Rect2i(Vector2i.ZERO, bm.get_size()), 2.0):
-		var cp := CollisionPolygon2D.new()
-		var pts := PackedVector2Array()
-		for q in poly:
-			pts.append(q + tl)
-		cp.polygon = pts
-		walls_body.add_child(cp)
+	var B: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/keep_buildings.json"))
+	for id in B:
+		var b: Dictionary = B[id]
+		var sp := Sprite2D.new()
+		sp.name = String(id)
+		sp.texture = load(String(b["image"]))
+		sp.centered = false
+		sp.position = Vector2(b["pos"][0], b["pos"][1])
+		sp.z_index = 2
+		add_child(sp)
+		keep_sprites.append([sp, float(b["z_line"])])
+		for poly in b["collision"]:
+			var cp := CollisionPolygon2D.new()
+			var pts := PackedVector2Array()
+			for q in poly:
+				pts.append(Vector2(q[0], q[1]))
+			cp.polygon = pts
+			walls_body.add_child(cp)
+		if b.has("door"):
+			keep_door = Vector2(b["door"][0], b["door"][1])
+			keep_sprite = sp
 
 func _update_keep(foot: Vector2) -> void:
-	if keep_sprite == null:
-		return
-	var col := int(foot.x - keep_sprite.position.x)
-	var behind := false
-	if col >= 0 and col < keep_bottom.size():
-		behind = foot.y < keep_sprite.position.y + float(keep_bottom[col]) and int(keep_bottom[col]) >= 0
-	keep_sprite.z_index = 4 if behind else 2
-	near_keep = level == 0 and foot.distance_to(keep_door + Vector2(0, 14)) < 56.0
+	for e in keep_sprites:
+		var sp: Sprite2D = e[0]
+		var inside_x := foot.x >= sp.position.x and foot.x <= sp.position.x + sp.texture.get_width()
+		sp.z_index = 4 if (inside_x and foot.y < float(e[1])) else 2
+	near_keep = keep_sprite != null and level == 0 and foot.distance_to(keep_door) < 40.0
 	if near_keep and hint:
 		hint.visible = true
-		hint.text = "E: sneak into the Red Keep (through the river drain)"
+		hint.text = "E: enter the Throne Hall (interior prototype)"
