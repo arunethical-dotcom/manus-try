@@ -57,8 +57,8 @@ data = {}
 src = np.asarray(Image.open(os.path.join(SRC, 'holdfast_src.png')).convert('RGB'))
 rgba = np.dstack([src, key_checker(src.astype(int))])
 # crop away the outer ring of wooden stakes and its curb: keep the castle, the moat pit, the iron fence and both bridges
-CROP = [(285,0),(1150,0),(1150,330),(1240,405),(1310,500),(1340,545),(1448,545),(1448,665),(1310,665),(1310,870),(1250,935),
-        (1170,990),(690,996),(690,1076),(572,1076),(572,996),(240,992),(170,935),(130,880),(128,455),(200,402),(285,372)]
+CROP = [(285,0),(1150,0),(1150,330),(1240,405),(1310,500),(1340,545),(1448,545),(1448,665),(1405,665),(1405,860),(1360,925),(1290,990),(1230,1040),(1120,1058),
+        (690,1058),(690,1076),(572,1076),(572,1058),(260,1052),(200,1030),(170,935),(130,880),(128,455),(200,402),(285,372)]
 cm = Image.new('L', (rgba.shape[1], rgba.shape[0]), 0); ImageDraw.Draw(cm).polygon(CROP, fill=255)
 rgba[..., 3] = np.minimum(rgba[..., 3], np.asarray(cm))
 ys_, xs_ = np.where(rgba[..., 3] > 0)
