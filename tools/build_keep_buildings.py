@@ -140,7 +140,9 @@ data['holdfast'] = {'name': 'The Holdfast', 'image': 'res://art/game/keep/holdfa
 # ---------------------------------------------------------------- Throne Hall (plan: rect 760,520 270x150)
 th = np.array(Image.open(os.path.join(SRC, 'throne_hall_src.png')).convert('RGBA'))
 th[..., 3] = np.where(th[..., 3] > 128, 255, 0)
-x0, y0 = W(760, 520); x1, y1 = W(760 + 270, 520 + 150)
+# From the reference town render (ref->world x = 558 + X*3.56, y = 705 + Y*3.19): hall spans ref x 828..1110,
+# bottom step at ref y 812  ->  world x 3506..4510, base y 3295.
+x0, x1, y1 = 3506, 4510, 3295
 w = round(x1 - x0); s = w / th.shape[1]
 img = scaled(th, w); h = img.shape[0]
 pos = (round(x0), round(y1 - h))

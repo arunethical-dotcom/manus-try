@@ -10,7 +10,7 @@ extends Node2D
 ##               layer 1 = ground (wall / tower footprints), layer 2 = wall-walk (parapets / drop-offs around the
 ##               battlements). Kael collides with one level at a time; E at a gate tower climbs up / down.
 ##   UI      - minimap (top-right, M to expand)
-## Command line (after --):  --capture --out=f.png [--pos=x,y] [--frames=n] [--bigmap] [--zoom=z] [--hideui] [--hideplayer]
+## Command line (after --):  --capture --out=f.png [--pos=x,y] [--frames=n] [--bigmap] [--zoom=z] [--hideui] [--hideplayer] [--nofade]
 ##                           --test   (collision flood-fill from the spawn)
 
 const TILE := 16
@@ -102,6 +102,8 @@ func _update_fade(foot: Vector2, ey: float, dt: float) -> void:
 			behind = true
 	if level == 1 and _in_tower(foot):
 		behind = true                       # inside a tower passage on the wall-walk
+	if args.has("nofade"):
+		behind = false                      # capture of the whole map: walls always solid
 	var target := 1.0 if behind else 0.0
 	var v := fade[0]
 	var changed := false
