@@ -67,7 +67,9 @@ rgba = rgba[CY0:ys_.max() + 1, CX0:xs_.max() + 1]
 # Size and place taken from the reference town render (user, 12 Nov): the Holdfast spans the north-west corner from the
 # west wall to the Throne Hall. Reference->world: x = 558 + X*3.56 (tower extents), y = 705 + Y*3.19 (gate to gate).
 # Reference Holdfast: x 205..810, moat bottom y 550  ->  world x 1288..3420 (kept clear of the Throne Hall), base y 2460.
-x0, x1, y1 = 1288, 3420, 2460                  # fitted: the cropped Holdfast spans exactly this, base on y1
+# Placed so its whole ground footprint (moat rim, pit, bridges) stands on the courtyard floor, >=14 px clear of the wall
+# art everywhere; size kept (west wall to the Throne Hall). Searched: lowest base line with zero overlap = 3008.
+x0, x1, y1 = 1288, 3420, 3008
 w = round(x1 - x0); s = w / rgba.shape[1]
 img = scaled(rgba, w); h = img.shape[0]
 pos = (round(x0), round(y1 - h))
