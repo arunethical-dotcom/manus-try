@@ -183,6 +183,9 @@ func _unhandled_input(e: InputEvent) -> void:
 		if near_keep:
 			get_tree().change_scene_to_file("res://scenes/Keep.tscn")
 			return
+		if near_holdfast:
+			get_tree().change_scene_to_file("res://scenes/HoldfastGF.tscn")
+			return
 		_use_access()
 	if e is InputEventKey and e.pressed and not e.echo and e.physical_keycode == KEY_G:
 		grade_rect.visible = not grade_rect.visible
@@ -324,6 +327,9 @@ func _player() -> void:
 	player.add_child(cam)
 	var sp0: Array = L["spawn"]
 	player.position = Vector2(sp0[0], sp0[1])
+	if Engine.has_meta("from_holdfast"):
+		Engine.remove_meta("from_holdfast")
+		player.position = HOLDFAST_DOOR + Vector2(0, 30)
 	if Engine.has_meta("from_keep") and keep_sprite:
 		Engine.remove_meta("from_keep")
 		player.position = keep_door + Vector2(0, 40)
@@ -493,7 +499,14 @@ func _keep_exterior() -> void:
 			keep_door = Vector2(b["door"][0], b["door"][1])
 			keep_sprite = sp
 
+const HOLDFAST_DOOR := Vector2(2489, 2468)       # front of the Holdfast (on its stone apron)
+var near_holdfast := false
+
 func _update_keep(foot: Vector2) -> void:
+	near_holdfast = level == 0 and foot.distance_to(HOLDFAST_DOOR) < 48.0
+	if near_holdfast and hint:
+		hint.visible = true
+		hint.text = "E: enter the Holdfast (ground floor)"
 	for e in keep_sprites:
 		var sp: Sprite2D = e[0]
 		var inside_x := foot.x >= sp.position.x and foot.x <= sp.position.x + sp.texture.get_width()
