@@ -154,6 +154,11 @@ th[..., 3] = np.where(th[..., 3] > 128, 255, 0)
 # From the reference town render (ref->world x = 558 + X*3.56, y = 705 + Y*3.19): hall spans ref x 828..1110,
 # bottom step at ref y 812  ->  world x 3506..4510, base y 3295.
 x0, x1, y1 = 3506, 4510, 3295
+# the ring was widened (tools/expand_ring.py): move the hall with the wall it was placed against
+import sys as _s; _s.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+if os.path.exists(os.path.join(ROOT, 'data/ring_xform.json')):
+    import expand_layout; _T, _ = expand_layout.load(os.path.join(ROOT, 'data/ring_xform.json'))
+    _dx = _T(x0, y1)[0] - x0; x0 += _dx; x1 += _dx
 w = round(x1 - x0); s = w / th.shape[1]
 img = scaled(th, w); h = img.shape[0]
 pos = (round(x0), round(y1 - h))
