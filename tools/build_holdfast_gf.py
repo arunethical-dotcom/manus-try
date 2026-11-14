@@ -375,6 +375,82 @@ labels = []
 for rid, nm in names.items():
     ys_, xs_ = np.where(rl == rid); labels.append({'name': nm, 'pos': [int(xs_.mean() * T), int(ys_.mean() * T)]})
 labels.append({'name': 'Courtyard', 'pos': [int(cx * T), int(cy * T)]})
+# ------------------------------------------------------------------ room-reveal regions (same scheme as the keep)
+# doorways from the plan's brown door lines (any tile with door brown in it), plus the wall gaps they sit in
+pim = np.asarray(Image.open(os.path.join(ROOT, 'design/holdfast/plan.png')).convert('RGB')).astype(int)
+gm = (np.abs(pim - [124, 155, 92]).sum(-1) < 30); ys0, xs0 = np.where(gm[:2200, :2000])
+pa = pim[ys0.min():ys0.max() + 1, xs0.min():xs0.max() + 1]
+brown = (np.abs(pa - [184, 138, 90]).sum(-1) < 40)
+P_ = G['tile_plan_px']
+bf = brown[:H * P_, :W * P_].reshape(H, P_, W, P_).mean((1, 3))
+walk = ~block
+solidm = wallm | facem
+closedw = ndimage.binary_closing(np.pad(solidm, 8), structure=np.ones((7, 7)))[8:-8, 8:-8]
+outside = walk & ~body
+gate_t = walk & (g == 'gate') & body
+inner = walk & body & ~closedw & ~gate_t
+cc_ = np.isin(g, ['yard', 'cloister'])
+lab_r, n_in = ndimage.label(inner & ~cc_)
+lab_r[inner & cc_] = n_in + 1
+nxt = lab_r.max() + 1
+lab_r[outside] = nxt; lab_r[gate_t] = nxt + 1
+u = np.unique(lab_r); u = u[u > 0]
+comp = np.zeros(lab_r.max() + 1, int); comp[u] = np.arange(1, len(u) + 1); lab_r = comp[lab_r]; nreg = len(u)
+OUT_ID, GATE_ID = comp[nxt], comp[nxt + 1]
+# tiny pockets (< 6 tiles) join their largest neighbour
+for r in range(1, nreg + 1):
+    m = lab_r == r
+    if 0 < m.sum() < 6:
+        nb = lab_r[ndimage.binary_dilation(m, iterations=2) & ~m]; nb = nb[nb > 0]
+        if len(nb): lab_r[m] = np.bincount(nb).argmax()
+slots = np.zeros((3, H, W), np.int32); slots[0] = lab_r
+fill_ = lab_r == 0
+offs = sorted([(dx, dy) for dx in range(-3, 4) for dy in range(-3, 4)], key=lambda o: o[0] ** 2 + o[1] ** 2)
+for dx, dy in offs:
+    sh_ = np.roll(np.roll(lab_r, dy, 0), dx, 1)
+    ok = fill_ & (sh_ > 0)
+    for k in range(3):
+        put = ok & (slots[k] == 0)
+        for j in range(k): put &= (slots[j] != sh_)
+        slots[k] = np.where(put, sh_, slots[k])
+        ok &= ~put & ~((slots[:k + 1] == sh_).any(0))
+# faces below a wall belong to the room in front of them only (not to the room behind the wall)
+dist, (iy, ix) = ndimage.distance_transform_edt(slots[0] == 0, return_indices=True)
+far = (slots[0] == 0) & (dist <= 10); slots[0] = np.where(far, slots[0][iy, ix], slots[0])
+rnames = [''] * (nreg + 1)
+for lb in [{'name': 'Courtyard', 'pos': [int(cx * T), int(cy * T)]}] + labels:
+    tx_, ty_ = lb['pos'][0] // T, lb['pos'][1] // T
+    rid = lab_r[ty_, tx_] if lab_r[ty_, tx_] else (slots[0][ty_, tx_])
+    if rid and not rnames[rid]: rnames[rid] = lb['name']
+rnames[OUT_ID] = 'Outside the Holdfast'; rnames[GATE_ID] = 'Gate passage'
+for i in range(1, nreg + 1):
+    if not rnames[i]:
+        ys_, xs_ = np.where(lab_r == i); fy_, fx_ = (ys_.mean() - BY0) / (BY1 - BY0), (xs_.mean() - BX0) / (BX1 - BX0)
+        if (fy_ < .2 or fy_ > .8) and (fx_ < .2 or fx_ > .8):
+            rnames[i] = ('North' if fy_ < .5 else 'South') + ('-west' if fx_ < .5 else '-east') + ' tower'
+        else:
+            rnames[i] = 'Passage'
+regimg = np.dstack([slots[0], slots[1], slots[2], np.full((H, W), 255)]).astype(np.uint8)
+Image.fromarray(regimg, 'RGBA').save(os.path.join(ROOT, 'data/holdfast_gf_regions.png'))
+# wall torches: iron sconce on the north face of every room, 1-3 per room
+torches = []
+for r in range(1, nreg + 1):
+    m = lab_r == r
+    if m.sum() < 30 or rnames[r] in ('Outside the Holdfast', 'Courtyard'): continue
+    ys_, xs_ = np.where(m)
+    top = ys_.min()
+    row = [x for x in range(xs_.min() + 2, xs_.max() - 1) if top - 1 >= 0 and facem[top - 1, x] and facem[top - 1, x - 1] and facem[top - 1, x + 1]]
+    if not row:
+        continue
+    n = max(1, min(3, len(row) // 9))
+    for j in range(n):
+        x = row[int((j + 0.5) * len(row) / n)]
+        px, py = x * T + 8, (top - 1) * T + 2
+        img[py:py + 10, px - 1:px + 2] = (40, 34, 30); img[py + 1:py + 9, px] = (90, 80, 70)
+        img[py - 1:py + 1, px - 3:px + 4] = (40, 34, 30)
+        torches.append([int(px), int(py - 2), int(r)])
+Image.fromarray(np.clip(img, 0, 255).astype(np.uint8)).save(os.path.join(ROOT, 'art/game/holdfast/gf.png'), optimize=True)
 json.dump({'tile': T, 'size': [PW, PH], 'image': 'res://art/game/holdfast/gf.png', 'solid': rects(block),
-           'spawn': spawn, 'exit': spawn, 'stairs': stairs, 'rooms': labels}, open(os.path.join(ROOT, 'data/holdfast_gf.json'), 'w'))
+           'spawn': spawn, 'exit': spawn, 'stairs': stairs, 'rooms': labels,
+           'regions': 'res://data/holdfast_gf_regions.png', 'region_names': rnames, 'torches': torches}, open(os.path.join(ROOT, 'data/holdfast_gf.json'), 'w'))
 print('map', PW, PH, 'rooms', {v for v in names.values()}, 'stairs', len(stairs), 'spawn', spawn)
