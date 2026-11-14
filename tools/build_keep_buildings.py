@@ -128,10 +128,25 @@ y1 = 2445
 while (ringd[y1 - h:y1, x0:x0 + w] & foot).any():
     y1 += 4
 pos = (x0, y1 - h)
+# front portal (tools/holdfast_door.py): centred on the facade, bottom step 4 px below the ground line of that column
+import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from holdfast_door import draw_door
+dr = draw_door(); dh, dw = dr.shape[:2]
+gcx = w // 2
+gy = int(np.where(img[:, gcx, 3] > 0)[0].max())
+img = np.vstack([img, np.zeros((8, w, 4), np.uint8)])          # room for the steps below the old base
+dy0, dx0 = gy + 5 - dh, gcx - dw // 2
+reg_ = img[dy0:dy0 + dh, dx0:dx0 + dw]
+m_ = dr[..., 3] > 0
+reg_[m_] = dr[m_]
+h = img.shape[0]
+yy, xx = np.indices((h, w))
+foot = (img[..., 3] > 0) & (yy >= TOP)
+DOOR = [pos[0] + gcx, pos[1] + gy + 18]                          # where Kael stands to press E
 Image.fromarray(img).save(os.path.join(OUT, 'holdfast.png'))
-col_mask = ndimage.binary_opening(foot & ~ringd[pos[1]:pos[1] + h, pos[0]:pos[0] + w], iterations=2)
+col_mask = ndimage.binary_opening(foot & ~ringd[pos[1]:pos[1] + h, pos[0]:pos[0] + w] & (yy <= gy), iterations=2)
 data['holdfast'] = {'name': 'The Holdfast', 'image': 'res://art/game/keep/holdfast.png', 'pos': pos, 'size': [w, h],
-                    'collision': polys(col_mask, pos[0], pos[1], 1.0), 'z_line': pos[1] + TOP,
+                    'collision': polys(col_mask, pos[0], pos[1], 1.0), 'z_line': pos[1] + TOP, 'enter': DOOR,
                     'shadow': bake_shadow(img, pos, 'holdfast', apron=True)}
 # ---------------------------------------------------------------- Throne Hall (plan: rect 760,520 270x150)
 th = np.array(Image.open(os.path.join(SRC, 'throne_hall_src.png')).convert('RGBA'))

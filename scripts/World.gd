@@ -495,15 +495,17 @@ func _keep_exterior() -> void:
 				pts.append(Vector2(q[0], q[1]))
 			cp.polygon = pts
 			walls_body.add_child(cp)
+		if b.has("enter"):
+			HOLDFAST_DOOR = Vector2(b["enter"][0], b["enter"][1])
 		if b.has("door"):
 			keep_door = Vector2(b["door"][0], b["door"][1])
 			keep_sprite = sp
 
-const HOLDFAST_DOOR := Vector2(2489, 2468)       # front of the Holdfast (on its stone apron)
+var HOLDFAST_DOOR := Vector2(2489, 2443)         # foot of the Holdfast portal steps (data/keep_buildings.json "enter")
 var near_holdfast := false
 
 func _update_keep(foot: Vector2) -> void:
-	near_holdfast = level == 0 and foot.distance_to(HOLDFAST_DOOR) < 48.0
+	near_holdfast = level == 0 and foot.distance_to(HOLDFAST_DOOR) < 64.0
 	if near_holdfast and hint:
 		hint.visible = true
 		hint.text = "E: enter the Holdfast (ground floor)"
