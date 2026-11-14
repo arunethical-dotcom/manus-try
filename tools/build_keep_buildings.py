@@ -53,30 +53,25 @@ def polys(mask, ox, oy, s):
     return out
 
 data = {}
-# ---------------------------------------------------------------- The Holdfast (v2 art: castle on a rock mound)
-hf = np.array(Image.open(os.path.join(SRC, 'holdfast_v2_src.png')).convert('RGBA'))
+# ---------------------------------------------------------------- The Holdfast (v5 art: grey stone, joined from 4 quadrants)
+hf = np.array(Image.open(os.path.join(SRC, 'holdfast_v5_src.png')).convert('RGBA'))
 hf[..., 3] = np.where(hf[..., 3] > 128, 255, 0)
-lab_, n_ = ndimage.label(hf[..., 3] > 0)                     # drop stray specks, keep the castle
-sz_ = ndimage.sum(np.ones_like(lab_), lab_, range(1, n_ + 1))
-hf[..., 3] = np.where(lab_ == 1 + np.argmax(sz_), 255, 0)
-ys_, xs_ = np.where(hf[..., 3] > 0)
-CX0, CY0 = xs_.min(), ys_.min()
-hf = hf[CY0:ys_.max() + 1, CX0:xs_.max() + 1]
-# Size: as wide as the castle part of the earlier art (reference render). Place: north-west corner, the mound's
-# foot on the courtyard floor clear of the ring wall (searched with the mound footprint).
-W_HF = 1900
-w = W_HF; s = w / hf.shape[1]
+# Size: 1235 px wide (0.65 of the reference-render width, approved in review). Place: centred on the old Holdfast
+# footprint (x 2489), base line as low as the slot allows with the whole ground footprint clear of the ring wall.
+w = 1235; s = w / hf.shape[1]
 img = scaled(hf, w); h = img.shape[0]
 ring = np.asarray(Image.open(os.path.join(ROOT, 'art/source/walls/ring_world_v2.png')))[..., 3] > 0
 ringd = cv2.dilate(ring.astype(np.uint8), np.ones((17, 17), np.uint8)) > 0
 yy, xx = np.indices((h, w))
-TOP = round((640 - CY0) * s)                                # mound rim: below this the art stands on the ground
+TOP = round(h * 0.60)                                     # front range + corner-tower bases stand on the ground
 foot = (img[..., 3] > 0) & (yy >= TOP)
-# exact place from the reference render: the bridge foot (source 750,1029) sits at ref (510,545) -> world (2374,2444)
-x0 = round(2374 - (750 - CX0) * s); y1 = round(2444 + (h - 1 - (1029 - CY0) * s))
+cx = 2489
+x0 = cx - w // 2
+y1 = 2445
+while (ringd[y1 - h:y1, x0:x0 + w] & foot).any():
+    y1 += 4
 pos = (x0, y1 - h)
 Image.fromarray(img).save(os.path.join(OUT, 'holdfast.png'))
-sub_ring = ring[pos[1]:pos[1] + h, pos[0]:pos[0] + w]
 col_mask = ndimage.binary_opening(foot & ~ringd[pos[1]:pos[1] + h, pos[0]:pos[0] + w], iterations=2)
 data['holdfast'] = {'name': 'The Holdfast', 'image': 'res://art/game/keep/holdfast.png', 'pos': pos, 'size': [w, h],
                     'collision': polys(col_mask, pos[0], pos[1], 1.0), 'z_line': pos[1] + TOP}
