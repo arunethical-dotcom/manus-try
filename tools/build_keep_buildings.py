@@ -52,6 +52,63 @@ def polys(mask, ox, oy, s):
             out.append([[round(ox + x * s, 1), round(oy + y * s, 1)] for x, y in c])
     return out
 
+
+def bake_shadow(img, pos, name, apron=False):
+    """Same look as tools/build_shadows.py (walls): cast shadow projected by height (KX 0.5, KY 0.2, cap 700) in
+    (38,30,78) up to alpha 96, plus a contact shadow (alpha up to 215) under the base so the building sits on the
+    ground. Ground line per column = lowest opaque pixel of that column (the base the building stands on)."""
+    KX, KY, HCAP = 0.50, 0.20, 700
+    a = img[..., 3] > 0
+    h, w = a.shape
+    has = a.any(0)
+    gl = np.where(has, h - 1 - np.argmax(a[::-1], axis=0), -1)          # ground line per column (local y)
+    PL, PR, PB = 40, 380, 180
+    W2, H2 = w + PL + PR, h + PB
+    yy, xx = np.nonzero(a)
+    gy = gl[xx]
+    hh = np.minimum(np.maximum(0, gy - yy), HCAP).astype(np.float32)
+    tx = np.round(xx + KX * hh).astype(int) + PL
+    ty = np.round(gy + KY * hh).astype(int)
+    ok = (tx >= 0) & (tx < W2) & (ty >= 0) & (ty < H2)
+    S = np.zeros((H2, W2), np.uint8); S[ty[ok], tx[ok]] = 255
+    S = cv2.morphologyEx(S, cv2.MORPH_CLOSE, np.ones((9, 9), np.uint8)); S = cv2.GaussianBlur(S, (0, 0), 2.0)
+    foot = np.zeros((H2, W2), bool)
+    cols = np.where(has)[0]
+    foot[gl[cols], cols + PL] = True
+    D = 44
+    C = np.zeros((H2, W2), np.float32)
+    for k in range(1, D + 1):
+        sh_ = np.zeros_like(foot); sh_[k:] = foot[:-k]
+        C = np.maximum(C, sh_ * (1.0 - k / (D + 1)) ** 1.6)
+    C = cv2.GaussianBlur(C, (0, 0), 2.5)
+    C = np.maximum(C, cv2.GaussianBlur(foot.astype(np.float32), (0, 0), 3.0) * 1.4)
+    al = np.maximum(S.astype(np.float32) / 255 * 96, np.clip(C * 1.5, 0, 1) * 225)
+    al[:h, PL:PL + w][a] = 0                                              # never draw over the building itself
+    out = np.zeros((H2, W2, 4), np.uint8); out[..., 0], out[..., 1], out[..., 2] = 38, 30, 78
+    out[..., 3] = al.astype(np.uint8)
+    if apron:
+        # stone paving apron round the foot: floor-slab texture (art/game/floor_atlas.png), darkened to sit in the
+        # shadow, 28 px wide in front, 14 px at the sides, with a 2 px dark edge; the shadow is drawn over it
+        tex = np.asarray(Image.open(os.path.join(ROOT, 'art/game/floor_atlas.png')).convert('RGB')).astype(np.float32)
+        base = np.zeros((H2, W2), np.uint8)
+        base[gl[cols], cols + PL] = 1
+        for k in range(1, 6):                                            # base = bottom 5 px of the building
+            idx = gl[cols] - k; base[np.clip(idx, 0, H2 - 1), cols + PL] = 1
+        ap = cv2.dilate(base, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (37, 21))) > 0
+        for dd in (10, 20, 30):
+            ap2 = np.zeros_like(ap); ap2[dd:] = ap[:-dd]; ap |= ap2                # deeper in front
+        bmask = np.zeros((H2, W2), bool); bmask[:h, PL:PL + w] = a
+        ap &= ~bmask
+        Y, X = np.indices((H2, W2))
+        col = tex[(Y + pos[1]) % 128, (X + pos[0] - PL) % 128] * 0.82
+        edge = ap & ~cv2.erode(ap.astype(np.uint8), np.ones((5, 5), np.uint8)).astype(bool)
+        col[edge] = (60, 48, 44)
+        sh = np.minimum(al / 255.0, 0.55)[..., None]
+        mix = col * (1 - sh) + np.array([38, 30, 78], np.float32) * sh
+        out[ap, :3] = mix[ap].astype(np.uint8); out[ap, 3] = 255
+    Image.fromarray(out).save(os.path.join(OUT, name + '_shadow.png'))
+    return {'image': 'res://art/game/keep/%s_shadow.png' % name, 'pos': [pos[0] - PL, pos[1]]}
+
 data = {}
 # ---------------------------------------------------------------- The Holdfast (v5 art: grey stone, joined from 4 quadrants)
 hf = np.array(Image.open(os.path.join(SRC, 'holdfast_v5_src.png')).convert('RGBA'))
@@ -74,7 +131,8 @@ pos = (x0, y1 - h)
 Image.fromarray(img).save(os.path.join(OUT, 'holdfast.png'))
 col_mask = ndimage.binary_opening(foot & ~ringd[pos[1]:pos[1] + h, pos[0]:pos[0] + w], iterations=2)
 data['holdfast'] = {'name': 'The Holdfast', 'image': 'res://art/game/keep/holdfast.png', 'pos': pos, 'size': [w, h],
-                    'collision': polys(col_mask, pos[0], pos[1], 1.0), 'z_line': pos[1] + TOP}
+                    'collision': polys(col_mask, pos[0], pos[1], 1.0), 'z_line': pos[1] + TOP,
+                    'shadow': bake_shadow(img, pos, 'holdfast', apron=True)}
 # ---------------------------------------------------------------- Throne Hall (plan: rect 760,520 270x150)
 th = np.array(Image.open(os.path.join(SRC, 'throne_hall_src.png')).convert('RGBA'))
 th[..., 3] = np.where(th[..., 3] > 128, 255, 0)
@@ -98,7 +156,8 @@ m[995:1015, 548:692] = False                      # the door threshold stays rea
 m = ndimage.binary_opening(m, iterations=2)
 data['throne_hall'] = {'name': 'Throne Hall', 'image': 'res://art/game/keep/throne_hall.png', 'pos': pos, 'size': [w, h],
                        'collision': polys(m, pos[0], pos[1], s), 'z_line': round(pos[1] + 1000 * s),
-                       'door': [round(pos[0] + 620 * s), round(pos[1] + 1030 * s)]}
+                       'door': [round(pos[0] + 620 * s), round(pos[1] + 1030 * s)],
+                       'shadow': bake_shadow(img, pos, 'throne_hall')}
 json.dump(data, open(os.path.join(ROOT, 'data/keep_buildings.json'), 'w'), indent=1)
 for k, v in data.items():
     print(k, 'pos', v['pos'], 'size', v['size'], 'z', v['z_line'], 'polys', len(v['collision']), 'door', v.get('door'))

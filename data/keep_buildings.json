@@ -378,7 +378,14 @@
     ]
    ]
   ],
-  "z_line": 1856
+  "z_line": 1856,
+  "shadow": {
+   "image": "res://art/game/keep/holdfast_shadow.png",
+   "pos": [
+    1832,
+    973
+   ]
+  }
  },
  "throne_hall": {
   "name": "Throne Hall",
@@ -891,6 +898,13 @@
   "door": [
    4008,
    3102
-  ]
+  ],
+  "shadow": {
+   "image": "res://art/game/keep/throne_hall_shadow.png",
+   "pos": [
+    3466,
+    2268
+   ]
+  }
  }
 }

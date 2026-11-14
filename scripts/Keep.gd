@@ -89,7 +89,7 @@ func _parse_v(s: String) -> Vector2:
 
 func _inputs() -> void:
 	var map := {"move_up": [KEY_W, KEY_UP], "move_down": [KEY_S, KEY_DOWN], "move_left": [KEY_A, KEY_LEFT],
-		"move_right": [KEY_D, KEY_RIGHT], "run": [KEY_SHIFT], "interact": [KEY_E]}
+		"move_right": [KEY_D, KEY_RIGHT], "run": [KEY_SHIFT], "interact": [KEY_E], "attack": [KEY_SPACE]}
 	for act in map:
 		if not InputMap.has_action(act):
 			InputMap.add_action(act)
@@ -248,10 +248,10 @@ func _runners(route_id: String, n: int, col: Color, end_spread: Rect2) -> void:
 func _player() -> void:
 	player = CharacterBody2D.new(); player.name = "Kael"
 	player.set_script(load("res://scripts/Player.gd"))
-	var sh := Sprite2D.new(); sh.name = "Shadow"; sh.texture = t("res://art/game/kael_shadow.png"); sh.position = Vector2(1, -1)
+	var sh := Sprite2D.new(); sh.name = "Shadow"; sh.texture = t("res://art/game/kael3/shadow.png"); sh.position = Vector2(0, -5)
 	player.add_child(sh)
-	var sp := Sprite2D.new(); sp.name = "Sprite"; sp.texture = t("res://art/game/kael.png"); sp.hframes = 4; sp.vframes = 4
-	sp.centered = false; sp.offset = Vector2(-8, -28)
+	var sp := Sprite2D.new(); sp.name = "Sprite"; sp.texture = t("res://art/game/kael3/idle.png"); sp.hframes = 12; sp.vframes = 4
+	sp.centered = false; sp.offset = Vector2(-32, -46)
 	player.add_child(sp)
 	var cs := CollisionShape2D.new(); var rs := RectangleShape2D.new(); rs.size = Vector2(12, 6)
 	cs.shape = rs; cs.position = Vector2(0, -3)

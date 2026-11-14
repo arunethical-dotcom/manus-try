@@ -194,7 +194,7 @@ func _inputs() -> void:
 	var map := {
 		"move_up": [KEY_W, KEY_UP], "move_down": [KEY_S, KEY_DOWN],
 		"move_left": [KEY_A, KEY_LEFT], "move_right": [KEY_D, KEY_RIGHT],
-		"run": [KEY_SHIFT], "toggle_map": [KEY_M], "interact": [KEY_E],
+		"run": [KEY_SHIFT], "toggle_map": [KEY_M], "interact": [KEY_E], "attack": [KEY_SPACE],
 	}
 	for act in map:
 		if not InputMap.has_action(act):
@@ -309,10 +309,10 @@ func _player() -> void:
 	player = CharacterBody2D.new()
 	player.name = "Kael"
 	player.set_script(load("res://scripts/Player.gd"))
-	var sh := Sprite2D.new(); sh.name = "Shadow"; sh.texture = t("kael_shadow"); sh.position = Vector2(1, -1)
+	var sh := Sprite2D.new(); sh.name = "Shadow"; sh.texture = load("res://art/game/kael3/shadow.png"); sh.position = Vector2(0, -5)
 	player.add_child(sh)
-	var sp := Sprite2D.new(); sp.name = "Sprite"; sp.texture = t("kael"); sp.hframes = 4; sp.vframes = 4
-	sp.centered = false; sp.offset = Vector2(-8, -28)
+	var sp := Sprite2D.new(); sp.name = "Sprite"; sp.texture = load("res://art/game/kael3/idle.png"); sp.hframes = 12; sp.vframes = 4
+	sp.centered = false; sp.offset = Vector2(-32, -46)
 	player.add_child(sp)
 	var cs := CollisionShape2D.new()
 	var rs := RectangleShape2D.new(); rs.size = Vector2(12, 6)
@@ -467,6 +467,13 @@ func _keep_exterior() -> void:
 	var B: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/keep_buildings.json"))
 	for id in B:
 		var b: Dictionary = B[id]
+		if b.has("shadow"):                          # baked ground shadow (cast + contact), under the building
+			var shs := Sprite2D.new()
+			shs.texture = load(String(b["shadow"]["image"]))
+			shs.centered = false
+			shs.position = Vector2(b["shadow"]["pos"][0], b["shadow"]["pos"][1])
+			shs.z_index = 1
+			add_child(shs)
 		var sp := Sprite2D.new()
 		sp.name = String(id)
 		sp.texture = load(String(b["image"]))
