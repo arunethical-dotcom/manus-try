@@ -124,9 +124,13 @@ print('curtain thinned to 3 tiles:', tot, 'tiles became floor')
 # ------------------------------------------------------------------ servants' room bigger, stores smaller (user)
 # servants x 27-43: was y 58-67, now y 54-71 (north wall moves up to y 52-53, south wall down to y 72-73);
 # the cloister door x 46-49 at y 68-69 keeps a passage x 46-49 down into the stores (now y 74-84)
-g[52:54, 24:44] = 'wall'; g[54:58, 27:44] = 'room'
+g[52:54, 27:44] = 'room'; g[54:56, 24:44] = 'wall'; g[56:58, 27:44] = 'room'   # pantry grows 2 rows (user)
 g[68:72, 27:44] = 'room'; g[72:74, 24:46] = 'wall'
 g[68:74, 44:46] = 'wall'; g[70:74, 46:50] = 'room'
+
+# kitchen grows east into the armoury (wall x 48-49 -> x 52-53), guardroom takes the NE tower's wall block
+g[27:42, 48:52] = 'room'; g[23:42, 52:54] = 'wall'
+g[27:30, 86:94] = 'room'
 
 # ------------------------------------------------------------------ rooms (for floor style + names)
 floor = np.isin(g, ['room', 'door'])
