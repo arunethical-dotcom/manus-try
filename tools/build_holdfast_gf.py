@@ -135,7 +135,7 @@ g[27:42, 48:56] = 'room'; g[23:42, 56:58] = 'wall'; g[23:42, 58:76] = 'room'; g[
 g[23:27, 46:56] = 'wall'
 # the projecting north block (outside y 20, was x 46-73) follows the armoury east so it sits centred over it
 # (x 52-79); over the kitchen the edge drops back to the straight curtain line (y 24)
-g[20:24, 46:52] = 'ground'; g[20:24, 52:80] = 'wall'; g[23, 58:76] = 'room'
+g[20:24, 46:80] = 'ground'; g[24:27, 56:78] = 'wall'          # (user) no projecting block: straight north edge
 # (user) the pantry's north wall (kitchen / pantry, y 42-43) moves one tile north
 for x in range(27, 46):
     if g[42, x] in ('wall', 'door') and g[41, x] == 'room' and g[44, x] == 'room':
