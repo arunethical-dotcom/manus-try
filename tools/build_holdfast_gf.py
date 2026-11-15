@@ -131,12 +131,12 @@ g[68:74, 44:46] = 'wall'; g[70:74, 46:50] = 'room'
 # kitchen grows east into the armoury (wall x 48-49 -> x 52-53), guardroom takes the NE tower's wall block
 g[27:30, 86:94] = 'room'
 # (user) armoury keeps its size (16 tiles) and moves 4 tiles east: kitchen grows east, guardroom shrinks
-g[27:42, 48:56] = 'room'; g[23:42, 56:58] = 'wall'; g[23:42, 58:74] = 'room'; g[23:42, 74:76] = 'wall'
+g[27:42, 48:56] = 'room'; g[23:42, 56:58] = 'wall'; g[23:42, 58:76] = 'room'; g[23:42, 76:78] = 'wall'          # armoury east wall 2 tiles further east (user)
 g[23:27, 46:56] = 'wall'
-# (user) the pantry's north wall (kitchen / pantry, y 42-43) moves one tile south
+# (user) the pantry's north wall (kitchen / pantry, y 42-43) moves one tile north
 for x in range(27, 46):
-    if g[42, x] in ('wall', 'door') and g[44, x] == 'room':
-        g[44, x] = g[43, x]; g[43, x] = g[42, x]; g[42, x] = 'room'
+    if g[42, x] in ('wall', 'door') and g[41, x] == 'room' and g[44, x] == 'room':
+        g[41, x] = g[42, x]; g[42, x] = g[43, x]; g[43, x] = 'room'
 
 # ------------------------------------------------------------------ rooms (for floor style + names)
 floor = np.isin(g, ['room', 'door'])
