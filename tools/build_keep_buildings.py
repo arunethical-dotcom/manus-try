@@ -150,35 +150,32 @@ col_mask = ndimage.binary_opening(foot & ~ringd[pos[1]:pos[1] + h, pos[0]:pos[0]
 data['holdfast'] = {'name': 'The Holdfast', 'image': 'res://art/game/keep/holdfast.png', 'pos': pos, 'size': [w, h],
                     'collision': polys(col_mask, pos[0], pos[1], 1.0), 'z_line': pos[1] + TOP, 'enter': DOOR,
                     'shadow': bake_shadow(img, pos, 'holdfast', apron=True)}
-# ---------------------------------------------------------------- Throne Hall (plan: rect 760,520 270x150)
-th = np.array(Image.open(os.path.join(SRC, 'throne_hall_src.png')).convert('RGBA'))
+# ---------------------------------------------------------------- Throne Hall (v7: the user's matched quarters at 2x,
+# joined on a plain grid -> art/source/keep/v7/throne_hall_v4_src.png, 2171 x 2528)
+th = np.array(Image.open(os.path.join(ROOT, 'art/source/keep/v7/throne_hall_v4_src.png')).convert('RGBA'))
 th[..., 3] = np.where(th[..., 3] > 128, 255, 0)
-# From the reference town render (ref->world x = 558 + X*3.56, y = 705 + Y*3.19): hall spans ref x 828..1110,
-# bottom step at ref y 812  ->  world x 3506..4510, base y 3295.
-x0, x1, y1 = 3506, 4510, 3295
-# the ring was widened (tools/expand_ring.py): move the hall with the wall it was placed against
+# Placed on its plan footprint (design/keep/red-keep-plan.html: rect 760,520 270x150): the main body (corner towers,
+# source x 640..2124) spans the footprint's width, the towers' base (source y 2450) stands on its south edge; the
+# covered walkway on the west runs toward the waiting gallery (plan 560..740), as in the plan.
+fx0, fy0 = W(760, 520); fx1, fy1 = W(1030, 670)
 import sys as _s; _s.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 if os.path.exists(os.path.join(ROOT, 'data/ring_xform.json')):
     import expand_layout; _T, _ = expand_layout.load(os.path.join(ROOT, 'data/ring_xform.json'))
-    _dx = _T(x0, y1)[0] - x0; x0 += _dx; x1 += _dx
-w = round(x1 - x0); s = w / th.shape[1]
+    _dx = _T(fx0, fy1)[0] - fx0; fx0 += _dx; fx1 += _dx
+AXIS, DOOR_Y, BODY0, BODY1, BASE_Y = 1482, 2093, 640, 2124, 2450
+s = (fx1 - fx0) / (BODY1 - BODY0); w = round(th.shape[1] * s)
 img = scaled(th, w); h = img.shape[0]
-pos = (round(x0), round(y1 - h))
+pos = (round(fx0 - BODY0 * s), round(fy1 - BASE_Y * s))
+print('throne footprint world', round(fx0), round(fy0), round(fx1), round(fy1), 'scale', round(s, 3))
 Image.fromarray(img).save(os.path.join(OUT, 'throne_hall.png'))
 H0, W0 = th.shape[:2]
-m = np.zeros((H0, W0), bool)
-m[560:1002, :] = th[560:1002, :, 3] > 0          # the hall itself, from its rear wall line to the front base
-for bx0, bx1 in ((398, 470), (770, 842)):         # the two king statues on their plinths
-    m[995:1112, bx0:bx1] = th[995:1112, bx0:bx1, 3] > 0
-m[995:1150, 0:345] = th[995:1150, 0:345, 3] > 0     # the lower bases of the side wings
-m[995:1150, 895:] = th[995:1150, 895:, 3] > 0
-for bx0, bx1 in ((338, 392), (848, 902)):         # braziers
-    m[1040:1135, bx0:bx1] = th[1040:1135, bx0:bx1, 3] > 0
-m[995:1015, 548:692] = False                      # the door threshold stays reachable
-m = ndimage.binary_opening(m, iterations=2)
+yy0, xx0 = np.indices((H0, W0))
+m = (th[..., 3] > 0) & (yy0 >= 1150)          # ground footprint: the lower part (front range, towers, walkway base)
+m &= ~((yy0 >= DOOR_Y - 20) & (xx0 >= 1030) & (xx0 <= 1930))   # the stairs up to the door stay walkable
+m = ndimage.binary_opening(m, iterations=3)
 data['throne_hall'] = {'name': 'Throne Hall', 'image': 'res://art/game/keep/throne_hall.png', 'pos': pos, 'size': [w, h],
-                       'collision': polys(m, pos[0], pos[1], s), 'z_line': round(pos[1] + 1000 * s),
-                       'door': [round(pos[0] + 620 * s), round(pos[1] + 1030 * s)],
+                       'collision': polys(m, pos[0], pos[1], s), 'z_line': round(pos[1] + DOOR_Y * s),
+                       'door': [round(pos[0] + AXIS * s), round(pos[1] + (DOOR_Y + 40) * s)],
                        'shadow': bake_shadow(img, pos, 'throne_hall')}
 json.dump(data, open(os.path.join(ROOT, 'data/keep_buildings.json'), 'w'), indent=1)
 for k, v in data.items():
