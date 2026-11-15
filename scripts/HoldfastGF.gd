@@ -111,8 +111,14 @@ func _torches() -> void:
 		fl.scale = Vector2(0.5, 0.5); fl.centered = false
 		fl.offset = Vector2(-fl.texture.get_width() / 8.0, -fl.texture.get_height())
 		tn.add_child(fl)
+		var painted: bool = tc.size() > 3 and int(tc[3]) == 1     # flame already painted in the floor art
+		if painted:                                   # our animated flame sits over the painted one
+			tn.position += Vector2(0, 16)
+			fl.scale = Vector2(0.95, 0.95)
+			fl.modulate = Color(1, 1, 1, 0.92)
+			fl.offset = Vector2(-fl.texture.get_width() / 8.0, -fl.texture.get_height())
 		var lt := PointLight2D.new(); lt.texture = light_tex; lt.texture_scale = 1.3; lt.energy = 0.95
-		lt.color = Color(1.0, 0.68, 0.36); lt.position = Vector2(0, 10); lt.enabled = false
+		lt.color = Color(1.0, 0.68, 0.36); lt.position = Vector2(0, -6 if painted else 10); lt.enabled = false
 		tn.add_child(lt)
 		add_child(tn)
 		torches.append({"flame": fl, "light": lt, "reg": int(tc[2]), "x": float(tc[0])})
