@@ -85,54 +85,28 @@ g[cl] = 'cloister'
 g[(g == 'door') & ~body] = 'gate'
 
 # ------------------------------------------------------------------ thinner outer curtain (user: more room inside,
-# same outside size). Only the straight curtain runs between the towers are thinned: on each side, every row/column
-# whose castle edge lies on that side's straight line is scanned inward; a wall run of the usual curtain thickness
-# with floor right behind it is cut to CURTAIN tiles and the rest becomes floor of the room behind. Tower walls, inner
-# walls (longer runs) and junctions (unusual run lengths) are left as they are.
-CURTAIN = int(os.environ.get('CURTAIN', 3))
-flo_ = np.isin(g, ['room', 'cloister', 'yard', 'door'])
-def thin_side(get_line, n_lines, length):
-    runs = []
-    edges = []
-    for i in range(n_lines):
-        b_ = get_line(body, i); w_ = get_line(g == 'wall', i)
-        idx = np.where(b_)[0]
-        edges.append(idx[0] if len(idx) else -1)
-    ev = np.array(edges); straight = np.bincount(ev[ev >= 0]).argmax()
-    for i in range(n_lines):
-        if ev[i] != straight: continue
-        w_ = get_line(g == 'wall', i); f_ = get_line(flo_, i)
-        L = 0
-        while straight + L < length and w_[straight + L]: L += 1
-        if straight + L < length and f_[straight + L]: runs.append((i, L))
-    if not runs: return 0
-    mode = np.bincount([L for _, L in runs]).argmax(); n = 0
-    for i, L in runs:
-        if mode - 3 <= L <= mode + 4 and L > CURTAIN:          # +4: short spurs on the curtain go too
-            for k in range(CURTAIN, L):
-                yield_ = (i, straight + k)
-                set_tile(yield_); n += 1
-    return n
-cur = None
-def set_tile(t):
-    y, x = cur(*t); g[y, x] = 'room'
-g_before_thin = g.copy()
+# same outside size). The cleaned plan's curtain is 6 tiles thick; on every straight run between the corner towers
+# it is cut to 3 tiles (the outer half stays, the inner half becomes floor of the room behind it). Laid out by hand
+# against the grid (tiles): west x 20-25, east x 98-103, south y 82-87, north y 24-29 (kitchen, guardroom) and the
+# projecting north block over the tower armoury y 20-25. Inner walls and the corner towers are not touched.
+def isfl(v): return v in ('room', 'cloister', 'yard', 'door')
 tot = 0
-cur = lambda i, k: (i, k);              tot += thin_side(lambda m, i: m[i, :], H, W)            # west
-cur = lambda i, k: (i, W - 1 - k);      tot += thin_side(lambda m, i: m[i, ::-1], H, W)         # east
-cur = lambda i, k: (k, i);              tot += thin_side(lambda m, i: m[:, i], W, H)            # north
-cur = lambda i, k: (H - 1 - k, i);      tot += thin_side(lambda m, i: m[::-1, i], W, H)         # south
-# never let the new floor join two rooms that were separate (e.g. a tower and the room beside it): revert such groups
-newf = (g == 'room') & (g_before_thin == 'wall')
-ofl = np.isin(g_before_thin, ['room', 'cloister', 'yard', 'door'])
-olab, _ = ndimage.label(ofl)
-nlab, nn = ndimage.label(newf)
-for i in range(1, nn + 1):
-    m = nlab == i
-    touch = set(np.unique(olab[ndimage.binary_dilation(m) & ~m])) - {0}
-    if len(touch) > 1:
-        g[m] = 'wall'; tot -= int(m.sum())
-print('curtain thinned to', CURTAIN, 'tiles:', tot, 'tiles became floor')
+for y in range(36, 76):                                     # west / east runs, clear of the towers
+    if isfl(g[y, 26]) and all(g[y, x] == 'wall' for x in range(23, 26)):
+        g[y, 23:26] = 'room'; tot += 3
+    if isfl(g[y, 97]) and all(g[y, x] == 'wall' for x in range(98, 101)):
+        g[y, 98:101] = 'room'; tot += 3
+for x in range(30, 90):                                     # south run
+    if isfl(g[81, x]) and all(g[y, x] == 'wall' for y in range(82, 85)):
+        g[82:85, x] = 'room'; tot += 3
+for x in list(range(30, 46)) + list(range(74, 90)):         # north run over the kitchen and the guardroom
+    if isfl(g[30, x]) and all(g[y, x] in ('wall', 'hearth') for y in range(27, 30)):
+        g[27:30, x] = 'room'; tot += 3
+# kitchen fireplace goes back with the wall face: rows 25-26 over the same columns
+for x in range(30, 46):
+    if raw[28, x] == 'hearth' or raw[29, x] == 'hearth' or (x >= 34 and x <= 39):
+        if g[26, x] == 'wall': g[25:27, x] = 'hearth'
+print('curtain thinned to 3 tiles:', tot, 'tiles became floor')
 
 # ------------------------------------------------------------------ rooms (for floor style + names)
 floor = np.isin(g, ['room', 'door'])
