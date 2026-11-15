@@ -109,11 +109,12 @@ for x in range(33, 46):                                       # kitchen fireplac
         g[25:27, x] = 'hearth'
 # tower armoury block (x 46-73, y 20-37): outer wall y 20-22 (3 tiles), side walls 2 tiles (x 48-49, x 70-71);
 # the old 2-tile sliver room above it joins the armoury, the kitchen and guardroom grow into the old side walls
-g[23:38, 50:70] = 'room'; g[20:23, 46:74] = 'wall'
-g[23:38, 48:50] = 'wall'; g[23:38, 70:72] = 'wall'
-for y in range(27, 38):
+# armoury runs down to the 2-tile wall over the cloister (y 42-43, door x 59-60 stays)
+g[23:42, 50:70] = 'room'; g[20:23, 46:74] = 'wall'
+g[23:42, 48:50] = 'wall'; g[23:42, 70:72] = 'wall'
+for y in range(27, 42):
     if isfl(g[y, 45]): g[y, 46:48] = 'room'
-    if isfl(g[y, 74]): g[y, 72:74] = 'room'
+    if isfl(g[y, 78]) or isfl(g[y - 1, 78]): g[y, 72:78] = 'room'
 g[23:27, 46:48] = 'wall'; g[23:27, 72:74] = 'wall'
 # SE tower: its west wall on the south run was a 7-tile block; 2 tiles like the SW tower, bunks room grows
 for x in range(82, 91):
