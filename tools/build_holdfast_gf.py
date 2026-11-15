@@ -91,21 +91,33 @@ g[(g == 'door') & ~body] = 'gate'
 # projecting north block over the tower armoury y 20-25. Inner walls and the corner towers are not touched.
 def isfl(v): return v in ('room', 'cloister', 'yard', 'door')
 tot = 0
-for y in range(36, 76):                                     # west / east runs, clear of the towers
-    if isfl(g[y, 26]) and all(g[y, x] == 'wall' for x in range(23, 26)):
-        g[y, 23:26] = 'room'; tot += 3
-    if isfl(g[y, 97]) and all(g[y, x] == 'wall' for x in range(98, 101)):
+# grid columns/rows (checked on the printed grid): west curtain x 24-29, east x 98-103, south y 82-87, north over the
+# kitchen and guardroom y 24-29; the outer three stay, the inner three become floor. Corner towers excluded.
+for y in range(33, 80):
+    if isfl(g[y, 30]) and all(g[y, x] == 'wall' for x in range(24, 30)):
+        g[y, 27:30] = 'room'; tot += 3
+    if isfl(g[y, 97]) and all(g[y, x] == 'wall' for x in range(98, 104)):
         g[y, 98:101] = 'room'; tot += 3
-for x in range(30, 90):                                     # south run
-    if isfl(g[81, x]) and all(g[y, x] == 'wall' for y in range(82, 85)):
+for x in range(33, 86):
+    if isfl(g[81, x]) and all(g[y, x] == 'wall' for y in range(82, 88)):
         g[82:85, x] = 'room'; tot += 3
-for x in list(range(30, 46)) + list(range(74, 90)):         # north run over the kitchen and the guardroom
-    if isfl(g[30, x]) and all(g[y, x] in ('wall', 'hearth') for y in range(27, 30)):
+for x in list(range(33, 46)) + list(range(74, 86)):
+    if isfl(g[30, x]) and all(g[y, x] in ('wall', 'hearth') for y in range(24, 30)):
         g[27:30, x] = 'room'; tot += 3
-# kitchen fireplace goes back with the wall face: rows 25-26 over the same columns
-for x in range(30, 46):
-    if raw[28, x] == 'hearth' or raw[29, x] == 'hearth' or (x >= 34 and x <= 39):
-        if g[26, x] == 'wall': g[25:27, x] = 'hearth'
+for x in range(33, 46):                                       # kitchen fireplace back into the new wall face
+    if g[26, x] == 'wall' and raw[24:32, x].tolist().count('hearth'):
+        g[25:27, x] = 'hearth'
+# tower armoury block (x 46-73, y 20-37): outer wall y 20-22 (3 tiles), side walls 2 tiles (x 48-49, x 70-71);
+# the old 2-tile sliver room above it joins the armoury, the kitchen and guardroom grow into the old side walls
+g[23:38, 50:70] = 'room'; g[20:23, 46:74] = 'wall'
+g[23:38, 48:50] = 'wall'; g[23:38, 70:72] = 'wall'
+for y in range(27, 38):
+    if isfl(g[y, 45]): g[y, 46:48] = 'room'
+    if isfl(g[y, 74]): g[y, 72:74] = 'room'
+g[23:27, 46:48] = 'wall'; g[23:27, 72:74] = 'wall'
+# SE tower: its west wall on the south run was a 7-tile block; 2 tiles like the SW tower, bunks room grows
+for x in range(82, 91):
+    if isfl(g[81, x]) and (g[82:85, x] == 'wall').all(): g[82:85, x] = 'room'; tot += 3
 print('curtain thinned to 3 tiles:', tot, 'tiles became floor')
 
 # ------------------------------------------------------------------ rooms (for floor style + names)
