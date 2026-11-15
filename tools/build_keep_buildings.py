@@ -144,7 +144,9 @@ reg_[m_] = dr[m_]
 h = img.shape[0]
 yy, xx = np.indices((h, w))
 foot = (img[..., 3] > 0) & (yy >= TOP)
-DOOR = [pos[0] + gcx, pos[1] + gy + 18]                          # where Kael stands to press E
+DOOR = [pos[0] + gcx, pos[1] + gy + 18]
+if w == 1536:
+    import holdfast_fixes; img = holdfast_fixes.fix(img)                          # where Kael stands to press E
 Image.fromarray(img).save(os.path.join(OUT, 'holdfast.png'))
 col_mask = ndimage.binary_opening(foot & ~ringd[pos[1]:pos[1] + h, pos[0]:pos[0] + w] & (yy <= gy), iterations=2)
 data['holdfast'] = {'name': 'The Holdfast', 'image': 'res://art/game/keep/holdfast.png', 'pos': pos, 'size': [w, h],
