@@ -141,6 +141,13 @@ for x in range(27, 46):
     if g[42, x] in ('wall', 'door') and g[41, x] == 'room' and g[44, x] == 'room':
         g[41, x] = g[42, x]; g[42, x] = g[43, x]; g[43, x] = 'room'
 
+# free-standing wall stubs (small wall pieces with floor all round, left over from the plan) -> floor
+_lab, _n = ndimage.label(np.isin(g, ['wall', 'hearth']))
+for _i in range(1, _n + 1):
+    _m = _lab == _i
+    if _m.sum() < 12 and set(g[ndimage.binary_dilation(_m) & ~_m]) <= {'room'}:
+        g[_m] = 'room'
+
 # ------------------------------------------------------------------ rooms (for floor style + names)
 floor = np.isin(g, ['room', 'door'])
 rl, nr = ndimage.label(np.isin(g, ['room']))
