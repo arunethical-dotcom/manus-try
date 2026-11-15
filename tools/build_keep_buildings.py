@@ -110,12 +110,14 @@ def bake_shadow(img, pos, name, apron=False):
     return {'image': 'res://art/game/keep/%s_shadow.png' % name, 'pos': [pos[0] - PL, pos[1]]}
 
 data = {}
-# ---------------------------------------------------------------- The Holdfast (v5 art: grey stone, joined from 4 quadrants)
-hf = np.array(Image.open(os.path.join(SRC, 'holdfast_v5_src.png')).convert('RGBA'))
+# ---------------------------------------------------------------- The Holdfast (v6 art: the user's redrawn quarters, joined)
+hf = np.array(Image.open(os.path.join(ROOT, 'art/source/keep/v6/holdfast_v6_src.png')).convert('RGBA'))
 hf[..., 3] = np.where(hf[..., 3] > 128, 255, 0)
 # Size: 1235 px wide (0.65 of the reference-render width, approved in review). Place: centred on the old Holdfast
 # footprint (x 2489), base line as low as the slot allows with the whole ground footprint clear of the ring wall.
-w = 1235; s = w / hf.shape[1]
+# Size matched to the interior (data/holdfast_gf.json): the ground floor measures 1536 px across its corner towers
+# (96 tiles), so the outside is drawn 1536 px wide too; same 16 px tile, same Kael, inside == outside.
+w = 1536; s = w / hf.shape[1]
 img = scaled(hf, w); h = img.shape[0]
 ring = np.asarray(Image.open(os.path.join(ROOT, 'art/source/walls/ring_world_v2.png')))[..., 3] > 0
 ringd = cv2.dilate(ring.astype(np.uint8), np.ones((17, 17), np.uint8)) > 0
