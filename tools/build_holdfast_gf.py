@@ -121,15 +121,22 @@ for x in range(82, 91):
     if isfl(g[81, x]) and (g[82:85, x] == 'wall').all(): g[82:85, x] = 'room'; tot += 3
 print('curtain thinned to 3 tiles:', tot, 'tiles became floor')
 
+# ------------------------------------------------------------------ servants' room bigger, stores smaller (user)
+# servants x 27-43: was y 58-67, now y 54-71 (north wall moves up to y 52-53, south wall down to y 72-73);
+# the cloister door x 46-49 at y 68-69 keeps a passage x 46-49 down into the stores (now y 74-84)
+g[52:54, 24:44] = 'wall'; g[54:58, 27:44] = 'room'
+g[68:72, 27:44] = 'room'; g[72:74, 24:46] = 'wall'
+g[68:74, 44:46] = 'wall'; g[70:74, 46:50] = 'room'
+
 # ------------------------------------------------------------------ rooms (for floor style + names)
 floor = np.isin(g, ['room', 'door'])
 rl, nr = ndimage.label(np.isin(g, ['room']))
 # names by plan position (fractions of the castle body box)
 bys, bxs = np.where(body); BY0, BY1, BX0, BX1 = bys.min(), bys.max() + 1, bxs.min(), bxs.max() + 1
-LBL = [('Kitchen', 299, 418), ('Tower armoury', 448, 393), ('Guardroom', 597, 418), ('Pantry', 280, 505),
+LBL = [('Kitchen', 299, 418), ('Tower armoury', 448, 393), ('Guardroom', 597, 418),
        ("Servants' room", 280, 585), ('Waiting room', 616, 579), ('Stores', 299, 666), ('Lower hall', 448, 666),
        ("Guards' bunks", 597, 666), ('NW tower', 212, 355), ('NE tower', 684, 355), ('SW tower', 212, 729),
-       ('SE tower', 684, 729)]
+       ('SE tower', 684, 729), ('Pantry', 280, 505)]
 names = {}
 for nm, dx, dy in LBL:
     x = int((dx - 50) * 2.09 / 13); y = int((dy - 194) * 2.09 / 13)
