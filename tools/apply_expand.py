@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import expand_layout
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 D = sys.argv[1]
-T, xf = expand_layout.load(os.path.join(D, 'xform.json'))
+xf = json.load(open(os.path.join(D, 'xform.json'))); T = expand_layout._one(xf)
 A = np.array(Image.open(os.path.join(D, 'wall.png'))); G = np.load(os.path.join(D, 'G.npy'))
 L = json.load(open(os.path.join(ROOT, 'data/layout.json')))
 NW, NH = xf['world']
@@ -36,5 +36,9 @@ L['gates'] = {k: list(T(*v)) for k, v in L['gates'].items()}
 L['grid'] = []
 json.dump(L, open(os.path.join(ROOT, 'data/layout.json'), 'w'))
 Image.fromarray(A).save(os.path.join(ROOT, 'art/source/walls/ring_world_v2.png'))
-shutil.copy(os.path.join(D, 'xform.json'), os.path.join(ROOT, 'data/ring_xform.json'))
+_prev = os.path.join(ROOT, 'data/ring_xform.json')
+_chain = []
+if os.path.exists(_prev):
+    _p = json.load(open(_prev)); _chain = _p if isinstance(_p, list) else [_p]
+json.dump(_chain + [xf], open(_prev, 'w'), indent=1)
 print('world', NW, NH, 'chunks', len(chunks), 'gates', L['gates'], 'spawn', L['spawn'], 'inside', L['inside'])

@@ -21,7 +21,7 @@ O, N = 32, 2
 YSPLIT, XSPLIT = 2600, 3944                  # courtyard lines separating north/south and west/east runs
 # flat, tower-free stretches (world px, measured on the art)
 SIDES_X = {'west': {'n': (2490, 3230), 's': (1950, 2850)}, 'east': {'n': (4700, 5380), 's': (5000, 6030)}}
-SPAN_Y = {'w': (2794, 3313), 'e': (2794, 3313)}
+SPAN_Y = {'w': (2895, 3120), 'e': (2895, 3120)}   # both edges of the side walls are straight here (no stair step)
 
 A = np.zeros((WH, WW, 4), np.uint8); G = np.zeros((WH, WW), np.float32)
 for c in L['chunks']:
@@ -72,7 +72,7 @@ def best(Aband_n, Aband_s, span_n, span_s, Ps):
 
 xf = {'old_world': [WW, WH], 'x': [], 'y': []}
 # --- widen: east side first (so the west cut positions stay valid), north band / south band cut separately
-for side in ('east', 'west'):
+for side in (() if os.environ.get('ONLYY') else ('east', 'west')):
     sp = SIDES_X[side]
     nb, sb = A[:YSPLIT], A[YSPLIT:]
     cost, P, Xn, Xs = best(nb, sb, sp['n'], sp['s'], range(256, 400, 16))
@@ -82,17 +82,18 @@ for side in ('east', 'west'):
     xf['x'].append({'side': side, 'x_north': Xn, 'x_south': Xs, 'y_split': YSPLIT, 'd': P * N})
     print(side, 'P', P, 'N', N, 'cuts', Xn, Xs, 'cost', round(cost))
 D_x = sum(c['d'] for c in xf['x'])
-xsplit = XSPLIT + xf['x'][1]['d']             # courtyard centre after the west insertion
+xsplit = XSPLIT + (xf['x'][1]['d'] if xf['x'] else 0)
+NY = int(os.environ.get('NY', N))             # courtyard centre after the west insertion
 # --- heighten: west band / east band cut separately (rows)  (skipped with NOY=1: the side walls lean, copies step)
 if not os.environ.get('NOY'):
     At, Ht = A.transpose(1, 0, 2), Hh.T
     wb, eb = At[:xsplit], At[xsplit:]
-    cost, P, Yw, Ye = best(wb, eb, SPAN_Y['w'], SPAN_Y['e'], range(160, 400, 16))
-    Aw, Hw = insert_cols(At[:xsplit], Ht[:xsplit], Yw, P, N)
-    Ae, He = insert_cols(At[xsplit:], Ht[xsplit:], Ye, P, N)
+    cost, P, Yw, Ye = best(wb, eb, SPAN_Y['w'], SPAN_Y['e'], range(96, 192, 16))
+    Aw, Hw = insert_cols(At[:xsplit], Ht[:xsplit], Yw, P, NY)
+    Ae, He = insert_cols(At[xsplit:], Ht[xsplit:], Ye, P, NY)
     A = np.concatenate([Aw, Ae], 0).transpose(1, 0, 2); Hh = np.concatenate([Hw, He], 0).T
-    xf['y'].append({'y_west': Yw, 'y_east': Ye, 'x_split_new': xsplit, 'd': P * N})
-    print('rows P', P, 'N', N, 'cuts', Yw, Ye, 'cost', round(cost))
+    xf['y'].append({'y_west': Yw, 'y_east': Ye, 'x_split_new': xsplit, 'd': P * NY})
+    print('rows P', P, 'N', NY, 'cuts', Yw, Ye, 'cost', round(cost))
 NH, NW = A.shape[:2]
 A[A[..., 3] < 128] = 0; A[..., 3] = np.where(A[..., 3] > 0, 255, 0)
 Gn = np.where(A[..., 3] > 0, Hh + np.arange(NH)[:, None], 0)

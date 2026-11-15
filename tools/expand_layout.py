@@ -4,7 +4,16 @@
 import json
 
 def load(path):
-    xf = json.load(open(path))
+    data = json.load(open(path))
+    if isinstance(data, list):                # several expansions applied in order
+        Ts = [_one(d) for d in data]
+        def TT(x, y):
+            for t in Ts: x, y = t(x, y)
+            return x, y
+        return TT, data[-1]
+    return _one(data), data
+
+def _one(xf):
     def T(x, y):
         nx = x
         for c in xf['x']:                     # east first, then west (as applied)
@@ -15,4 +24,4 @@ def load(path):
             cut = c['y_west'] if nx < c['x_split_new'] else c['y_east']
             if y >= cut: ny += c['d']
         return nx, ny
-    return T, xf
+    return T
