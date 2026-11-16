@@ -65,6 +65,7 @@ func _ready() -> void:
 func _process(dt: float) -> void:
 	if player == null:
 		return
+	_flicker()
 	var foot := player.global_position
 	var ey := foot.y + (walk_h if level == 1 else 0.0)     # ground line Kael stands on (raised on the wall-walk)
 	var pr := Rect2(foot - Vector2(12, 34), Vector2(24, 38))
@@ -467,29 +468,34 @@ var keep_door := Vector2.ZERO
 var keep_sprite: Sprite2D             # kept for the return-from-keep spawn
 var near_keep := false
 
+var flame_glows: Array = []          # [Sprite2D, base scale, phase] - flickering light of the fires seen from outside
+
 func _add_flame(parent: Node2D, at: Vector2, sc: float, kind: String) -> void:
-	var tex: Texture2D = load("res://art/game/keep/fx_fire_m.png")
-	var fw := tex.get_width() / 4
-	var frames := SpriteFrames.new()
-	frames.set_animation_speed("default", 9.0)
-	for i in 4:
-		var at_ := AtlasTexture.new(); at_.atlas = tex; at_.region = Rect2(i * fw, 0, fw, tex.get_height())
-		frames.add_frame("default", at_)
-	var glow := Sprite2D.new()                                   # soft warm halo behind the fire
-	var gr := Gradient.new(); gr.set_color(0, Color(1.0, 0.72, 0.3, 0.55)); gr.set_color(1, Color(1.0, 0.5, 0.15, 0.0))
-	var gt := GradientTexture2D.new(); gt.gradient = gr; gt.fill = GradientTexture2D.FILL_RADIAL
-	gt.fill_from = Vector2(0.5, 0.5); gt.fill_to = Vector2(1.0, 0.5); gt.width = 96; gt.height = 96
-	glow.texture = gt; glow.position = at + Vector2(0, -10 * sc); glow.scale = Vector2(sc, sc) * (1.4 if kind == "fire" else 1.0)
-	var mat := CanvasItemMaterial.new(); mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD; glow.material = mat
-	parent.add_child(glow)
-	if kind != "fire":
-		return
-	var an := AnimatedSprite2D.new()
-	an.sprite_frames = frames; an.centered = false
-	an.offset = Vector2(-fw / 2.0, -tex.get_height() + 4)
-	an.position = at; an.scale = Vector2(sc, sc) * 1.15
-	an.frame = randi() % 4; an.play("default")
-	parent.add_child(an)
+	# From outside only the light of a fire reads, as in real life: a warm flickering glow, a small bright core,
+	# no drawn flame.
+	for layer in 2:
+		var gr := Gradient.new()
+		if layer == 0:
+			gr.set_color(0, Color(1.0, 0.6, 0.22, 0.6)); gr.set_color(1, Color(1.0, 0.45, 0.12, 0.0))
+		else:
+			gr.set_color(0, Color(1.0, 0.85, 0.5, 1.0)); gr.set_color(1, Color(1.0, 0.6, 0.2, 0.0))
+		var gt := GradientTexture2D.new(); gt.gradient = gr; gt.fill = GradientTexture2D.FILL_RADIAL
+		gt.fill_from = Vector2(0.5, 0.5); gt.fill_to = Vector2(1.0, 0.5); gt.width = 128; gt.height = 128
+		var g := Sprite2D.new(); g.texture = gt
+		var k: float = (1.7 if layer == 0 else 0.4) * sc * (1.0 if kind == "fire" else 0.7)
+		g.position = at + Vector2(0, 3 * sc); g.scale = Vector2(k, k * 0.85)
+		var mat := CanvasItemMaterial.new(); mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD; g.material = mat
+		parent.add_child(g)
+		flame_glows.append([g, k, randf() * 10.0, layer])
+
+func _flicker() -> void:
+	var t := Time.get_ticks_msec() * 0.001
+	for f in flame_glows:
+		var g: Sprite2D = f[0]; var ph: float = f[2]
+		var n := 0.82 + 0.1 * sin(t * 7.3 + ph) + 0.06 * sin(t * 17.1 + ph * 2.0) + 0.04 * sin(t * 31.0 + ph)
+		g.modulate.a = clampf(n, 0.0, 1.0)
+		var k: float = f[1] * (0.96 + 0.05 * sin(t * 5.1 + ph))
+		g.scale = Vector2(k, k * 0.85)
 
 func _keep_exterior() -> void:
 	if not FileAccess.file_exists("res://data/keep_buildings.json"):
