@@ -22,7 +22,7 @@ def fix(a):
     m |= blue & (pm > 0)
     soft = cv2.GaussianBlur(m.astype(np.float32), (0, 0), 0.7)[..., None]
     a[Y0:Y1, X0:X1, :3] = np.clip(rgb[Y0:Y1, X0:X1] * (1 - soft) + fill * soft, 0, 255).astype(np.uint8)
-    return fix_tower_seam_row(fix_tower_windows(a))
+    return fix_seam_windows(fix_tower_seam_row(fix_tower_windows(a)))
 
 def fix_tower_windows(a):
     """2) The right-hand window of each of the tower's six rows was drawn narrower and up to 3 px higher than its
@@ -50,4 +50,33 @@ def fix_tower_seam_row(a):
         fx = np.clip(np.minimum(np.arange(w), w - 1 - np.arange(w)) / 3.0, 0, 1)[None, :]
         fy = (fy * fx)[..., None]
         a[y0:y1, x0:x1] = (src * fy + dst * (1 - fy)).astype(np.uint8)
+    return a
+
+def fix_seam_windows(a):
+    """4) Every other window the horizontal quarter seam (y ~957) cuts: left and right bays beside the tower, the
+    window by the east-wing door and the east block. Each gets its lower half (y 951..988) from the best-matching
+    intact window: the same window one row up (offset searched), or, for the door window, the right bay's window."""
+    g = a[..., :3].astype(float)
+    def best(tx0, tx1, cands):
+        top = g[924:951, tx0:tx1]
+        sc = []
+        for dx, dy in cands:
+            s = g[924 + dy:951 + dy, tx0 + dx:tx1 + dx]
+            if s.shape == top.shape: sc.append((np.abs(s - top).mean(), dx, dy))
+        return min(sc)
+    def paste(tx0, tx1, dx, dy, y0=951, y1=989):
+        src = a[y0 + dy:y1 + dy, tx0 + dx:tx1 + dx].astype(float); dst = a[y0:y1, tx0:tx1].astype(float)
+        h, w = y1 - y0, tx1 - tx0
+        fy = np.clip(np.minimum(np.arange(h) / 3.0, (h - 1 - np.arange(h)) / 3.0), 0, 1)[:, None]
+        fx = np.clip(np.minimum(np.arange(w), w - 1 - np.arange(w)) / 3.0, 0, 1)[None, :]
+        f = (fy * fx)[..., None]
+        a[y0:y1, tx0:tx1] = (src * f + dst * (1 - f)).astype(np.uint8)
+    up = [(dx, dy) for dy in range(-126, -88) for dx in range(-4, 5)]
+    done = []
+    for tx0, tx1 in ((383, 445), (462, 521), (861, 917), (939, 993), (1364, 1419), (1421, 1480)):
+        s, dx, dy = best(tx0, tx1, up); paste(tx0, tx1, dx, dy); done.append((tx0, round(s, 1), dx, dy))
+    g = a[..., :3].astype(float)
+    side = [(dx, dy) for dx in range(-112, -92) for dy in range(-4, 5)]
+    s, dx, dy = best(1041, 1098, side); paste(1041, 1098, dx, dy); done.append((1041, round(s, 1), dx, dy))
+    print('seam windows', done)
     return a
