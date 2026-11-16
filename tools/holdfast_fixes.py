@@ -22,4 +22,19 @@ def fix(a):
     m |= blue & (pm > 0)
     soft = cv2.GaussianBlur(m.astype(np.float32), (0, 0), 0.7)[..., None]
     a[Y0:Y1, X0:X1, :3] = np.clip(rgb[Y0:Y1, X0:X1] * (1 - soft) + fill * soft, 0, 255).astype(np.uint8)
+    return fix_tower_windows(a)
+
+def fix_tower_windows(a):
+    """2) The right-hand window of each of the tower's six rows was drawn narrower and up to 3 px higher than its
+    neighbours (seam of the redrawn quarters): replaced by a copy of the left window of the same row, moved 137 px."""
+    rows = [396, 504, 611, 725, 835, 946]             # top of the glass, left window
+    DX = 137
+    for t in rows:
+        y0, y1, x0, x1 = t - 32, t + 46, 584, 651
+        src = a[y0:y1, x0:x1].astype(float)
+        dst = a[y0:y1, x0 + DX:x1 + DX].astype(float)
+        h, w = src.shape[:2]
+        fy = np.minimum(np.arange(h), np.arange(h)[::-1]); fx = np.minimum(np.arange(w), np.arange(w)[::-1])
+        wgt = np.clip(np.minimum(fy[:, None], fx[None, :]) / 3.0, 0, 1)[..., None]
+        a[y0:y1, x0 + DX:x1 + DX] = (src * wgt + dst * (1 - wgt)).astype(np.uint8)
     return a
