@@ -467,6 +467,30 @@ var keep_door := Vector2.ZERO
 var keep_sprite: Sprite2D             # kept for the return-from-keep spawn
 var near_keep := false
 
+func _add_flame(parent: Node2D, at: Vector2, sc: float, kind: String) -> void:
+	var tex: Texture2D = load("res://art/game/keep/fx_fire_m.png")
+	var fw := tex.get_width() / 4
+	var frames := SpriteFrames.new()
+	frames.set_animation_speed("default", 9.0)
+	for i in 4:
+		var at_ := AtlasTexture.new(); at_.atlas = tex; at_.region = Rect2(i * fw, 0, fw, tex.get_height())
+		frames.add_frame("default", at_)
+	var glow := Sprite2D.new()                                   # soft warm halo behind the fire
+	var gr := Gradient.new(); gr.set_color(0, Color(1.0, 0.72, 0.3, 0.55)); gr.set_color(1, Color(1.0, 0.5, 0.15, 0.0))
+	var gt := GradientTexture2D.new(); gt.gradient = gr; gt.fill = GradientTexture2D.FILL_RADIAL
+	gt.fill_from = Vector2(0.5, 0.5); gt.fill_to = Vector2(1.0, 0.5); gt.width = 96; gt.height = 96
+	glow.texture = gt; glow.position = at + Vector2(0, -10 * sc); glow.scale = Vector2(sc, sc) * (1.4 if kind == "fire" else 1.0)
+	var mat := CanvasItemMaterial.new(); mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD; glow.material = mat
+	parent.add_child(glow)
+	if kind != "fire":
+		return
+	var an := AnimatedSprite2D.new()
+	an.sprite_frames = frames; an.centered = false
+	an.offset = Vector2(-fw / 2.0, -tex.get_height() + 4)
+	an.position = at; an.scale = Vector2(sc, sc) * 1.15
+	an.frame = randi() % 4; an.play("default")
+	parent.add_child(an)
+
 func _keep_exterior() -> void:
 	if not FileAccess.file_exists("res://data/keep_buildings.json"):
 		return
@@ -488,6 +512,9 @@ func _keep_exterior() -> void:
 		sp.z_index = 2
 		add_child(sp)
 		keep_sprites.append([sp, float(b["z_line"])])
+		if b.has("flames"):                          # animated fire in the braziers / glow in lanterns
+			for fl in b["flames"]:
+				_add_flame(sp, Vector2(fl[0], fl[1]) - sp.position, float(fl[2]), String(fl[3]))
 		for poly in b["collision"]:
 			var cp := CollisionPolygon2D.new()
 			var pts := PackedVector2Array()

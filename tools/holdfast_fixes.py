@@ -4,25 +4,40 @@
 import numpy as np, cv2
 
 def fix(a):
-    rgb = a[..., :3].astype(float)
-    S = rgb[1018:1080, 1112:1152]
-    bw, bh = 37, 54
-    T = S[:bh, :bw]
-    X0, Y0, X1, Y1 = 1000, 960, 1135, 1150
-    H, W = Y1 - Y0, X1 - X0
-    fill = np.tile(T, (H // bh + 2, W // bw + 2, 1))
-    oy = (Y0 - 1018) % bh; ox = (X0 - 1112) % bw
-    fill = fill[oy:oy + H, ox:ox + W]
-    reg = a[Y0:Y1, X0:X1, :3].astype(int); blue = reg[..., 2] > reg[..., 0] + 8
-    poly = np.array([(1098, 974), (1010, 1062), (1010, 1146), (1126, 1146), (1108, 1084), (1104, 974)]) - [X0, Y0]
+    """1) blue roof triangle beside the east-wing door -> stone wall, synthesised patch by patch from the clean wall
+    right of the drainpipe (image quilting); pipe, pillar cap, rail and tower blocks kept."""
+    rgb = a[..., :3].astype(np.float32)
+    X0, Y0, X1, Y1 = 990, 960, 1140, 1160
+    reg = a[Y0:Y1, X0:X1, :3].astype(int)
+    blue = reg[..., 2] > reg[..., 0] + 6
+    poly = np.array([(1100, 966), (1003, 1063), (1003, 1150), (1132, 1150), (1114, 1084), (1110, 966)]) - [X0, Y0]
     pm = np.zeros(blue.shape, np.uint8); cv2.fillPoly(pm, [poly], 1)
-    m = pm > 0
-    m[974 - Y0:1146 - Y0, 1089 - X0:1104 - X0] = False
-    cap = np.s_[1096 - Y0:1146 - Y0, 1022 - X0:1078 - X0]; m[cap] = blue[cap]
-    m |= blue & (pm > 0)
-    soft = cv2.GaussianBlur(m.astype(np.float32), (0, 0), 0.7)[..., None]
-    a[Y0:Y1, X0:X1, :3] = np.clip(rgb[Y0:Y1, X0:X1] * (1 - soft) + fill * soft, 0, 255).astype(np.uint8)
+    m = (cv2.dilate(blue.astype(np.uint8), np.ones((9, 9))) > 0) & (pm > 0)
+    m = cv2.morphologyEx(m.astype(np.uint8), cv2.MORPH_CLOSE, np.ones((7, 7))) > 0
+    m[:, 1093 - X0:1102 - X0] = False
+    cap = np.s_[1094 - Y0:1160 - Y0, 1020 - X0:1080 - X0]; m[cap] &= blue[cap]
+    src = rgb[1018:1080, 1110:1150]; ex = [src, src[:, ::-1]]
+    B, O = 20, 6; H, W = Y1 - Y0, X1 - X0
+    out = rgb[Y0:Y1, X0:X1].copy(); filled = ~m
+    rng = np.random.default_rng(1)
+    C = np.stack([e[y:y + B + O, x:x + B + O] for e in ex
+                  for y in range(0, e.shape[0] - B - O + 1, 2) for x in range(0, e.shape[1] - B - O + 1, 2)])
+    for by in range(-O, H, B):
+        for bx in range(-O, W, B):
+            y0, x0 = max(0, by), max(0, bx); y1, x1 = min(H, by + B + O), min(W, bx + B + O)
+            if not m[y0:y1, x0:x1].any(): continue
+            tgt = out[y0:y1, x0:x1]; known = filled[y0:y1, x0:x1]
+            P = C[:, (y0 - by):(y0 - by) + (y1 - y0), (x0 - bx):(x0 - bx) + (x1 - x0)]
+            err = ((P - tgt) ** 2).sum(-1)[:, known].mean(1) if known.any() else rng.random(len(P))
+            patch = P[np.argsort(err)[:3][rng.integers(0, 3)]]
+            kn = cv2.GaussianBlur(known.astype(np.float32), (0, 0), 1.0)
+            newv = patch * (1 - kn[..., None]) + tgt * kn[..., None]
+            sel = m[y0:y1, x0:x1]
+            out[y0:y1, x0:x1][sel] = newv[sel]; filled[y0:y1, x0:x1] |= sel
+    soft = cv2.GaussianBlur(m.astype(np.float32), (0, 0), 0.8)[..., None]
+    a[Y0:Y1, X0:X1, :3] = np.clip(rgb[Y0:Y1, X0:X1] * (1 - soft) + out * soft, 0, 255).astype(np.uint8)
     return fix_seam_windows(fix_tower_seam_row(fix_tower_windows(a)))
+
 
 def fix_tower_windows(a):
     """2) The right-hand window of each of the tower's six rows was drawn narrower and up to 3 px higher than its

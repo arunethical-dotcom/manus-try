@@ -111,7 +111,10 @@ def bake_shadow(img, pos, name, apron=False):
 
 data = {}
 # ---------------------------------------------------------------- The Holdfast (v6 art: the user's redrawn quarters, joined)
-hf = np.array(Image.open(os.path.join(ROOT, 'art/source/keep/v6/holdfast_v6_src.png')).convert('RGBA'))
+# v9: the user's flame-free quarters, registered by feature matching and joined on min-error cuts
+# (tools/holdfast_v9_register.py, tools/holdfast_v9_join.py)
+HF_SRC = 'art/source/keep/v8/holdfast_v9_src.png'
+hf = np.array(Image.open(os.path.join(ROOT, HF_SRC)).convert('RGBA'))
 hf[..., 3] = np.where(hf[..., 3] > 128, 255, 0)
 # Size: 1235 px wide (0.65 of the reference-render width, approved in review). Place: centred on the old Holdfast
 # footprint (x 2489), base line as low as the slot allows with the whole ground footprint clear of the ring wall.
@@ -145,13 +148,16 @@ h = img.shape[0]
 yy, xx = np.indices((h, w))
 foot = (img[..., 3] > 0) & (yy >= TOP)
 DOOR = [pos[0] + gcx, pos[1] + gy + 18]
-if w == 1536:
+if 'v6' in HF_SRC:
     import holdfast_fixes; img = holdfast_fixes.fix(img)                          # where Kael stands to press E
 Image.fromarray(img).save(os.path.join(OUT, 'holdfast.png'))
 col_mask = ndimage.binary_opening(foot & ~ringd[pos[1]:pos[1] + h, pos[0]:pos[0] + w] & (yy <= gy), iterations=2)
+# animated flames (game draws them): tower-top brazier, the two arcade fire bowls; the east lantern gets a glow
+FL = [(692, 199, 2.0, 'fire'), (520, 1157, 1.4, 'fire'), (1053, 1157, 1.4, 'fire'), (1623, 756, 0.6, 'glow')]
+flames = [[round(pos[0] + x * s), round(pos[1] + y * s), sc, k] for x, y, sc, k in FL]
 data['holdfast'] = {'name': 'The Holdfast', 'image': 'res://art/game/keep/holdfast.png', 'pos': pos, 'size': [w, h],
                     'collision': polys(col_mask, pos[0], pos[1], 1.0), 'z_line': pos[1] + TOP, 'enter': DOOR,
-                    'shadow': bake_shadow(img, pos, 'holdfast', apron=True)}
+                    'shadow': bake_shadow(img, pos, 'holdfast', apron=True), 'flames': flames}
 # ---------------------------------------------------------------- Throne Hall (v7: the user's matched quarters at 2x,
 # joined on a plain grid -> art/source/keep/v7/throne_hall_v4_src.png, 2171 x 2528)
 th = np.array(Image.open(os.path.join(ROOT, 'art/source/keep/v7/throne_hall_v4_src.png')).convert('RGBA'))
