@@ -22,7 +22,7 @@ def fix(a):
     m |= blue & (pm > 0)
     soft = cv2.GaussianBlur(m.astype(np.float32), (0, 0), 0.7)[..., None]
     a[Y0:Y1, X0:X1, :3] = np.clip(rgb[Y0:Y1, X0:X1] * (1 - soft) + fill * soft, 0, 255).astype(np.uint8)
-    return fix_tower_windows(a)
+    return fix_tower_seam_row(fix_tower_windows(a))
 
 def fix_tower_windows(a):
     """2) The right-hand window of each of the tower's six rows was drawn narrower and up to 3 px higher than its
@@ -37,4 +37,17 @@ def fix_tower_windows(a):
         fy = np.minimum(np.arange(h), np.arange(h)[::-1]); fx = np.minimum(np.arange(w), np.arange(w)[::-1])
         wgt = np.clip(np.minimum(fy[:, None], fx[None, :]) / 3.0, 0, 1)[..., None]
         a[y0:y1, x0 + DX:x1 + DX] = (src * wgt + dst * (1 - wgt)).astype(np.uint8)
+    return a
+
+def fix_tower_seam_row(a):
+    """3) Bottom tower row: the quarters' horizontal seam (y ~957) cuts these windows and their lower halves are
+    shifted ~3 px. Their lower half (y 950..993) is replaced with the same part of the intact row above (111 px up)."""
+    y0, y1, D = 950, 988, 111
+    for x0, x1 in ((586, 650), (654, 718), (723, 787)):
+        src = a[y0 - D:y1 - D, x0:x1].astype(float); dst = a[y0:y1, x0:x1].astype(float)
+        h, w = y1 - y0, x1 - x0
+        fy = np.clip(np.minimum(np.arange(h) / 3.0, (h - 1 - np.arange(h)) / 3.0), 0, 1)[:, None]
+        fx = np.clip(np.minimum(np.arange(w), w - 1 - np.arange(w)) / 3.0, 0, 1)[None, :]
+        fy = (fy * fx)[..., None]
+        a[y0:y1, x0:x1] = (src * fy + dst * (1 - fy)).astype(np.uint8)
     return a
