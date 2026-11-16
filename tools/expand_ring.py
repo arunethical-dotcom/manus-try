@@ -17,11 +17,14 @@ from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUTD = sys.argv[1]; os.makedirs(OUTD, exist_ok=True)
 L = json.load(open(os.path.join(ROOT, 'data/layout.json'))); WW, WH = L['world']
-O, N = 32, 2
-YSPLIT, XSPLIT = 2600, 3944                  # courtyard lines separating north/south and west/east runs
+O = 32
+N = int(os.environ.get('NX', 2))
+YSPLIT, XSPLIT = int(os.environ.get('YSPLIT', 2600)), int(os.environ.get('XSPLIT', 3944))                  # courtyard lines separating north/south and west/east runs
 # flat, tower-free stretches (world px, measured on the art)
 SIDES_X = {'west': {'n': (2490, 3230), 's': (1950, 2850)}, 'east': {'n': (4700, 5380), 's': (5000, 6030)}}
-SPAN_Y = {'w': (2895, 3120), 'e': (2895, 3120)}   # both edges of the side walls are straight here (no stair step)
+if os.environ.get('SPANS'): SIDES_X = json.loads(os.environ['SPANS'])
+SPAN_Y = {'w': (2895, 3120), 'e': (2895, 3120)}
+if os.environ.get('SPANY'): SPAN_Y = json.loads(os.environ['SPANY'])   # both edges of the side walls are straight here (no stair step)
 
 A = np.zeros((WH, WW, 4), np.uint8); G = np.zeros((WH, WW), np.float32)
 for c in L['chunks']:
@@ -75,7 +78,7 @@ xf = {'old_world': [WW, WH], 'x': [], 'y': []}
 for side in (() if os.environ.get('ONLYY') else ('east', 'west')):
     sp = SIDES_X[side]
     nb, sb = A[:YSPLIT], A[YSPLIT:]
-    cost, P, Xn, Xs = best(nb, sb, sp['n'], sp['s'], range(256, 400, 16))
+    cost, P, Xn, Xs = best(nb, sb, sp['n'], sp['s'], range(int(os.environ.get('PX0', 256)), int(os.environ.get('PX1', 400)), 16))
     An, Hn = insert_cols(A[:YSPLIT], Hh[:YSPLIT], Xn, P, N)
     As, Hs = insert_cols(A[YSPLIT:], Hh[YSPLIT:], Xs, P, N)
     A = np.concatenate([An, As], 0); Hh = np.concatenate([Hn, Hs], 0)
@@ -88,7 +91,7 @@ NY = int(os.environ.get('NY', N))             # courtyard centre after the west 
 if not os.environ.get('NOY'):
     At, Ht = A.transpose(1, 0, 2), Hh.T
     wb, eb = At[:xsplit], At[xsplit:]
-    cost, P, Yw, Ye = best(wb, eb, SPAN_Y['w'], SPAN_Y['e'], range(96, 192, 16))
+    cost, P, Yw, Ye = best(wb, eb, SPAN_Y['w'], SPAN_Y['e'], range(int(os.environ.get('PY0', 96)), int(os.environ.get('PY1', 192)), 16))
     Aw, Hw = insert_cols(At[:xsplit], Ht[:xsplit], Yw, P, NY)
     Ae, He = insert_cols(At[xsplit:], Ht[xsplit:], Ye, P, NY)
     A = np.concatenate([Aw, Ae], 0).transpose(1, 0, 2); Hh = np.concatenate([Hw, He], 0).T

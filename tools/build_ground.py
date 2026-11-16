@@ -67,6 +67,7 @@ B2 = np.tile(g2, (ty, tx, 1))[:WH, :WW]
 noise = cv2.resize(rng.rand(WH // 256 + 2, WW // 256 + 2).astype(np.float32), (WW, WH), interpolation=cv2.INTER_CUBIC)
 m = np.clip((noise - 0.35) * 3, 0, 1)[..., None]
 ground = B1 * (1 - m) + B2 * m
+del B1, B2, noise, m                                 # (memory: the world is large)
 
 
 def blob(rx, ry):
@@ -162,11 +163,15 @@ for yy in range(gyc):
     for xx in range(gxc):
         MUD[yy * S:(yy + 1) * S, xx * S:(xx + 1) * S] = mseam[pick[yy, xx]]
 # hide the cell grid: blend with a half-cell-shifted copy of a calm tile field
-calm = np.tile(mseam[0], (gyc + 1, gxc + 1, 1))[S // 2:S // 2 + gyc * S, S // 2:S // 2 + gxc * S]
 yy_, xx_ = np.mgrid[0:S, 0:S]
 dd = np.minimum(np.minimum(xx_, S - 1 - xx_), np.minimum(yy_, S - 1 - yy_)).astype(np.float32)
-wcell = np.tile(np.clip(dd / 28, 0, 1), (gyc, gxc))[..., None]
-MUD = (MUD * wcell + calm * (1 - wcell))[:WH, :WW]
+wc1 = np.clip(dd / 28, 0, 1)[..., None]
+calm1 = np.tile(mseam[0], (2, 2, 1))[S // 2:S // 2 + S, S // 2:S // 2 + S]   # the half-shifted calm tile, one cell
+for yy in range(gyc):                                                      # blended cell by cell (memory)
+    for xx in range(gxc):
+        c_ = MUD[yy * S:(yy + 1) * S, xx * S:(xx + 1) * S]
+        c_ *= wc1; c_ += calm1 * (1 - wc1)
+MUD = MUD[:WH, :WW]
 
 # interior of the ring (walls flood-filled at 1/8 scale)
 K8 = 8
@@ -217,21 +222,25 @@ rmask[yl - 8:int(sy) + 40, l_:r_ + 1] = True
 L["plaza"] = [int(axis), int((by0 + by1) / 2)]
 # outside: road from the north gate to the north edge, same width as the plan's main lines
 rmask[0:max(0, ny - 40), int(nx) - 75:int(nx) + 75] = True
-soft = cv2.GaussianBlur(rmask.astype(np.float32), (0, 0), 1.2)[..., None]
-ground = ground * (1 - soft) + MUD * soft
+soft = cv2.GaussianBlur(rmask.astype(np.float32), (0, 0), 1.2)
+for y0 in range(0, WH, 256):                                               # in strips (memory)
+    sl = slice(y0, min(WH, y0 + 256)); so = soft[sl][..., None]
+    ground[sl] = ground[sl] * (1 - so) + MUD[sl] * so
+del MUD, soft
 # dark rim + shade on the grass side, like the tiles' own edges
 edge = cv2.dilate(rmask.astype(np.uint8), np.ones((3, 3), np.uint8)).astype(bool) & ~rmask
 shade = cv2.GaussianBlur((cv2.dilate(rmask.astype(np.uint8), np.ones((13, 13), np.uint8)) > 0).astype(np.float32), (0, 0), 3)
-ground *= (1 - 0.18 * shade * (~rmask))[..., None]
+for y0 in range(0, WH, 256):
+    sl = slice(y0, min(WH, y0 + 256)); ground[sl] *= (1 - 0.18 * shade[sl] * (~rmask[sl]))[..., None]
 ground[edge] = ground[edge] * 0.45 + np.array([70, 40, 20], np.float32) * 0.55
 
 # ---------------------------------------------------------------- stone avenue (supplied floor tile), with a dark kerb
 floor = np.array(Image.open(os.path.join(ROOT, "art/game/floor_atlas.png")).convert("RGB")).astype(np.float32)
-fl = np.tile(floor, (WH // 128 + 2, WW // 128 + 2, 1))
+fl = np.tile(floor, (WH // 128 + 2, (2 * AW) // 128 + 4, 1))
 ax = int((sx + nx) / 2)
 y_top, y_bot = sy - 60, WH
 x0, x1 = ax - AW, ax + AW
-ground[y_top:y_bot, x0:x1] = fl[y_top:y_bot, x0 - ax % 128 + 128:x1 - ax % 128 + 128]
+_o = (x0 - (x0 // 128) * 128); ground[y_top:y_bot, x0:x1] = fl[y_top:y_bot, _o:_o + (x1 - x0)]
 kerb = np.array([92, 78, 60], np.float32)
 for xx in (x0, x0 + 1, x1 - 2, x1 - 1):
     ground[y_top:y_bot, xx] = kerb
@@ -259,5 +268,5 @@ for c in L["chunks"]:
         wl.alpha_composite(Image.open(os.path.join(ROOT, "art/game/walls/wall_%d_%d.png" % (c["x"], c["y"]))), (c["x"], c["y"]))
 mm.alpha_composite(wl.resize((GW * 2, GH * 2), Image.LANCZOS))
 mm.convert("RGB").save(os.path.join(ROOT, "art/game/minimap.png"))
-Image.fromarray(g8).resize((WW // 6, WH // 6), Image.BOX).save("/tmp/gr/ground_preview.png")
+os.makedirs('/tmp/gr', exist_ok=True); Image.fromarray(g8).resize((WW // 6, WH // 6), Image.BOX).save("/tmp/gr/ground_preview.png")
 print("ground chunks", len(chunks), "size MB", round(sum(os.path.getsize(os.path.join(OUT, f)) for f in os.listdir(OUT)) / 1e6, 1))
