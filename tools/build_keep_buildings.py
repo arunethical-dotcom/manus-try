@@ -189,29 +189,6 @@ data['throne_hall'] = {'name': 'Throne Hall', 'image': 'res://art/game/keep/thro
                        'collision': polys(m, pos[0], pos[1], s), 'z_line': round(pos[1] + DOOR_Y * s),
                        'door': [round(pos[0] + AXIS * s), round(pos[1] + (DOOR_Y + 40) * s)],
                        'shadow': bake_shadow(img, pos, 'throne_hall')}
-# ---------------------------------------------------------------- Waiting gallery (the user's three pieces, joined:
-# tools/waiting_gallery_join.py). Plan: west of the Throne Hall, where petitioners queue before its side door; here it
-# continues the hall's covered walkway: its east end stands against the walkway's west end, floors on one line.
-tha = img[..., 3] > 0                                       # (img / pos are still the Throne Hall's)
-wx_end = pos[0] + int(np.argmax(tha.any(0)))                # walkway's west end
-wy_base = pos[1] + int(np.where(tha[:, int(np.argmax(tha.any(0))) + 4])[0].max())
-wg = np.array(Image.open(os.path.join(ROOT, 'art/source/keep/v9/waiting_gallery_src.png')).convert('RGBA'))
-wg[..., 3] = np.where(wg[..., 3] > 128, 255, 0)
-s = 0.25                                                    # columns ~2.6x Kael, benches knee height
-w = round(wg.shape[1] * s); img = scaled(wg, w); h = img.shape[0]
-pos = (wx_end - w + 2, wy_base - h + 1)
-Image.fromarray(img).save(os.path.join(OUT, 'waiting_gallery.png'))
-H0, W0 = wg.shape[:2]
-m = np.zeros((H0, W0), bool)
-m[:955] = wg[:955, :, 3] > 0                                # roof, back wall and benches
-for cx in (145, 509, 904, 1292, 1680, 2067, 2470, 2863, 3270):   # column feet
-    m[985:1070, cx - 42:cx + 42] = wg[985:1070, cx - 42:cx + 42, 3] > 0
-m[:, :105] = wg[:, :105, 3] > 0                             # the two closed end walls
-m[:, 3330:] = wg[:, 3330:, 3] > 0
-m = ndimage.binary_opening(m, iterations=2)
-data['waiting_gallery'] = {'name': 'Waiting gallery', 'image': 'res://art/game/keep/waiting_gallery.png', 'pos': pos,
-                           'size': [w, h], 'collision': polys(m, pos[0], pos[1], s), 'z_line': round(pos[1] + 955 * s),
-                           'shadow': bake_shadow(img, pos, 'waiting_gallery')}
 json.dump(data, open(os.path.join(ROOT, 'data/keep_buildings.json'), 'w'), indent=1)
 for k, v in data.items():
     print(k, 'pos', v['pos'], 'size', v['size'], 'z', v['z_line'], 'polys', len(v['collision']), 'door', v.get('door'))
