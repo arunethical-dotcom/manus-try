@@ -58,7 +58,7 @@ def fix(img):
         if (r[..., 3] == 0).any(): return False
         blue = r[..., 2] > r[..., 0] + 25; glow = (r[..., 0] > 200) & (r[..., 2] < 120)
         return (blue.mean() > 0.97) if roof else (blue.mean() < 0.01 and glow.mean() < 0.001)
-    for (y0, y1, x0, x1, roof) in ((1228, 1256, 722, 835, False), (1160, 1198, 735, 845, True)):
+    for (y0, y1, x0, x1, roof) in ((1228, 1256, 740, 835, False), (1160, 1198, 735, 845, True)):
         best = None
         for dx in (list(range(270, 420)) if not roof else list(range(-600, -130)) + list(range(130, 600))):
             if x0 - 8 + dx < 0 or x1 + 8 + dx > a.shape[1] or not ok(y0, y1, x0 + dx, x1 + dx, roof): continue
