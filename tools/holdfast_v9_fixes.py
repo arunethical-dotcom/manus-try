@@ -34,15 +34,27 @@ def fix(img):
     # half by an amount that grows with height: 0 at the eave, ~3 px at the parapet, 6-7 px from the battlement
     # cornice down to the plinth (measured). Each column of that strip is resampled to put every course on the
     # right half's line.
-    SX0, SX1 = 238, 740
-    ky = np.array([1228, 1245, 1300, 1330, 1420, 1600, 1770], np.float32)
-    kd = np.array([0, 3, 4, 6, 6.5, 7, 6], np.float32)
+    SX1 = 740
+    # shift ramp kept out of the eave band and dormer bases (0 down to the parapet wall, then easing in through
+    # plain brick courses)
+    ky = np.array([1250, 1295, 1335, 1420, 1600, 1770], np.float32)
+    kd = np.array([0, 4, 6, 6.5, 7, 6], np.float32)
     YE = min(1785, a.shape[0]); Y = np.arange(1200, YE, dtype=np.float32)
     srcy = Y - np.interp(Y, ky, kd)
-    strip = a[:, SX0:SX1].copy()
-    for c in range(4):
-        for j in range(SX1 - SX0):
-            a[1200:YE, SX0 + j, c] = np.interp(srcy, np.arange(strip.shape[0]), strip[:, j, c])
+    # left boundary per row: it must not cut the tower-side pilaster, its capitals, the corbels or the merlon in
+    # front of the little turret, so above the corbels it runs left of the turret, below them on the tower's edge
+    def sx0(y):
+        return 238 if y < 1266 else (195 if y < 1342 else (214 if y < 1362 else 229))
+    x_lo = 195
+    strip = a[:, x_lo:SX1].copy()
+    out = a[1200:YE, x_lo:SX1].copy()
+    for j in range(SX1 - x_lo):
+        for c in range(4):
+            col = np.interp(srcy, np.arange(strip.shape[0]), strip[:, j, c])
+            out[:, j, c] = col
+    for i, y in enumerate(range(1200, YE)):
+        x0 = sx0(y)
+        a[y, x0:SX1] = out[i, x0 - x_lo:]
     a[..., 3] = np.where(a[..., 3] > 127, 255, 0)
     # (a) the whole bay left of the centre pilaster plus the pilaster (x 612..812, from the shadowed edge of the
     #     left pilaster), below the parapet, is the intact bay right of the pilaster (183 px further right); the
