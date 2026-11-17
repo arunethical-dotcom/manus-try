@@ -152,6 +152,8 @@ hf[..., 3] = np.where(hf[..., 3] > 128, 255, 0)
 # (96 tiles), so the outside is drawn 1536 px wide too; same 16 px tile, same Kael, inside == outside.
 w = 1536; s = w / hf.shape[1]
 img = scaled(hf, w); h = img.shape[0]
+if 'v8/holdfast_v9' in HF_SRC and w == 1536:
+    import holdfast_v9_fixes; img = holdfast_v9_fixes.fix(img)
 ring = np.asarray(Image.open(os.path.join(ROOT, 'art/source/walls/ring_world_v2.png')))[..., 3] > 0
 ringd = cv2.dilate(ring.astype(np.uint8), np.ones((17, 17), np.uint8)) > 0
 yy, xx = np.indices((h, w))
@@ -167,7 +169,7 @@ pos = (x0, y1 - h)
 import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from holdfast_door import draw_door
 dr = draw_door(); dh, dw = dr.shape[:2]
-gcx = w // 2
+gcx = 878 if 'v8/holdfast_v9' in HF_SRC else w // 2      # v9: centre bay right of the middle pilaster
 gy = int(np.where(img[:, gcx, 3] > 0)[0].max())
 img = np.vstack([img, np.zeros((8, w, 4), np.uint8)])          # room for the steps below the old base
 dy0, dx0 = gy + 5 - dh, gcx - dw // 2
