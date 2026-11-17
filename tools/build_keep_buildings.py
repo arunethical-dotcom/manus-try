@@ -173,7 +173,11 @@ if os.path.exists(os.path.join(ROOT, 'data/ring_xform.json')):
 AXIS, DOOR_Y, BODY0, BODY1, BASE_Y = 1482, 2093, 640, 2124, 2450
 s = (fx1 - fx0) / (BODY1 - BODY0); w = round(th.shape[1] * s)
 img = scaled(th, w); h = img.shape[0]
-pos = (round(fx0 - BODY0 * s), round(fy1 - BASE_Y * s))
+# recentred (user, after the ring expansions): door axis on the gate axis, body centred on the courtyard's centre
+_L = json.load(open(os.path.join(ROOT, 'data/layout.json')))
+_axis = (_L['gates']['south'][0] + _L['gates']['north'][0]) / 2
+_cy = (_L['gates']['south'][1] + _L['gates']['north'][1]) / 2
+pos = (round(_axis - AXIS * s), round(_cy + BASE_Y * s / 2 - BASE_Y * s))
 print('throne footprint world', round(fx0), round(fy0), round(fx1), round(fy1), 'scale', round(s, 3))
 Image.fromarray(img).save(os.path.join(OUT, 'throne_hall.png'))
 H0, W0 = th.shape[:2]
