@@ -75,16 +75,44 @@ def bake_shadow(img, pos, name, apron=False):
     foot = np.zeros((H2, W2), bool)
     cols = np.where(has)[0]
     foot[gl[cols], cols + PL] = True
-    D = 44
-    C = np.zeros((H2, W2), np.float32)
-    for k in range(1, D + 1):
-        sh_ = np.zeros_like(foot); sh_[k:] = foot[:-k]
-        C = np.maximum(C, sh_ * (1.0 - k / (D + 1)) ** 1.6)
-    C = cv2.GaussianBlur(C, (0, 0), 2.5)
-    C = np.maximum(C, cv2.GaussianBlur(foot.astype(np.float32), (0, 0), 3.0) * 1.4)
-    al = np.maximum(S.astype(np.float32) / 255 * 96, np.clip(C * 1.5, 0, 1) * 225)
-    al[:h, PL:PL + w][a] = 0                                              # never draw over the building itself
-    out = np.zeros((H2, W2, 4), np.uint8); out[..., 0], out[..., 1], out[..., 2] = 38, 30, 78
+    # (user) no dark contact shadow under the buildings: earth piled up against the base instead - a low mound of
+    # mud (8..16 px in front, a little at the sides) with a ragged lower edge, clods and a soft dark rim; the cast shadow
+    # stays, softer and earth-brown instead of purple
+    rng = np.random.RandomState(7)
+    xs_ = np.arange(W2)
+    nz = cv2.resize(rng.rand(1, W2 // 24 + 2).astype(np.float32), (W2, 1), interpolation=cv2.INTER_CUBIC)[0]
+    nz2 = cv2.resize(rng.rand(1, W2 // 7 + 2).astype(np.float32), (W2, 1), interpolation=cv2.INTER_CUBIC)[0]
+    berm = np.zeros((H2, W2), np.float32); tt = np.zeros((H2, W2), np.float32)
+    for c in cols:
+        x = c + PL; g0 = gl[c]
+        hh = 9 + 9 * float(np.clip(nz[x], 0, 1)) ** 1.5 + 3 * float(np.clip(nz2[x], 0, 1))
+        y0, y1 = g0 - 3, min(H2, int(g0 + hh) + 1)
+        berm[y0:y1, x] = 1.0
+        tt[y0:y1, x] = np.clip((np.arange(y0, y1) - g0) / max(hh, 1), 0, 1)
+    berm = cv2.morphologyEx(berm, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 7)))
+    side = cv2.dilate(berm, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (17, 5)))       # spills round the corners
+    berm = np.maximum(berm, side * 0.0 + (side > 0) * 1.0)
+    tt = np.maximum(tt, cv2.dilate(tt, np.ones((3, 9), np.uint8)))
+    MUD = np.array([176, 98, 52], np.float32); MUD_HI = np.array([204, 132, 80], np.float32); MUD_LO = np.array([112, 62, 34], np.float32)
+    grain = rng.rand(H2, W2).astype(np.float32)
+    # a mound seen from above-front: dark in the crack at the wall foot, a lit crest, the front slope darkening downward
+    t3 = tt[..., None]
+    crest = np.exp(-((t3 - 0.22) / 0.13) ** 2)
+    col_ = MUD[None, None] * (1 - 0.35 * t3) + (MUD_HI - MUD)[None, None] * crest
+    col_ = col_ * np.where(t3 < 0.06, 0.65, 1.0)
+    col_ = col_ * (0.88 + 0.24 * cv2.GaussianBlur(grain, (0, 0), 1.0)[..., None])
+    clod = (grain > 0.985).astype(np.float32); clod = cv2.dilate(clod, np.ones((2, 2), np.uint8))
+    col_ = col_ * (1 - clod[..., None] * 0.6) + MUD_HI * clod[..., None] * 0.6
+    inner = cv2.erode((berm > 0.5).astype(np.uint8), np.ones((3, 3), np.uint8)).astype(bool)
+    rim = (berm > 0.5) & ~inner
+    col_[rim] = col_[rim] * 0.8 + np.array([96, 56, 30], np.float32) * 0.2
+    soft = cv2.GaussianBlur((berm > 0.5).astype(np.float32), (0, 0), 1.2)
+    soft = np.where(tt > 0.8, soft * np.clip((1.0 - tt) / 0.2 + 0.5, 0, 1), soft)      # lower edge fades into grass
+    al = np.maximum(S.astype(np.float32) / 255 * 60, soft * 255)
+    al[:h, PL:PL + w][a] = 0
+    out = np.zeros((H2, W2, 4), np.uint8); out[..., 0], out[..., 1], out[..., 2] = 40, 30, 22
+    mm_ = soft > 0.02
+    out[mm_, :3] = np.clip(col_[mm_], 0, 255).astype(np.uint8)
     out[..., 3] = al.astype(np.uint8)
     if apron:
         # stone paving apron round the foot: floor-slab texture (art/game/floor_atlas.png), darkened to sit in the
@@ -103,8 +131,10 @@ def bake_shadow(img, pos, name, apron=False):
         col = tex[(Y + pos[1]) % 128, (X + pos[0] - PL) % 128] * 0.82
         edge = ap & ~cv2.erode(ap.astype(np.uint8), np.ones((5, 5), np.uint8)).astype(bool)
         col[edge] = (60, 48, 44)
-        sh = np.minimum(al / 255.0, 0.55)[..., None]
-        mix = col * (1 - sh) + np.array([38, 30, 78], np.float32) * sh
+        keep_mud = soft > 0.5
+        ap &= ~keep_mud
+        sh = np.minimum(S.astype(np.float32) / 255 * 0.25, 0.25)[..., None]
+        mix = col * (1 - sh) + np.array([40, 30, 22], np.float32) * sh
         out[ap, :3] = mix[ap].astype(np.uint8); out[ap, 3] = 255
     Image.fromarray(out).save(os.path.join(OUT, name + '_shadow.png'))
     return {'image': 'res://art/game/keep/%s_shadow.png' % name, 'pos': [pos[0] - PL, pos[1]]}
@@ -157,7 +187,7 @@ FL = [(692, 199, 2.0, 'fire'), (520, 1157, 1.4, 'fire'), (1053, 1157, 1.4, 'fire
 flames = [[round(pos[0] + x * s), round(pos[1] + y * s), sc, k] for x, y, sc, k in FL]
 data['holdfast'] = {'name': 'The Holdfast', 'image': 'res://art/game/keep/holdfast.png', 'pos': pos, 'size': [w, h],
                     'collision': polys(col_mask, pos[0], pos[1], 1.0), 'z_line': pos[1] + TOP, 'enter': DOOR,
-                    'shadow': bake_shadow(img, pos, 'holdfast', apron=True), 'flames': flames}
+                    'shadow': bake_shadow(img, pos, 'holdfast'), 'flames': flames}
 # ---------------------------------------------------------------- Throne Hall (v7: the user's matched quarters at 2x,
 # joined on a plain grid -> art/source/keep/v7/throne_hall_v4_src.png, 2171 x 2528)
 th = np.array(Image.open(os.path.join(ROOT, 'art/source/keep/v7/throne_hall_v4_src.png')).convert('RGBA'))
@@ -189,6 +219,29 @@ data['throne_hall'] = {'name': 'Throne Hall', 'image': 'res://art/game/keep/thro
                        'collision': polys(m, pos[0], pos[1], s), 'z_line': round(pos[1] + DOOR_Y * s),
                        'door': [round(pos[0] + AXIS * s), round(pos[1] + (DOOR_Y + 40) * s)],
                        'shadow': bake_shadow(img, pos, 'throne_hall')}
+# ---------------------------------------------------------------- Waiting gallery (the user's three pieces, joined:
+# tools/waiting_gallery_join.py). Plan (red-keep-plan.html): 560..740 x 570..670, i.e. west of the Throne Hall with a
+# 20-unit gap, its front on the hall's front line; petitioners queue here before the hall's side door.
+# Size at Kael's scale (columns ~2.5x Kael): 902 px wide, east end at the plan gap from the hall's west tower.
+SXp = 6628 / 1794
+th_s = img.shape[1] / 2171.0                                # (img / pos are still the Throne Hall's)
+body_l = pos[0] + 640 * th_s; front_y = pos[1] + 2450 * th_s
+wg = np.array(Image.open(os.path.join(ROOT, 'art/source/keep/v9/waiting_gallery_src.png')).convert('RGBA'))
+wg[..., 3] = np.where(wg[..., 3] > 128, 255, 0)
+w = 902; s = w / wg.shape[1]
+img = scaled(wg, w); h = img.shape[0]
+pos = (round(body_l - 20 * SXp - w), round(front_y - h))
+Image.fromarray(img).save(os.path.join(OUT, 'waiting_gallery.png'))
+m = np.zeros(wg.shape[:2], bool)
+m[:955] = wg[:955, :, 3] > 0                                # roof, back wall and benches
+for cx in (145, 509, 904, 1292, 1680, 2067, 2470, 2863, 3270):   # column feet
+    m[985:1070, cx - 42:cx + 42] = wg[985:1070, cx - 42:cx + 42, 3] > 0
+m[:, :105] = wg[:, :105, 3] > 0                             # the two closed end walls
+m[:, 3330:] = wg[:, 3330:, 3] > 0
+m = ndimage.binary_opening(m, iterations=2)
+data['waiting_gallery'] = {'name': 'Waiting gallery', 'image': 'res://art/game/keep/waiting_gallery.png', 'pos': pos,
+                           'size': [w, h], 'collision': polys(m, pos[0], pos[1], s), 'z_line': round(pos[1] + 955 * s),
+                           'shadow': bake_shadow(img, pos, 'waiting_gallery')}
 json.dump(data, open(os.path.join(ROOT, 'data/keep_buildings.json'), 'w'), indent=1)
 for k, v in data.items():
     print(k, 'pos', v['pos'], 'size', v['size'], 'z', v['z_line'], 'polys', len(v['collision']), 'door', v.get('door'))
