@@ -47,10 +47,12 @@ def fix(img):
     # (a) the whole bay left of the centre pilaster plus the pilaster (x 612..812, from the shadowed edge of the
     #     left pilaster), below the parapet, is the intact bay right of the pilaster (183 px further right); the
     #     only remaining joins run down pilaster edges / along course lines
-    paste_cut(a, 1352, 1758, 615, 762, 190, ov=4, sides='lrtb')    # the bay: left pilaster's dark edge 614 <-> 804
-    paste_cut(a, 1352, 1758, 758, 814, 183, ov=6, sides='lrtb')
+    paste_cut(a, 1352, 1758, 615, 750, 190, ov=6, sides='lrtb')    # the bay: left pilaster's dark edge 614 <-> 804
+    # the centre pilaster and the wall right of it from the right-hand pilaster at x 1111 (string courses run into its
+    # capitals, shading like every other pilaster); one piece from x 742, so no second edge
+    paste_cut(a, 1352, 1758, 742, 808, 347, ov=5, sides='lrtb')
     paste_cut(a, 1262, 1356, 621, 840, 190, ov=4, sides='lrtb')      # battlements + corbels (merlon period 47.5)
-    paste_cut(a, 1272, 1340, 622, 662, 40, ov=4, sides='lr')         # one merlon to close the phase gap    # centre pilaster (its dark edges at 764 / 804)
+    paste_cut(a, 1272, 1340, 622, 662, 40, ov=4, sides='lr')         # one merlon to close the phase gap
     # (b) parapet wall above the battlements and the roof slates above it, smeared along the join: rebuilt from a
     #     clean stretch of the same rows (no dormer / window glow / roof in a wall patch, all roof in a roof patch)
     def ok(y0, y1, x0, x1, roof):
