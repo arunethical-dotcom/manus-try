@@ -503,6 +503,10 @@ func _keep_exterior() -> void:
 	var B: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/keep_buildings.json"))
 	for id in B:
 		var b: Dictionary = B[id]
+		if b.has("approach"):
+			var approach: Dictionary = b["approach"]
+			var ground_detail := _chunk_sprite(load(String(approach["image"])), Vector2(approach["pos"][0], approach["pos"][1]))
+			add_child(ground_detail)
 		if b.has("shadow"):                          # baked ground shadow (cast + contact), under the building
 			var shs := Sprite2D.new()
 			shs.texture = load(String(b["shadow"]["image"]))

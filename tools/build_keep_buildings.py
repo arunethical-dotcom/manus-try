@@ -244,24 +244,8 @@ m = ndimage.binary_opening(m, iterations=2)
 data['waiting_gallery'] = {'name': 'Waiting gallery', 'image': 'res://art/game/keep/waiting_gallery.png', 'pos': pos,
                            'size': [w, h], 'collision': polys(m, pos[0], pos[1], s), 'z_line': round(pos[1] + 955 * s),
                            'shadow': bake_shadow(img, pos, 'waiting_gallery')}
-# Sister's Apartment: centre the front steps on the south edge of plan parcel 250,570 220x110.
-source = Image.open(os.path.join(ROOT, 'art/source/keep/sisters_apartment.png'))
-# Pad the partial edge tiles so each runtime pixel samples exactly four source pixels per axis.
-w, h = (source.width + 3) // 4, (source.height + 3) // 4
-canvas = Image.new('RGBA', (4 * w, 4 * h))
-canvas.paste(source, (0, 0))
-sprite = canvas.resize((w, h), Image.Resampling.BOX)
-sprite.save(os.path.join(OUT, 'sisters_apartment.png'))
-cx, base = W(360, 680)
-x, y = round(cx - w / 2), round(base) - h
-# Only the lower walls and tower bases obstruct movement. Keep the front steps walkable.
-outline = [(6, 305), (570, 305), (570, 406), (548, 412), (501, 410),
-           (498, 400), (78, 400), (74, 411), (25, 412), (6, 406)]
-data['sisters_apartment'] = {
-    'name': "Sister's Apartment", 'image': 'res://art/game/keep/sisters_apartment.png',
-    'pos': [x, y], 'size': [w, h], 'z_line': y + 400,
-    'collision': [[[x + dx, y + dy] for dx, dy in outline]],
-}
+from build_sisters_apartment import build as build_apartment
+data['sisters_apartment'] = build_apartment()
 json.dump(data, open(os.path.join(ROOT, 'data/keep_buildings.json'), 'w'), indent=1)
 for k, v in data.items():
     print(k, 'pos', v['pos'], 'size', v['size'], 'z', v['z_line'], 'polys', len(v['collision']), 'door', v.get('door'))
