@@ -211,6 +211,10 @@ _axis = (_L['gates']['south'][0] + _L['gates']['north'][0]) / 2
 _cy = (_L['gates']['south'][1] + _L['gates']['north'][1]) / 2
 pos = (round(_axis - AXIS * s), round(_cy + BASE_Y * s / 2 - BASE_Y * s))
 print('throne footprint world', round(fx0), round(fy0), round(fx1), round(fy1), 'scale', round(s, 3))
+# The joined source jumps by a pixel at x=798 across the front stairs.
+# Continue each tread from its intact right half, blending out before the rail.
+from throne_stairs import align_treads
+align_treads(img)
 Image.fromarray(img).save(os.path.join(OUT, 'throne_hall.png'))
 H0, W0 = th.shape[:2]
 yy0, xx0 = np.indices((H0, W0))
