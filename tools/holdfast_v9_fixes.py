@@ -4,6 +4,15 @@ battlements above were drawn differently on each side. The strip x 735..812 (wal
 parapet down to the plinth) is replaced by the same strip one bay (183 px) to the right, which is intact."""
 import numpy as np
 
+def repair_plinth_brick(a):
+    """Complete the lowest course immediately left of the centre pilaster."""
+    stone = a[1754:1765, 696:721].copy()
+    # Continue the shade cast by the pilaster across the replacement stone.
+    shade = np.linspace(0.97, 0.62, stone.shape[1])
+    stone[..., :3] = stone[..., :3] * shade[None, :, None]
+    a[1753:1764, 740:765] = stone
+
+
 def _mincut(E):
     acc = E.copy(); bk = np.zeros(E.shape, np.int8); n = E.shape[1]
     for y in range(1, E.shape[0]):
@@ -80,4 +89,5 @@ def fix(img):
                 np.abs(a[y0:y1, x1:x1 + 6, :3] - a[y0:y1, x1 + dx:x1 + 6 + dx, :3]).mean()
             if best is None or e < best[0]: best = (e, dx)
         if best: paste_cut(a, y0, y1, x0, x1, best[1], ov=8)
+    repair_plinth_brick(a)
     return np.clip(a, 0, 255).astype(np.uint8)
