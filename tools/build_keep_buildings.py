@@ -250,6 +250,7 @@ data['waiting_gallery'] = {'name': 'Waiting gallery', 'image': 'res://art/game/k
                            'shadow': bake_shadow(img, pos, 'waiting_gallery')}
 from build_sisters_apartment import build as build_apartment
 data['sisters_apartment'] = build_apartment()
+data['great_hall'] = {'name': 'Great Hall', 'image': 'res://art/game/keep/great_hall.webp', 'pos': [6150, 3488], 'size': [1100, 722], 'z_line': 4190, 'collision': [[[6155, 4080], [7245, 4080], [7245, 4190], [6155, 4190]]]}
 json.dump(data, open(os.path.join(ROOT, 'data/keep_buildings.json'), 'w'), indent=1)
 for k, v in data.items():
     print(k, 'pos', v['pos'], 'size', v['size'], 'z', v['z_line'], 'polys', len(v['collision']), 'door', v.get('door'))

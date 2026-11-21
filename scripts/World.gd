@@ -517,7 +517,7 @@ func _keep_exterior() -> void:
 		var sp := Sprite2D.new()
 		sp.name = String(id)
 		sp.texture = load(String(b["image"]))
-		if id == "sisters_apartment":
+		if id in ["sisters_apartment", "great_hall"]:
 			sp.scale = Vector2(b["size"][0], b["size"][1]) / sp.texture.get_size()
 			sp.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		sp.centered = false
