@@ -6,11 +6,14 @@ import numpy as np
 
 def repair_plinth_brick(a):
     """Complete the lowest course immediately left of the centre pilaster."""
-    stone = a[1754:1765, 696:721].copy()
-    # Continue the shade cast by the pilaster across the replacement stone.
-    shade = np.linspace(0.97, 0.62, stone.shape[1])
-    stone[..., :3] = stone[..., :3] * shade[None, :, None]
-    a[1753:1764, 740:765] = stone
+    # The pillar and its cast shadow above this course come from x + 347.
+    # Carry that same bay down to the footing, tapering into the intact row.
+    x0, x1 = 716, 767
+    rows = np.rint(np.linspace(1752, 1761, 12)).astype(int)
+    donor = a[rows, x0 + 347:x1 + 347].astype(float)
+    region = a[1752:1764, x0:x1]
+    blend = np.clip((np.arange(x0, x1) - x0) / 7, 0, 1)[None, :, None]
+    region[:] = np.rint(region * (1 - blend) + donor * blend)
 
 
 def _mincut(E):
