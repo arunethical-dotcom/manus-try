@@ -8,7 +8,8 @@ OUT = ROOT / 'art/game/keep'
 
 def build():
     source = Image.open(ROOT / 'art/source/keep/sisters_apartment.png').convert('RGBA')
-    width = 640
+    # Match the framed windows on the lower Holdfast facade at world scale.
+    width = 1088
     height = round(source.height * width / source.width)
     sprite = source.resize((width, height), Image.Resampling.LANCZOS)
     sprite.save(OUT / 'sisters_apartment.png')
@@ -30,13 +31,13 @@ def build():
     for row in range(57):
         extended.paste(swatch.crop((0,row % 32,48,row % 32+1)),(358,row))
     extended.save(OUT / 'sisters_approach.png')
-    x, y = 1994, 2490
+    x, y = 1952, 2490
     # Original lower-wall and turret footprint, traced on the 577 x 429 reference.
     outline = [(6,305),(570,305),(570,406),(548,412),(501,410),
                (498,400),(78,400),(74,411),(25,412),(6,406)]
     footprint = [[x + round(dx*width/577), y + round(dy*height/429)] for dx,dy in outline]
     return dict(name="Sister's Apartment", image='res://art/game/keep/sisters_apartment.png',
-                approach=dict(image='res://art/game/keep/sisters_approach.png', pos=[1890,2955]),
+                approach=dict(image='res://art/game/keep/sisters_approach.png', pos=[x + round(251 * width / 577) - 382, y + round(423 * height / 429) - 2]),
                 pos=[x,y], size=[width,height], z_line=y+round(400*height/429),
                 collision=[footprint])
 
