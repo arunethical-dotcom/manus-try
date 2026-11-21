@@ -517,6 +517,9 @@ func _keep_exterior() -> void:
 		var sp := Sprite2D.new()
 		sp.name = String(id)
 		sp.texture = load(String(b["image"]))
+		if id == "sisters_apartment":
+			sp.scale = Vector2(b["size"][0], b["size"][1]) / sp.texture.get_size()
+			sp.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		sp.centered = false
 		sp.position = Vector2(b["pos"][0], b["pos"][1])
 		sp.z_index = 2
@@ -548,7 +551,7 @@ func _update_keep(foot: Vector2) -> void:
 		hint.text = "E: enter the Holdfast (ground floor)"
 	for e in keep_sprites:
 		var sp: Sprite2D = e[0]
-		var inside_x := foot.x >= sp.position.x and foot.x <= sp.position.x + sp.texture.get_width()
+		var inside_x := foot.x >= sp.position.x and foot.x <= sp.position.x + sp.texture.get_width() * sp.scale.x
 		sp.z_index = 4 if (inside_x and foot.y < float(e[1])) else 2
 	near_keep = keep_sprite != null and level == 0 and foot.distance_to(keep_door) < 40.0
 	if near_keep and hint:

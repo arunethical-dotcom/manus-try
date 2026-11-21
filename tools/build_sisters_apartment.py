@@ -1,5 +1,6 @@
 """Scale the supplied apartment artwork and place its walkable approach."""
 from pathlib import Path
+from shutil import copyfile
 from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -7,12 +8,12 @@ OUT = ROOT / 'art/game/keep'
 
 
 def build():
-    source = Image.open(ROOT / 'art/source/keep/sisters_apartment.png').convert('RGBA')
+    original = ROOT / 'art/source/keep/sisters_apartment.png'
+    source = Image.open(original)
     # Match the framed windows on the lower Holdfast facade at world scale.
     width = 1088
     height = round(source.height * width / source.width)
-    sprite = source.resize((width, height), Image.Resampling.LANCZOS)
-    sprite.save(OUT / 'sisters_apartment.png')
+    copyfile(original, OUT / 'sisters_apartment.png')
     # A curved dirt approach joins the steps to the existing western lane.
     ground = Image.open(ROOT / 'art/game/ground/g_1024_2048.webp').convert('RGB')
     swatch = ground.crop((1844-1024, 3036-2048, 1908-1024, 3068-2048))
