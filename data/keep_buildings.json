@@ -2339,5 +2339,38 @@
     ]
    ]
   ]
+ },
+ "barracks_armory": {
+  "name": "Barracks and Armory",
+  "image": "res://art/game/keep/barracks_armory.png",
+  "pos": [
+   2632,
+   4544
+  ],
+  "size": [
+   960,
+   320
+  ],
+  "collision": [
+   [
+    [
+     2644,
+     4720
+    ],
+    [
+     3580,
+     4720
+    ],
+    [
+     3580,
+     4855
+    ],
+    [
+     2644,
+     4855
+    ]
+   ]
+  ],
+  "z_line": 4720
  }
 }
