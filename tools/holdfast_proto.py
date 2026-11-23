@@ -14,7 +14,9 @@ Scale:
 
 Run:  python3 tools/holdfast_proto.py out.png
 """
-import sys
+import sys, os
+DOORS = os.environ.get('DOORS', 'flat')      # flat | south | edge | angled | real
+SHEAR = float(os.environ.get('SHEAR', '0'))  # camera turned sideways: <0 sees east faces, >0 west faces
 import numpy as np
 from PIL import Image, ImageFilter
 from scipy import ndimage
@@ -162,11 +164,11 @@ eave = crenel_ring_mask(rect_mask(CX0 - 6, CY0 - 6, CX1 + 6, CY1 + 6), 6) & ~cou
 put(eave, WALK + 4, M_STONE, 10)
 
 # --- kitchen chimney (hearth in the north wall of the kitchen) -------------------------------------------------------
-chim = rect_mask(wx(600), wy(742), wx(676), wy(800))
+chim = rect_mask(wx(640), wy(766), wx(716), wy(810))   # on the inner face of the north wall, so the walk passes it
 obj(12, kind='box', name='chimney', courses=[])
 put(chim, WALK + 70, M_STONE, 12, mode='set')
-put(rect_mask(wx(600) - 3, wy(742) - 3, wx(676) + 3, wy(800) + 3) & ~chim, WALK + 64, M_STONE, 12)  # cap
-put(rect_mask(wx(615), wy(755), wx(661), wy(787)), WALK + 62, M_IRON, 12, mode='set')              # flue mouth
+put(rect_mask(wx(640) - 3, wy(766) - 3, wx(716) + 3, wy(810) + 3) & ~chim, WALK + 64, M_STONE, 12)  # cap
+put(rect_mask(wx(655), wy(774), wx(701), wy(802)), WALK + 62, M_IRON, 12, mode='set')              # flue mouth
 
 # --- corner towers -------------------------------------------------------------------------------------------------
 TOWERS = {'NW': (443, 743), 'NE': (1431, 743), 'SW': (443, 1523), 'SE': (1431, 1523)}
@@ -211,11 +213,27 @@ for i, (k, (px, py)) in enumerate(TOWERS.items()):
     pid = 60 + i
     obj(pid, kind='box', name='porch_' + k, courses=[])
     pm = rect_mask(x0, y0, x1, y1)
-    # walls to WALK+44, pent roof rising toward the tower
-    t = (XX - x0) / (x1 - x0) if k in ('NW', 'SW') else (x1 - XX) / (x1 - x0)
+    facing = 'E' if k in ('NW', 'SW') else 'W'
+    D = 30
+    if DOORS == 'angled':      # end of the bay cut at 45 degrees, so the door looks along the walk and toward the camera
+        if facing == 'E':
+            pm &= ~((XX + YY) > (x1 + y1 - D))
+        else:
+            pm &= ~((YY - XX) > (y1 - D - x0))
     put(pm, WALK + 44, M_WALK, pid)                       # flat top
     put(crenel_ring_mask(pm, 4), WALK + 50, M_STONE, pid)  # low coping round the flat top
-    PORCHES.append((pid, x0, x1, y0, y1, 'E' if k in ('NW', 'SW') else 'W'))
+    yc = (y0 + y1) / 2
+    # stone threshold step on the walk in front of the door
+    if DOORS in ('edge', 'real'):
+        tx0 = x1 if facing == 'E' else x0 - 9
+        put(rect_mask(tx0, yc - 13, tx0 + 9, yc + 13), WALK + 3, M_STONE, 2)
+    elif DOORS == 'angled':
+        mx_, my_ = (x1 - D / 2, y1 - D / 2) if facing == 'E' else (x0 + D / 2, y1 - D / 2)
+        sx_ = 1 if facing == 'E' else -1
+        put(rect_mask(mx_ + sx_ * 6 - 9, my_ + 6 - 9, mx_ + sx_ * 6 + 9, my_ + 6 + 9) & ~pm, WALK + 3, M_STONE, 2)
+    elif DOORS == 'south':
+        put(rect_mask((x0 + x1) / 2 - 13, y1, (x0 + x1) / 2 + 13, y1 + 9), WALK + 3, M_STONE, 2)
+    PORCHES.append((pid, x0, x1, y0, y1, facing))
 
 # --- great tower (north side, King's tower) -----------------------------------------------------------------------
 GX0, GY0, GX1, GY1 = wx(756), wy(666), wx(1119), wy(977)
@@ -298,18 +316,35 @@ T2s = np.round(T2).astype(np.int64) + ZB
 OFF = int(max(Hs.max(), T2s[T2s < 1e8].max())) + 6
 KY = 0.62          # 3/4 view: ground depth foreshortened, heights drawn full
 YS = np.round(np.arange(H) * KY).astype(np.int64)
+zmax_all = int(max(Hs.max(), T2s[T2s < 1e8].max())) - ZB
+XOFF = int(np.ceil(max(0, -SHEAR * zmax_all))) + int(np.ceil(abs(SHEAR) * ZB)) + 2
+SWID = W + XOFF + int(np.ceil(max(0, SHEAR * zmax_all))) + int(np.ceil(abs(SHEAR) * ZB)) + 2
 SH = int(YS[-1]) + 1 + OFF
-GY = np.full((SH, W), -1, np.int32)
-LAY = np.zeros((SH, W), np.int8)
-ZS = np.zeros((SH, W), np.int32)
-cols = np.arange(W)
+GY = np.full((SH, SWID), -1, np.int32)
+GXB = np.full((SH, SWID), -1, np.int32)
+LAY = np.zeros((SH, SWID), np.int8)
+ZS = np.zeros((SH, SWID), np.int32)
+DEP = np.full((SH, SWID), -1e18)
+
+
+def splat(y, mz, mx, layer):
+    zr = mz - ZB
+    sx = mx + XOFF + np.round(SHEAR * zr).astype(np.int64)
+    sy = YS[y] + OFF - mz
+    dep = -SHEAR * mx + y / KY + zr                      # nearness to the camera
+    keep = dep > DEP[sy, sx]
+    sx, sy, dep, mz, mx = sx[keep], sy[keep], dep[keep], mz[keep], mx[keep]
+    o = np.argsort(dep, kind='stable')                   # repeated pixels: the nearest is written last
+    sx, sy, dep, mz, mx = sx[o], sy[o], dep[o], mz[o], mx[o]
+    GY[sy, sx] = y; GXB[sy, sx] = mx; LAY[sy, sx] = layer; ZS[sy, sx] = mz; DEP[sy, sx] = dep
+
+
 for y in range(H):
     h = Hs[y]
     hm = int(h.max())
     z = np.arange(hm + 1)[:, None]
     mz, mx = np.nonzero(z <= h[None, :])
-    sy = YS[y] + OFF - mz
-    GY[sy, mx] = y; LAY[sy, mx] = 0; ZS[sy, mx] = mz
+    splat(y, mz, mx, 0)
     t2 = T2s[y]
     has = t2 > -1e8
     if has.any():
@@ -318,12 +353,11 @@ for y in range(H):
         z = np.arange(zlo, zhi + 1)[:, None]
         m = (z >= b2[None, :]) & (z <= t2[None, :]) & has[None, :]
         mz, mx = np.nonzero(m)
-        sy = YS[y] + OFF - (mz + zlo)
-        GY[sy, mx] = y; LAY[sy, mx] = 1; ZS[sy, mx] = mz + zlo
+        splat(y, mz + zlo, mx, 1)
 
 valid = GY >= 0
 sy_idx, sx_idx = np.nonzero(valid)
-gy = GY[valid]; gx = sx_idx; zz = ZS[valid] - ZB; lay = LAY[valid]
+gy = GY[valid]; gx = GXB[valid]; zz = ZS[valid] - ZB; lay = LAY[valid]
 htop = np.where(lay == 0, Hs[gy, gx], T2s[gy, gx]) - ZB
 is_top = zz >= htop
 mat = np.where(lay == 0, MAT[gy, gx], MAT2[gy, gx])
@@ -452,6 +486,15 @@ u = fx.astype(np.float64).copy()
 lam = np.full(n, 0.0)
 # horizontal normal: cylinders by angle; boxes face south
 hn = np.tile(np.array([0.0, 1.0]), (n, 1))
+side_face = np.zeros(n, bool)
+if SHEAR != 0:
+    dxs = 1 if SHEAR < 0 else -1                          # neighbour on the camera side
+    lay_f = lay[f]
+    Hn_side = Hf[fy, np.clip(fx + dxs, 0, W - 1)]
+    Hn_south = Hf[np.clip(fy + 1, 0, H - 1), fx]
+    side_face = (lay_f == 0) & (Hn_side < fz) & ~(Hn_south < fz)
+    hn[side_face] = (dxs, 0.0)
+    u[side_face] = fy[side_face]
 for k, o in OBJS.items():
     if o.get('kind') == 'cyl':
         m = fo == k
@@ -596,6 +639,23 @@ for k, (px, py) in (('NW', TOWERS['NW']), ('NE', TOWERS['NE'])):
     xm = BX0 + WALLT / 2 if k == 'NW' else BX1 - WALLT / 2
     a = np.arccos(np.clip((xm - o['cx']) / o['r'], -1, 1))
     door(fo == 20 + list(TOWERS).index(k), (a - np.pi / 2) * o['r'], WALK, 18, 36)
+for pid, x0, x1, y0, y1, facing in PORCHES:
+    m = fo == pid
+    yc = (y0 + y1) / 2
+    if DOORS == 'south':
+        door(m & ~side_face, (x0 + x1) / 2, WALK, 18, 36)
+    elif DOORS == 'angled':
+        D = 30
+        if facing == 'E':
+            ch = m & (np.abs(fx + fy - (x1 + y1 - D)) <= 2)
+            hn[ch] = (0.7071, 0.7071); u[ch] = (fx[ch] - fy[ch]) / 1.4142 * 1.0
+            door(ch, (x1 - y1) / 1.4142, WALK, 18, 36)
+        else:
+            ch = m & (np.abs(fy - fx - (y1 - D - x0)) <= 2)
+            hn[ch] = (-0.7071, 0.7071); u[ch] = (fx[ch] + fy[ch]) / 1.4142
+            door(ch, (x0 + y1) / 1.4142, WALK, 18, 36)
+    elif DOORS == 'real':
+        door(m & side_face, yc, WALK, 18, 36)
 # great tower: loops on the lower storeys, lookout windows on level 4 (plan: north, south and west windows)
 m = fo == 40
 for s in range(3):
@@ -624,6 +684,8 @@ base[rev] *= (0.7 + 0.3 * (fz[rev] + 48) / 48)[:, None]
 
 # vertical faces shading + cast shadow
 fsh = fz < Ssh[np.minimum(fy + 1, H - 1), fx] - 1
+lam = hn[:, 0] * SUN[0] + hn[:, 1] * SUN[1]
+fshade = 0.52 + 0.42 * np.clip(lam / np.hypot(SUN[0], SUN[1]), 0, 1)
 fs = np.where(fsh, 0.56, fshade)
 # slope faces under roofs (eaves drops) are dark
 c = base * fs[:, None] + rng.normal(0, 2.2, (n, 1))
@@ -634,7 +696,7 @@ ao = np.clip(ndimage.gaussian_filter(Hf, 10) - Hf, 0, 60) / 60
 aot = ao[gy, gx]
 col *= (1 - 0.35 * aot * (is_top & (mat != M_SLATE)))[:, None]
 
-out = np.zeros((SH, W, 4), np.uint8)
+out = np.zeros((SH, SWID, 4), np.uint8)
 out[sy_idx, sx_idx, :3] = np.clip(col, 0, 255).astype(np.uint8)
 out[sy_idx, sx_idx, 3] = 255
 img = Image.fromarray(out, 'RGBA')
@@ -643,7 +705,7 @@ TOPCROP = int(np.nonzero(out[..., 3].any(1))[0][0])
 # beacon fire glow + smoke-free flame
 from PIL import ImageDraw
 d = ImageDraw.Draw(img)
-fx0, fy0 = int(bcx), int(round(bcy * KY) + OFF - (G4 + 22 + ZB))
+fx0, fy0 = int(bcx + XOFF + SHEAR * (G4 + 22)), int(round(bcy * KY) + OFF - (G4 + 22 + ZB))
 for r, a in ((26, 40), (16, 80), (9, 160)):
     glow = Image.new('RGBA', img.size, (0, 0, 0, 0))
     ImageDraw.Draw(glow).ellipse((fx0 - r, fy0 - r - 8, fx0 + r, fy0 + r - 8), fill=(255, 170, 60, a))
@@ -664,7 +726,7 @@ def side_door(img, x0, x1, y0, y1, facing):
     walk = round(yc * KY) + OFF - (WALK + ZB)              # screen row of the walk surface
     L, R = 34, 9                                           # door length (its height, laid sideways), half-width
     sgn = 1 if facing == 'E' else -1
-    xe = x1 if facing == 'E' else x0                       # the end of the bay that meets the walk
+    xe = (x1 if facing == 'E' else x0) + XOFF               # the end of the bay that meets the walk
     xi = xe - sgn * L                                      # inner end (arch head)
     xa, xb = sorted((xi, xe))
     stone_l, stone_d = (222, 204, 196), (120, 100, 96)
@@ -687,7 +749,7 @@ def side_door(img, x0, x1, y0, y1, facing):
     d.line((xt0, walk - R - 1, xt1, walk - R - 1), fill=(236, 222, 214))
 
 
-for pid, x0, x1, y0, y1, facing in PORCHES:
+for pid, x0, x1, y0, y1, facing in (PORCHES if DOORS == 'flat' else []):
     img = img.convert('RGBA')
     side_door(img, x0, x1, y0, y1, facing)
 
