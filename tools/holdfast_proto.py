@@ -15,7 +15,7 @@ Scale:
 Run:  python3 tools/holdfast_proto.py out.png
 """
 import sys, os
-DOORS = os.environ.get('DOORS', 'flat')      # flat | south | edge | angled | real
+DOORS = os.environ.get('DOORS', 'edge')      # flat | south | edge | angled | real
 SHEAR = float(os.environ.get('SHEAR', '0'))  # camera turned sideways: <0 sees east faces, >0 west faces
 import numpy as np
 from PIL import Image, ImageFilter
