@@ -583,15 +583,61 @@ for k, o in OBJS.items():
 
 # ---- openings ----------------------------------------------------------------------------------------------------
 def loop(m, uc, z0, length=26):
-    """Arrow loop: 3 px slit with a round oillet at each end, splayed reveal."""
+    """Cross arrow loop (ground floor, defensive): dressed stone frame, splayed reveal, slit with round oillets at
+    the ends and on a short cross-arm for sighting."""
     du = u - uc
     zr = fz - z0
-    inn = m & (np.abs(du) <= 1.5) & (zr >= 0) & (zr < length)
-    ends = m & (((du) ** 2 + (zr - 2) ** 2 < 6) | ((du) ** 2 + (zr - length + 2) ** 2 < 6))
-    cross = m & (np.abs(zr - length / 2) <= 1) & (np.abs(du) <= 4)
-    rev = m & (np.abs(du) <= 3.5) & (zr >= -1) & (zr < length + 1)
-    paint(rev, STONE * 0.7)
-    paint(inn | ends | cross, np.array((26, 20, 20.)))
+    # dressed frame: one tall stone each side + lintel and sill blocks, outlined with mortar
+    frame = m & (np.abs(du) <= 6) & (zr >= -4) & (zr < length + 4)
+    paint(frame, STONE_TOP * 1.04)
+    paint(frame & ((np.abs(du) > 5.2) | (zr < -3) | (zr >= length + 3)), MORTAR)
+    paint(frame & ((np.abs(zr + 1) < 0.6) | (np.abs(zr - length - 1) < 0.6)), MORTAR)       # lintel/sill joints
+    paint(frame & (zr >= length) & (du < -2), STONE_TOP * 1.15)                               # lit lintel edge
+    # splayed reveal, darker inward
+    rev = m & (np.abs(du) <= 3.5) & (zr >= 0) & (zr < length)
+    paint(rev, STONE * 0.62)
+    paint(rev & (du > 1.5), STONE * 0.48)                                                     # shaded side
+    dark = np.array((22, 16, 16.))
+    slit = m & (np.abs(du) <= 1.0) & (zr >= 1) & (zr < length - 1)
+    arm = m & (np.abs(zr - length * 0.55) <= 0.8) & (np.abs(du) <= 5)
+    ends = m & (((du ** 2 + (zr - 2) ** 2) < 5) | ((du ** 2 + (zr - length + 2) ** 2) < 5) |
+                (((du - 4.5) ** 2 + (zr - length * 0.55) ** 2) < 3.2) | (((du + 4.5) ** 2 + (zr - length * 0.55) ** 2) < 3.2))
+    paint(slit | arm | ends, dark)
+
+
+def lancet(m, uc, z0, w=12, h=32):
+    """Lancet window (upper floors): pointed arch of two arcs, dressed jambs and voussoirs, leaded glass with a sky
+    glint, projecting sill with its shadow, and a hood mould over the arch."""
+    du = u - uc
+    zr = fz - z0
+    hw = w / 2
+    spring = h - w * 0.85                                    # where the arch starts
+    def pointed(r_extra):
+        R = w + r_extra                                      # equilateral-ish arch: arcs centred on the far jamb
+        lw = hw + r_extra
+        left = ((du + hw) ** 2 + (zr - spring) ** 2) < R ** 2
+        right = ((du - hw) ** 2 + (zr - spring) ** 2) < R ** 2
+        return (np.abs(du) < lw) & (zr >= 0) & ((zr < spring) | (left & right))
+    opening = m & pointed(0)
+    surround = m & pointed(3) & (zr >= -2)
+    hood = m & pointed(5) & ~pointed(3) & (zr >= spring - 2)
+    paint(hood, STONE_TOP * 1.12)
+    paint(m & pointed(6) & ~pointed(5) & (zr >= spring - 2), MORTAR * 0.75)                # hood shadow line
+    paint(surround, STONE_TOP * 1.02)
+    # voussoir joints on the arch, block joints on the jambs
+    ang = np.arctan2(zr - spring, du)
+    paint(surround & ~opening & (zr >= spring) & ((np.floor(ang * 5.5) % 2) == 0), STONE_TOP * 0.9)
+    paint(surround & ~opening & (zr < spring) & ((np.floor(zr) % 9) == 0), MORTAR)
+    # glass: dark leaded panes, diamond lead lines, upper-left sky glint, deep shadow at the top of the reveal
+    g = opening
+    paint(g, GLASS)
+    lead = ((np.floor(du + zr) % 5) == 0) | ((np.floor(du - zr + 40) % 5) == 0)
+    paint(g & lead, GLASS * 0.5)
+    paint(g & (du < -1) & (zr > spring * 0.5) & (zr < spring + 3) & ~lead, GLASS * 1.7)
+    paint(g & (np.abs(du) >= hw - 1.2), GLASS * 0.45)                                       # reveal shadow
+    # sill
+    paint(m & (np.abs(du) < hw + 4) & (zr >= -4) & (zr < -1), STONE_TOP * 1.12)
+    paint(m & (np.abs(du) < hw + 4) & (zr >= -6) & (zr < -4), MORTAR * 0.6)
 
 
 def window(m, uc, z0, w=20, h=36, lights=2, glass=GLASS):
@@ -655,7 +701,7 @@ court_face = m_body & (fy > CY0 - 3) & (fy < CY0 + 3)     # courtyard face of th
 bays = np.arange(wx(560), wx(1340), 60)
 for i, bx in enumerate(bays):
     loop(outer_south, bx + (30 if i % 2 else 0), 22, 28)
-    loop(outer_south, bx + (0 if i % 2 else 30), STOREY + 22, 28)
+    lancet(outer_south, bx + (0 if i % 2 else 30), STOREY + 22)
 # courtyard face: cloister arcade on the ground floor, gallery windows above (plan: two per side)
 arcade(court_face, [wx(768), wx(845), wx(937), wx(1027), wx(1107)], 0, STOREY)
 for wxp in (wx(862), wx(1015)):
@@ -666,7 +712,7 @@ for i in range(4):
     for s in range(3):
         for k2 in range(-3, 4):
             uc = (k2 + (0.5 if s % 2 else 0)) * 70
-            loop(m, uc, s * STOREY + 24, 28)
+            (loop(m, uc, s * STOREY + 24, 28) if s == 0 else lancet(m, uc, s * STOREY + 22))
 # stair heads: door on the south side
 for k in (31, 33, 42):
     if k in OBJS:
@@ -698,16 +744,16 @@ for pid, x0, x1, y0, y1, facing in PORCHES:
 m = fo == 40
 for s in range(3):
     for k2 in range(5):
-        loop(m, wx(800) + k2 * (wx(1080) - wx(800)) / 4, s * STOREY + 24, 28)
+        lancet(m, wx(800) + k2 * (wx(1080) - wx(800)) / 4, s * STOREY + 22)
 m = fo == 41
 for k2 in range(3):
-    loop(m, wx(830) + k2 * (wx(1045) - wx(830)) / 2, 3 * STOREY + 24, 28)
+    lancet(m, wx(830) + k2 * (wx(1045) - wx(830)) / 2, 3 * STOREY + 22)
 window(m, wx(939), 4 * STOREY + 16, w=44, h=46, lights=2)
 # gatehouse: winch room and watch room
 m = fo == 50
 for s in (1, 2):
     for k2 in range(3):
-        loop(m, wx(1230) + k2 * (wx(1400) - wx(1230)) / 2, s * STOREY + 24, 28)
+        lancet(m, wx(1230) + k2 * (wx(1400) - wx(1230)) / 2, s * STOREY + 22)
 # privy: chute opening at the foot
 m = fo == 52
 paint(m & (fz < 14) & (np.abs(u - wx(392)) < 8), np.array((30, 24, 22.)))
