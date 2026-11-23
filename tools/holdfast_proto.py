@@ -43,7 +43,7 @@ STONE = np.array((214, 168, 104.))    # warm golden sandstone: the keep's other 
 STONE_TOP = np.array((236, 202, 142.))
 MORTAR = np.array((138, 96, 48.))
 SLATE = np.array((46, 90, 182.))      # the keep's bright blue roofs
-LEAD = np.array((54, 94, 176.))       # flat roofs laid in the same blue tile
+LEAD = np.array((206, 162, 102.))     # flat roofs paved in the same sandstone as the walls
 GRASS = np.array((92, 150, 58.))
 BERM = np.array((206, 178, 134.))
 EARTH = np.array((112, 78, 44.))
@@ -480,10 +480,12 @@ cc[rg] = np.array((150, 140, 134.)) * (0.9 + 0.15 * ((sx[rg] + syy[rg]) % 6 == 0
 c[m] = cc + noise[m] * 2
 # lead, iron, deck, water, timber
 m = tm == M_LEAD
-cc = LEAD * (0.93 + 0.07 * hsh(tx[m] // 30, ty[m] // 90)[:, None])
-cc[(tx[m] % 30) == 0] = LEAD * 1.16          # lead rolls (raised seams) every 30 px
-cc[(tx[m] % 30) == 1] = LEAD * 0.78
-cc[(ty[m] % 90) == 0] = LEAD * 0.84          # drips/steps across the sheets
+row = ty[m] // 14
+xo = tx[m] + (row % 2) * 12
+cc = LEAD * (0.9 + 0.14 * hsh(xo // 24, row))[:, None]          # large roof flags, 24 x 14, half-bond
+joint = (ty[m] % 14 == 0) | (xo % 24 == 0)
+cc[joint] = MORTAR * 1.05
+cc[(ty[m] % 14 == 1) & ~joint] *= 1.06
 c[m] = cc + noise[m] * 1.5
 m = tm == M_IRON; c[m] = IRON + noise[m] * 3
 m = tm == M_WATER; c[m] = np.array((40, 58, 74.)) + noise[m] * 3
