@@ -284,6 +284,46 @@ db = rect_mask(wx(1611), wy(1010), wx(1716), wy(1103))
 obj(51, kind='box', name='drawbridge', courses=[])
 put_float(db, -10, 0.0, M_DECK, 51)
 
+# --- door bays at every other place a wall walk runs into a taller building --------------------------------------------
+# Same rule as the four tower bays: each door faces along the walk it serves, the way it would in reality. Doors facing
+# south can be seen from the camera; doors facing north, east or west are edge-on/hidden and only their step shows.
+BAYS = []
+
+
+def bay(name, x0, y0, x1, y1, facing):
+    bid = 70 + len(BAYS)
+    obj(bid, kind='box', name='bay_' + name, courses=[])
+    m = rect_mask(x0, y0, x1, y1)
+    put(m, WALK + 44, M_WALK, bid)
+    put(crenel_ring_mask(m, 4), WALK + 50, M_STONE, bid)
+    xc, yc = (x0 + x1) / 2, (y0 + y1) / 2
+    step = {'S': (xc - 13, y1, xc + 13, y1 + 9), 'N': (xc - 13, y0 - 9, xc + 13, y0),
+            'E': (x1, yc - 13, x1 + 9, yc + 13), 'W': (x0 - 9, yc - 13, x0, yc + 13)}[facing]
+    put(rect_mask(*step), WALK + 3, M_STONE, 2)
+    BAYS.append((bid, x0, y0, x1, y1, facing))
+
+
+def tower_edge_y(k, xm, south):
+    cx, cy = wx(TOWERS[k][0]), wy(TOWERS[k][1])
+    dy = np.sqrt(max(TR ** 2 - (xm - cx) ** 2, 0))
+    return cy + dy if south else cy - dy
+
+
+# west walk (runs north-south): NW tower door faces south, SW tower door faces north
+wa, wb = BX0 + 12, BX0 + WALLT * 0.55
+ye = tower_edge_y('NW', (wa + wb) / 2, True);  bay('NW_w', wa, ye - 24, wb, ye + 34, 'S')
+ye = tower_edge_y('SW', (wa + wb) / 2, False); bay('SW_w', wa, ye - 34, wb, ye + 24, 'N')
+# east walk: NE tower faces south; gatehouse north side faces north, south side faces south; SE tower faces north
+ea, eb = BX1 - WALLT * 0.55, BX1 - 12
+ye = tower_edge_y('NE', (ea + eb) / 2, True);  bay('NE_e', ea, ye - 24, eb, ye + 34, 'S')
+bay('gate_n', ea, HY0 - 34, eb, HY0 + 2, 'N')
+bay('gate_s', ea, HY1 - 2, eb, HY1 + 34, 'S')
+ye = tower_edge_y('SE', (ea + eb) / 2, False); bay('SE_e', ea, ye - 34, eb, ye + 24, 'N')
+# north walk meets the great tower: west part's door faces west, east part's faces east
+na, nb = BY0 + 14, BY0 + WALLT * 0.55
+bay('great_w', GX0 - 34, na, GX0 + 2, nb, 'W')
+bay('great_e', GX1 - 2, na, GX1 + 34, nb, 'E')
+
 # --- privy chute (west wall) -----------------------------------------------------------------------------------------
 obj(52, kind='box', name='privy', courses=[STOREY])
 pv = rect_mask(wx(366), wy(1056), wx(418), wy(1160))
@@ -632,13 +672,11 @@ for k in (31, 33, 42):
     if k in OBJS:
         door(fo == k, 0, (TOP_T if k != 42 else G4), 16, 30)
 # doors onto the wall walk (Kael-sized: 18 x 36 px), where the walk runs into a taller building's south face
-walk_mid_e = BX1 - WALLT / 2
-door(fo == 50, walk_mid_e, WALK, 18, 36)                       # watch room door (the walk passes through it)
-for k, (px, py) in (('NW', TOWERS['NW']), ('NE', TOWERS['NE'])):
-    o = OBJS[20 + list(TOWERS).index(k)]
-    xm = BX0 + WALLT / 2 if k == 'NW' else BX1 - WALLT / 2
-    a = np.arccos(np.clip((xm - o['cx']) / o['r'], -1, 1))
-    door(fo == 20 + list(TOWERS).index(k), (a - np.pi / 2) * o['r'], WALK, 18, 36)
+for bid, x0, y0, x1, y1, facing in BAYS:
+    if facing == 'S':
+        door((fo == bid) & ~side_face, (x0 + x1) / 2, WALK, 18, 36)
+    elif SHEAR != 0 and ((facing == 'E' and SHEAR < 0) or (facing == 'W' and SHEAR > 0)):
+        door((fo == bid) & side_face, (y0 + y1) / 2, WALK, 18, 36)
 for pid, x0, x1, y0, y1, facing in PORCHES:
     m = fo == pid
     yc = (y0 + y1) / 2
