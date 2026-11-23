@@ -148,8 +148,8 @@ put(talus, 30 * (1 - dist_out / 12), M_STONE, 10)
 # roofs: hipped slate roof over the ranges, from the inner edge of the wall walk to the courtyard eaves
 roof_fp = rect_mask(BX0 + WALLT, BY0 + WALLT, BX1 - WALLT, BY1 - WALLT) & ~court
 d_roof = ndimage.distance_transform_cdt(roof_fp, metric='chessboard').astype(np.float32)   # straight hips
-put(roof_fp, WALK + 2 + 0.42 * d_roof, M_SLATE, 11)      # ~23° pitch: ridge stays below the gatehouse and tower parapets
-RIDGE = roof_fp & (ndimage.maximum_filter(d_roof, size=3) <= d_roof) & (d_roof > 3)
+put(roof_fp, WALK + 2, M_LEAD, 11)      # flat lead roof over the ranges, just above the wall walk, behind the parapets
+RIDGE = np.zeros_like(roof_fp)
 RIDGE = ndimage.binary_dilation(RIDGE, iterations=1) & roof_fp
 obj(11, kind='roof')
 # parapet on the outer edge of the curtain, with merlons
@@ -193,6 +193,29 @@ for i, (k, (px, py)) in enumerate(TOWERS.items()):
         put(sc, TOP_T + 52 + (30 - np.hypot(XX - cx, YY - cy)) * 1.6, M_SLATE, sid)
     else:                                   # lead flat with a hatch
         put(circ_mask(cx, cy, 18), TOP_T + 3, M_LEAD, oid)
+
+# --- doorway porches where the north and south wall walks run into the corner towers -------------------------------
+# The walk meets these towers on their east/west sides, which face away from a 3/4 camera. So each tower gets a small
+# vaulted doorway bay built out onto the inner half of the walk (the walk is ~98 px wide, so the outer half stays clear
+# for passing guards). Its door faces south, onto the walk, and is Kael-sized (18 x 36).
+PORCHES = []
+for i, (k, (px, py)) in enumerate(TOWERS.items()):
+    cx, cy = wx(px), wy(py)
+    north = k in ('NW', 'NE')
+    y0 = BY0 + 14 if north else BY1 - WALLT + 2
+    y1 = BY0 + WALLT * 0.55 if north else BY1 - WALLT * 0.42
+    if k in ('NW', 'SW'):
+        x0, x1 = cx + TR - 24, cx + TR + 34
+    else:
+        x0, x1 = cx - TR - 34, cx - TR + 24
+    pid = 60 + i
+    obj(pid, kind='box', name='porch_' + k, courses=[])
+    pm = rect_mask(x0, y0, x1, y1)
+    # walls to WALK+44, pent roof rising toward the tower
+    t = (XX - x0) / (x1 - x0) if k in ('NW', 'SW') else (x1 - XX) / (x1 - x0)
+    put(pm, WALK + 44, M_WALK, pid)                       # flat top
+    put(crenel_ring_mask(pm, 4), WALK + 50, M_STONE, pid)  # low coping round the flat top
+    PORCHES.append((pid, (x0 + x1) / 2 + (6 if k in ('NW', 'SW') else -6)))
 
 # --- great tower (north side, King's tower) -----------------------------------------------------------------------
 GX0, GY0, GX1, GY1 = wx(756), wy(666), wx(1119), wy(977)
@@ -392,7 +415,12 @@ rg = RIDGE[syy, sx]
 cc[rg] = np.array((150, 140, 134.)) * (0.9 + 0.15 * ((sx[rg] + syy[rg]) % 6 == 0))[:, None]   # ridge & hip capping
 c[m] = cc + noise[m] * 2
 # lead, iron, deck, water, timber
-m = tm == M_LEAD; c[m] = LEAD * (0.95 + 0.06 * hsh(tx[m] // 12, ty[m])[:, None])
+m = tm == M_LEAD
+cc = LEAD * (0.93 + 0.07 * hsh(tx[m] // 30, ty[m] // 90)[:, None])
+cc[(tx[m] % 30) == 0] = LEAD * 1.16          # lead rolls (raised seams) every 30 px
+cc[(tx[m] % 30) == 1] = LEAD * 0.78
+cc[(ty[m] % 90) == 0] = LEAD * 0.84          # drips/steps across the sheets
+c[m] = cc + noise[m] * 1.5
 m = tm == M_IRON; c[m] = IRON + noise[m] * 3
 m = tm == M_WATER; c[m] = np.array((40, 58, 74.)) + noise[m] * 3
 m = tm == M_DECK
@@ -568,6 +596,8 @@ for k, (px, py) in (('NW', TOWERS['NW']), ('NE', TOWERS['NE'])):
     xm = BX0 + WALLT / 2 if k == 'NW' else BX1 - WALLT / 2
     a = np.arccos(np.clip((xm - o['cx']) / o['r'], -1, 1))
     door(fo == 20 + list(TOWERS).index(k), (a - np.pi / 2) * o['r'], WALK, 18, 36)
+for pid, xc in PORCHES:
+    door(fo == pid, xc, WALK, 18, 36)
 # great tower: loops on the lower storeys, lookout windows on level 4 (plan: north, south and west windows)
 m = fo == 40
 for s in range(3):
