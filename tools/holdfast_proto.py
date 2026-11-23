@@ -215,7 +215,7 @@ for i, (k, (px, py)) in enumerate(TOWERS.items()):
     t = (XX - x0) / (x1 - x0) if k in ('NW', 'SW') else (x1 - XX) / (x1 - x0)
     put(pm, WALK + 44, M_WALK, pid)                       # flat top
     put(crenel_ring_mask(pm, 4), WALK + 50, M_STONE, pid)  # low coping round the flat top
-    PORCHES.append((pid, (x0 + x1) / 2 + (6 if k in ('NW', 'SW') else -6)))
+    PORCHES.append((pid, x0, x1, y0, y1, 'E' if k in ('NW', 'SW') else 'W'))
 
 # --- great tower (north side, King's tower) -----------------------------------------------------------------------
 GX0, GY0, GX1, GY1 = wx(756), wy(666), wx(1119), wy(977)
@@ -596,8 +596,6 @@ for k, (px, py) in (('NW', TOWERS['NW']), ('NE', TOWERS['NE'])):
     xm = BX0 + WALLT / 2 if k == 'NW' else BX1 - WALLT / 2
     a = np.arccos(np.clip((xm - o['cx']) / o['r'], -1, 1))
     door(fo == 20 + list(TOWERS).index(k), (a - np.pi / 2) * o['r'], WALK, 18, 36)
-for pid, xc in PORCHES:
-    door(fo == pid, xc, WALK, 18, 36)
 # great tower: loops on the lower storeys, lookout windows on level 4 (plan: north, south and west windows)
 m = fo == 40
 for s in range(3):
@@ -653,6 +651,45 @@ for r, a in ((26, 40), (16, 80), (9, 160)):
 d = ImageDraw.Draw(img)
 d.polygon([(fx0 - 8, fy0), (fx0 + 8, fy0), (fx0 + 3, fy0 - 16), (fx0, fy0 - 24), (fx0 - 3, fy0 - 14)], fill=(255, 150, 40))
 d.polygon([(fx0 - 4, fy0), (fx0 + 4, fy0), (fx0, fy0 - 12)], fill=(255, 230, 140))
+
+
+# ---- side doors (3/4 RPG convention) ---------------------------------------------------------------------------------
+# The tower doors face east or west, along the walk. A 3/4 camera cannot see east/west faces, so, as in top-down RPGs,
+# the doorway is drawn into the top of the door bay: a sideways arch with its oak door, opening onto the walk, with the
+# threshold step lying on the walk in front of it.
+def side_door(img, x0, x1, y0, y1, facing):
+    d = ImageDraw.Draw(img)
+    yc = (y0 + y1) / 2
+    top = round(yc * KY) + OFF - (WALK + 44 + ZB)          # screen row of the bay's top, at its centre line
+    walk = round(yc * KY) + OFF - (WALK + ZB)              # screen row of the walk surface
+    L, R = 34, 9                                           # door length (its height, laid sideways), half-width
+    sgn = 1 if facing == 'E' else -1
+    xe = x1 if facing == 'E' else x0                       # the end of the bay that meets the walk
+    xi = xe - sgn * L                                      # inner end (arch head)
+    xa, xb = sorted((xi, xe))
+    stone_l, stone_d = (222, 204, 196), (120, 100, 96)
+    # dressed surround
+    d.rectangle((xa - 2, top - R - 3, xb, top + R + 3), fill=stone_l)
+    d.ellipse((xi - R - 3, top - R - 3, xi + R + 3, top + R + 3), fill=stone_l)
+    # door: oak planks running along the door's height, two iron straps, ring handle
+    d.rectangle((xa, top - R, xb - 1, top + R), fill=(132, 86, 48))
+    d.ellipse((xi - R, top - R, xi + R, top + R), fill=(132, 86, 48))
+    for yy in range(int(top - R) + 3, int(top + R), 4):
+        d.line((min(xi, xe), yy, max(xi, xe), yy), fill=(84, 52, 28))
+    for k in (8, L - 10):
+        xs = xe - sgn * k
+        d.line((xs, top - R + 1, xs, top + R - 1), fill=(56, 56, 62), width=2)
+    d.ellipse((xe - sgn * 18 - 2, top + 2, xe - sgn * 18 + 2, top + 6), outline=(190, 180, 120))
+    d.arc((xi - R - 3, top - R - 3, xi + R + 3, top + R + 3), 0, 360, fill=stone_d)
+    # threshold step on the walk in front of the door
+    xt0, xt1 = sorted((xe, xe + sgn * 9))
+    d.rectangle((xt0, walk - R - 2, xt1, walk + R + 2), fill=(214, 196, 186), outline=stone_d)
+    d.line((xt0, walk - R - 1, xt1, walk - R - 1), fill=(236, 222, 214))
+
+
+for pid, x0, x1, y0, y1, facing in PORCHES:
+    img = img.convert('RGBA')
+    side_door(img, x0, x1, y0, y1, facing)
 
 img = img.crop((0, max(0, TOPCROP - 8), img.width, img.height))
 out_path = sys.argv[1] if len(sys.argv) > 1 else 'holdfast_proto.png'
