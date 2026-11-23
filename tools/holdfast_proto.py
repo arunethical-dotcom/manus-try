@@ -25,7 +25,7 @@ from scipy import ndimage
 # plan → world.  Plan coordinates are pixels of the full-size plan image (3800 x 4276), ground-floor drawing.
 S = 1586 / (1561 - 314)              # castle incl. towers is 314..1561 on the plan
 PX0, PY0 = 105, 406                   # top-left of the plan's grass border
-EXTRA_S = 150                         # extra ground south of the plan so the covered bridge can be seen leaving
+EXTRA_S = 150                         # extra ground south of the plan
 
 
 def wx(px): return (px - PX0) * S
@@ -39,18 +39,18 @@ ZB = 64                               # height-field offset so the dry moat (neg
 
 # ---------------------------------------------------------------------------------------------------------------------
 # palette
-STONE = np.array((190, 168, 160.))    # rose-grey ashlar, as the current Holdfast
-STONE_TOP = np.array((206, 186, 178.))
-MORTAR = np.array((120, 100, 96.))
-SLATE = np.array((74, 90, 150.))
-LEAD = np.array((132, 136, 146.))
-GRASS = np.array((104, 138, 70.))
-BERM = np.array((168, 160, 150.))
-EARTH = np.array((96, 78, 60.))
-COBBLE = np.array((150, 144, 138.))
-TIMBER = np.array((132, 86, 48.))
+STONE = np.array((214, 168, 104.))    # warm golden sandstone: the keep's other buildings (Great Hall, Barracks, Throne Hall)
+STONE_TOP = np.array((236, 202, 142.))
+MORTAR = np.array((138, 96, 48.))
+SLATE = np.array((46, 90, 182.))      # the keep's bright blue roofs
+LEAD = np.array((54, 94, 176.))       # flat roofs laid in the same blue tile
+GRASS = np.array((92, 150, 58.))
+BERM = np.array((206, 178, 134.))
+EARTH = np.array((112, 78, 44.))
+COBBLE = np.array((180, 150, 108.))
+TIMBER = np.array((136, 84, 32.))
 IRON = np.array((54, 54, 60.))
-GLASS = np.array((60, 76, 104.))
+GLASS = np.array((30, 52, 108.))
 
 # material ids
 M_GRASS, M_BERM, M_MOAT, M_STONE, M_WALK, M_SLATE, M_COBBLE, M_TIMBER, M_IRON, M_LEAD, M_WATER, M_DECK = range(12)
@@ -329,16 +329,6 @@ obj(52, kind='box', name='privy', courses=[STOREY])
 pv = rect_mask(wx(366), wy(1056), wx(418), wy(1160))
 put(pv, 2 * STOREY - 20 + (XX - wx(366)) * 0.3, M_SLATE, 52)
 
-# --- covered bridge to the Sister's manor (first floor, south) ---------------------------------------------------------
-KX0, KX1 = wx(596), wx(655)
-br = rect_mask(KX0, BY1, KX1, H)
-obj(53, kind='box', name='bridge', courses=[])
-ridge = (KX0 + KX1) / 2
-roofz = STOREY + 58 + (((KX1 - KX0) / 2) - np.abs(XX - ridge)) * 0.8
-put_float(br, STOREY, roofz, M_SLATE, 53)
-obj(54, kind='box', name='pier', courses=[])
-pier = rect_mask(KX0 - 6, wy(1736), KX1 + 6, wy(1778))
-put(pier, STOREY, M_STONE, 54, mode='set')
 
 # --- courtyard: cobbles and the well ---------------------------------------------------------------------------------
 put(court, 0, M_COBBLE, 2, mode='set')
@@ -605,7 +595,7 @@ def loop(m, uc, z0, length=26):
     paint(slit | arm | ends, dark)
 
 
-def lancet(m, uc, z0, w=12, h=32):
+def lancet(m, uc, z0, w=12, h=32, bars=False):
     """Lancet window (upper floors): pointed arch of two arcs, dressed jambs and voussoirs, leaded glass with a sky
     glint, projecting sill with its shadow, and a hood mould over the arch."""
     du = u - uc
@@ -635,6 +625,9 @@ def lancet(m, uc, z0, w=12, h=32):
     paint(g & lead, GLASS * 0.5)
     paint(g & (du < -1) & (zr > spring * 0.5) & (zr < spring + 3) & ~lead, GLASS * 1.7)
     paint(g & (np.abs(du) >= hw - 1.2), GLASS * 0.45)                                       # reveal shadow
+    if bars:                                              # ground floor: iron grille set in the reveal
+        paint(g & ((np.floor(du + hw) % 4) == 1), IRON * 1.3)
+        paint(g & (np.abs(zr - spring * 0.5) < 0.8), IRON * 1.3)
     # sill
     paint(m & (np.abs(du) < hw + 4) & (zr >= -4) & (zr < -1), STONE_TOP * 1.12)
     paint(m & (np.abs(du) < hw + 4) & (zr >= -6) & (zr < -4), MORTAR * 0.6)
@@ -700,7 +693,7 @@ court_face = m_body & (fy > CY0 - 3) & (fy < CY0 + 3)     # courtyard face of th
 # The plan draws no windows on the outer faces: the curtain gets arrow loops, staggered between storeys.
 bays = np.arange(wx(560), wx(1340), 60)
 for i, bx in enumerate(bays):
-    loop(outer_south, bx + (30 if i % 2 else 0), 22, 28)
+    lancet(outer_south, bx + (0 if i % 2 else 30), 30, w=12, h=26, bars=True)   # high sill, barred
     lancet(outer_south, bx + (0 if i % 2 else 30), STOREY + 22)
 # courtyard face: cloister arcade on the ground floor, gallery windows above (plan: two per side)
 arcade(court_face, [wx(768), wx(845), wx(937), wx(1027), wx(1107)], 0, STOREY)
@@ -712,7 +705,7 @@ for i in range(4):
     for s in range(3):
         for k2 in range(-3, 4):
             uc = (k2 + (0.5 if s % 2 else 0)) * 70
-            (loop(m, uc, s * STOREY + 24, 28) if s == 0 else lancet(m, uc, s * STOREY + 22))
+            (lancet(m, uc, 30, w=12, h=26, bars=True) if s == 0 else lancet(m, uc, s * STOREY + 22))
 # stair heads: door on the south side
 for k in (31, 33, 42):
     if k in OBJS:
