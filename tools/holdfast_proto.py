@@ -273,7 +273,9 @@ Hs = np.round(Hf).astype(np.int32) + ZB
 B2s = np.round(B2).astype(np.int64) + ZB
 T2s = np.round(T2).astype(np.int64) + ZB
 OFF = int(max(Hs.max(), T2s[T2s < 1e8].max())) + 6
-SH = H + OFF
+KY = 0.62          # 3/4 view: ground depth foreshortened, heights drawn full
+YS = np.round(np.arange(H) * KY).astype(np.int64)
+SH = int(YS[-1]) + 1 + OFF
 GY = np.full((SH, W), -1, np.int32)
 LAY = np.zeros((SH, W), np.int8)
 ZS = np.zeros((SH, W), np.int32)
@@ -283,7 +285,7 @@ for y in range(H):
     hm = int(h.max())
     z = np.arange(hm + 1)[:, None]
     mz, mx = np.nonzero(z <= h[None, :])
-    sy = y + OFF - mz
+    sy = YS[y] + OFF - mz
     GY[sy, mx] = y; LAY[sy, mx] = 0; ZS[sy, mx] = mz
     t2 = T2s[y]
     has = t2 > -1e8
@@ -293,7 +295,7 @@ for y in range(H):
         z = np.arange(zlo, zhi + 1)[:, None]
         m = (z >= b2[None, :]) & (z <= t2[None, :]) & has[None, :]
         mz, mx = np.nonzero(m)
-        sy = y + OFF - (mz + zlo)
+        sy = YS[y] + OFF - (mz + zlo)
         GY[sy, mx] = y; LAY[sy, mx] = 1; ZS[sy, mx] = mz + zlo
 
 valid = GY >= 0
@@ -558,6 +560,14 @@ for i in range(4):
 for k in (31, 33, 42):
     if k in OBJS:
         door(fo == k, 0, (TOP_T if k != 42 else G4), 16, 30)
+# doors onto the wall walk (Kael-sized: 18 x 36 px), where the walk runs into a taller building's south face
+walk_mid_e = BX1 - WALLT / 2
+door(fo == 50, walk_mid_e, WALK, 18, 36)                       # watch room door (the walk passes through it)
+for k, (px, py) in (('NW', TOWERS['NW']), ('NE', TOWERS['NE'])):
+    o = OBJS[20 + list(TOWERS).index(k)]
+    xm = BX0 + WALLT / 2 if k == 'NW' else BX1 - WALLT / 2
+    a = np.arccos(np.clip((xm - o['cx']) / o['r'], -1, 1))
+    door(fo == 20 + list(TOWERS).index(k), (a - np.pi / 2) * o['r'], WALK, 18, 36)
 # great tower: loops on the lower storeys, lookout windows on level 4 (plan: north, south and west windows)
 m = fo == 40
 for s in range(3):
@@ -605,7 +615,7 @@ TOPCROP = int(np.nonzero(out[..., 3].any(1))[0][0])
 # beacon fire glow + smoke-free flame
 from PIL import ImageDraw
 d = ImageDraw.Draw(img)
-fx0, fy0 = int(bcx), int(bcy + OFF - (G4 + 22 + ZB))
+fx0, fy0 = int(bcx), int(round(bcy * KY) + OFF - (G4 + 22 + ZB))
 for r, a in ((26, 40), (16, 80), (9, 160)):
     glow = Image.new('RGBA', img.size, (0, 0, 0, 0))
     ImageDraw.Draw(glow).ellipse((fx0 - r, fy0 - r - 8, fx0 + r, fy0 + r - 8), fill=(255, 170, 60, a))
